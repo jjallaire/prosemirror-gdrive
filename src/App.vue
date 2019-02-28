@@ -25,7 +25,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="indigo" dark fixed app>
+    <v-toolbar color="orange" dark fixed app :clipped-left="true">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
     </v-toolbar>
@@ -34,9 +34,6 @@
         <router-view></router-view>
       </v-container>
     </v-content>
-    <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
   </v-app>
 </template>
 
@@ -53,3 +50,15 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.v-navigation-drawer {
+  padding-top: 70px;
+}
+
+.v-navigation-drawer.v-navigation-drawer--is-mobile {
+  padding-top: 0px;
+}
+
+</style>
