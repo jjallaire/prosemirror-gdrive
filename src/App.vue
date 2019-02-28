@@ -31,7 +31,7 @@
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
-        <HelloWorld />
+        <router-view></router-view>
       </v-container>
     </v-content>
     <v-footer color="indigo" app>
@@ -42,13 +42,10 @@
 
 
 <script>
-import HelloWorld from './components/HelloWorld'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  },
+ 
   data () {
     return {
       drawer: null
