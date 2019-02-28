@@ -1,4 +1,20 @@
 
+<script>
+
+
+export default {
+  name: 'App',
+ 
+  data () {
+    return {
+      drawer: false
+    }
+  }
+}
+
+</script>
+
+
 <template>
    <v-app>
     <v-navigation-drawer
@@ -7,7 +23,7 @@
       app
     >
       <v-list dense>
-        <v-list-tile v-on-click="">
+        <v-list-tile @click.stop="">
           <v-list-tile-action>
             <v-icon>home</v-icon>
           </v-list-tile-action>
@@ -15,7 +31,7 @@
             <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile v-on-click="">
+        <v-list-tile @click.stop="">
           <v-list-tile-action>
             <v-icon>contact_mail</v-icon>
           </v-list-tile-action>
@@ -37,19 +53,6 @@
   </v-app>
 </template>
 
-
-<script>
-
-export default {
-  name: 'App',
- 
-  data () {
-    return {
-      drawer: null
-    }
-  }
-}
-</script>
 
 <style>
 
