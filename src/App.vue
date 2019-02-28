@@ -16,7 +16,7 @@ export default {
 
 
 <template>
-   <v-app>
+  <v-app>
     <v-navigation-drawer
       v-model="drawer"
       fixed
@@ -42,12 +42,12 @@ export default {
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="orange" dark fixed app :clipped-left="true">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
-        <router-view></router-view>
+        <router-view />
       </v-container>
     </v-content>
   </v-app>

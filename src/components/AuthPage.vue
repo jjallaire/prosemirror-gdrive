@@ -11,10 +11,10 @@ export default {
 
 <template>
 
-<div>
+  <div>
 
-AuthPage
+    AuthPage
 
-</div>
+  </div>
 
 </template>
