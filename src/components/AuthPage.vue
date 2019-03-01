@@ -1,9 +1,21 @@
-
-
 <script>
 
+
+const gapi = window.gapi;
+
 export default {
-  name: 'AuthPage'
+  name: 'AuthPage',
+
+  methods: {
+
+    auth() {
+      return gapi.auth2.getAuthInstance();
+    },
+
+    onAuthorizeClicked() {
+      this.auth().signIn();
+    },
+  }
 }
 
 </script>
@@ -13,7 +25,7 @@ export default {
 
   <div>
 
-    AuthPage
+    <button @click="onAuthorizeClicked">Authorize</button>
 
   </div>
 
