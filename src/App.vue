@@ -1,15 +1,23 @@
 
 <script>
 
+import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
+         VList, VListTile, VListTileAction, VListTileContent } from 'vuetify/lib'
 
 export default {
   name: 'App',
- 
+
+  components: {
+    VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
+    VList, VListTile, VListTileAction, VListTileContent
+  },
+
   data () {
     return {
       drawer: false
     }
-  }
+  },
+
 }
 
 </script>
