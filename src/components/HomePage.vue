@@ -3,7 +3,7 @@
 <script>
 
 const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
-const kApiKey = "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
+const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
 const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
 
 // see: https://developers.google.com/drive/api/v2/about-auth#OAuth2Authorizing
@@ -33,6 +33,8 @@ export default {
   mounted() {
 
      
+     console.log(kApiKey);
+
      gapi.load('client:auth2', () => {
        
       gapi.client.init({
@@ -44,9 +46,9 @@ export default {
         
         this.initialized = true;
 
-        gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+        this.auth().isSignedIn.listen(this.updateSigninStatus);
 
-        this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        this.updateSigninStatus(this.auth().isSignedIn.get());
 
       }, error => {
         window.alert(error.message);
@@ -58,12 +60,16 @@ export default {
 
   methods: {
 
+    auth() {
+      return gapi.auth2.getAuthInstance();
+    },
+
     onAuthorizeClicked() {
-      gapi.auth2.getAuthInstance().signIn();
+      this.auth().signIn();
     },
 
     onSignOutClicked() {
-      gapi.auth2.getAuthInstance().signOut();
+      this.auth().signOut();
     },
 
     updateSigninStatus(isSignedIn) {
