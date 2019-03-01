@@ -17,10 +17,21 @@ export default {
 
 <template>
 
-  <div>
+  <div class="progress-container text-xs-center">
 
-    <v-progress-circular />
+    <v-progress-circular
+      :size="70"
+      :width="7"
+      color="orange"
+      indeterminate
+    />
 
   </div>
 
 </template>
+
+<style scoped>
+.progress-container {
+  width: 100%;
+}
+</style>
