@@ -15,6 +15,14 @@ export default {
   },
 
 
+  computed: {
+    username: function() {
+      let user = this.auth().currentUser.get();
+      let profile = user.getBasicProfile();
+      return profile.getEmail();
+    },
+  },
+
   mounted() {
     gapi.client.drive.files.list({
       pageSize: 10,
@@ -23,14 +31,18 @@ export default {
       if (response.result.files)
         this.files = response.result.files;
     });    
+
+    let auth = this.auth();
+    console.log(auth.currentUser.get());
   },
   
+
   methods: {
 
     auth() {
       return gapi.auth2.getAuthInstance();
     },
-
+ 
     onSignOutClicked() {
       this.auth().signOut();
     },
@@ -44,6 +56,7 @@ export default {
 
   <div>
   
+    <div>{{ username }}</div>
     <button @click="onSignOutClicked">Sign Out</button>
     
     <hr>
