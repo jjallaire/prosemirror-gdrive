@@ -39,7 +39,9 @@ export default {
         apiKey: kApiKey,
         clientId: kClientId,
         discoveryDocs: kDiscoveryDocs,
-        scope: kScopes.join(' ')
+        scope: kScopes.join(' '),
+        ux_mode: 'redirect',
+        redirect_uri: window.location.href
       }).then(() => {
         
         this.initialized = true;
