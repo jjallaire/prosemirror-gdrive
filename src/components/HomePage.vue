@@ -2,6 +2,10 @@
 
 <script>
 
+import { mapState } from 'vuex'
+
+import { SET_INITIALIZED, SET_USER } from '../store'
+
 const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
 const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
 const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
@@ -24,9 +28,17 @@ export default {
 
   data: function() {
     return {
-      initialized: false,
-      authorized: false,
       files: []
+    }
+  },
+
+  computed: {
+    ...mapState([
+      'initialized',
+      'user'
+    ]),
+    authorized: function() {
+      return this.user === true;
     }
   },
 
@@ -44,7 +56,7 @@ export default {
         redirect_uri: window.location.href
       }).then(() => {
         
-        this.initialized = true;
+        this.$store.commit(SET_INITIALIZED, true);
 
         this.auth().isSignedIn.listen(this.updateSigninStatus);
 
@@ -73,7 +85,9 @@ export default {
     },
 
     updateSigninStatus(isSignedIn) {
-      this.authorized = isSignedIn;
+
+    
+      this.$store.commit(SET_USER, isSignedIn);
 
       this.files = [];
 
