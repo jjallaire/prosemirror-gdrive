@@ -32,8 +32,6 @@ export default {
 
   mounted() {
 
-     
-     console.log(kApiKey);
 
      gapi.load('client:auth2', () => {
        
