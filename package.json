@@ -45,10 +45,19 @@
     ],
     "rules": {
       "no-console": "off",
-      "vue/prop-name-casing": ["error", "snake_case"],
-      "vue/singleline-html-element-content-newline": ["off"],
-      "vue/multiline-html-element-content-newline": ["off"],
-      "vue/max-attributes-per-line": ["off"]
+      "vue/prop-name-casing": [
+        "error",
+        "snake_case"
+      ],
+      "vue/singleline-html-element-content-newline": [
+        "off"
+      ],
+      "vue/multiline-html-element-content-newline": [
+        "off"
+      ],
+      "vue/max-attributes-per-line": [
+        "off"
+      ]
     },
     "parserOptions": {
       "parser": "babel-eslint"
