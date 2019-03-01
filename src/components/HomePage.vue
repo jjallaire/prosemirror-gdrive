@@ -25,7 +25,8 @@ export default {
   data: function() {
     return {
       initialized: false,
-      authorized: false
+      authorized: false,
+      files: []
     }
   },
 
@@ -67,6 +68,19 @@ export default {
 
     updateSigninStatus(isSignedIn) {
       this.authorized = isSignedIn;
+
+      this.files = [];
+
+      if (this.authorized) {
+        gapi.client.drive.files.list({
+          pageSize: 10,
+          fields: 'nextPageToken, files(id, name)'
+        }).then(response => {
+          if (response.result.files)
+            this.files = response.result.files;
+        });
+      }
+
     }
 
   }
@@ -85,6 +99,10 @@ export default {
     </div>
     <div v-else>
       Initializing....
+    </div>
+
+    <div v-for="file in files" :key="file.id">
+      {{ file.name }} - {{ file.id }}
     </div>
 
   </div>
