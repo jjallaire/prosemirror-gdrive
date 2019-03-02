@@ -6,7 +6,6 @@ export default {
 
   connect(onSignInChanged) {
     this.onSignInChanged = onSignInChanged;
-    this.onSignInChanged();
     return Promise.resolve();
   },
 

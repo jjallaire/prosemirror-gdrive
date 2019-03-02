@@ -44,6 +44,7 @@ export default {
     drive.connect(this.onSignInChanged)
       .then(() => {
          this.$store.commit(SET_INITIALIZED, true);
+         this.onSignInChanged();
       })
       .catch(error => {
         window.alert(error.message);

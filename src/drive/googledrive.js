@@ -32,7 +32,6 @@ export default {
         })
         .then(() => {
           auth().isSignedIn.listen(onSignInChanged);
-          onSignInChanged();
           resolve();
         })
         .catch(error => {
