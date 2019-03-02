@@ -2,8 +2,8 @@
 
 /* eslint-disable */
 
-import localdrive from './localdrive'
-import googledrive from './googledrive'
+import local from './local'
+import google from './google'
 
-export default googledrive;
+export default google;
 
