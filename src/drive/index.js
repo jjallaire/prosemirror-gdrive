@@ -21,7 +21,7 @@ export default {
 
   connect(onSignInChanged) {
     return new Promise((resolve, reject) => {
-      gapi.load('client:auth2', () => {
+      return gapi.load('client:auth2', () => {
         gapi.client.init({
           apiKey: kApiKey,
           clientId: kClientId,
@@ -29,12 +29,15 @@ export default {
           scope: kScopes.join(' '),
           ux_mode: 'redirect',
           redirect_uri: window.location.href
-        }).then(() => {
+        })
+        .then(() => {
           auth().isSignedIn.listen(onSignInChanged);
           onSignInChanged();
           resolve();
-        }, error => {
-          reject(error)
+        })
+        .catch(error => {
+          let message = error.error.errors[0].message;
+          reject(new Error(message));
         });
       });
 
