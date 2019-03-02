@@ -10,7 +10,7 @@ import { mapGetters } from 'vuex'
 import AuthPage from './components/AuthPage.vue'
 import LoadingPage from './components/LoadingPage.vue'
 
-import { SET_INITIALIZED, SET_USER, CLEAR_USER } from './store'
+import { SET_INITIALIZED, SET_USER, CLEAR_USER } from './store/mutations'
 
 const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
 const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
