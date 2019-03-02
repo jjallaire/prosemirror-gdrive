@@ -5,7 +5,7 @@ import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
          VSpacer, VBtn, VIcon,
          VList, VListTile, VListTileAction, VListTileContent } from 'vuetify/lib'
 
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import AuthPage from './components/AuthPage.vue'
 import LoadingPage from './components/LoadingPage.vue'
@@ -46,14 +46,11 @@ export default {
   },
 
   computed: {
-    ...mapState([
+    ...mapGetters([
       'initialized',
+      'authorized',
       'user'
     ]),
-
-    authorized() {
-      return this.user.id !== null;
-    },
 
   },
 

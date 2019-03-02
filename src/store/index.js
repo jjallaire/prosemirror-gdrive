@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import getters from './getters'
+
 Vue.use(Vuex)
 
 export const SET_INITIALIZED = 'SET_INITIALIZED'
@@ -22,6 +24,9 @@ const store = new Vuex.Store({
     initialized: false,
     user: noUser()
   },
+
+  getters: getters,
+  
   mutations: {
 
     [SET_INITIALIZED](state, initialized) {
