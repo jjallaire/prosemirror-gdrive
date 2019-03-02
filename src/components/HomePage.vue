@@ -42,10 +42,7 @@ export default {
     auth() {
       return gapi.auth2.getAuthInstance();
     },
- 
-    onSignOutClicked() {
-      this.auth().signOut();
-    },
+
   }
 }
 
@@ -55,12 +52,6 @@ export default {
 <template>
 
   <div>
-  
-    <div>{{ username }}</div>
-    <button @click="onSignOutClicked">Sign Out</button>
-    
-    <hr>
-    <p />
 
     <div v-for="file in files" :key="file.id">
       {{ file.name }} - {{ file.id }}

@@ -1,7 +1,8 @@
 
 <script>
 
-import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
+import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
+         VSpacer, VBtn, VIcon,
          VList, VListTile, VListTileAction, VListTileContent } from 'vuetify/lib'
 
 import { mapState } from 'vuex'
@@ -9,7 +10,7 @@ import { mapState } from 'vuex'
 import AuthPage from './components/AuthPage.vue'
 import LoadingPage from './components/LoadingPage.vue'
 
-import { SET_INITIALIZED, SET_USER } from './store'
+import { SET_INITIALIZED, SET_USER, CLEAR_USER } from './store'
 
 const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
 const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
@@ -32,7 +33,8 @@ export default {
   name: 'App',
 
   components: {
-    VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
+    VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
+    VSpacer, VBtn, VIcon,
     VList, VListTile, VListTileAction, VListTileContent,
     LoadingPage, AuthPage
   },
@@ -48,9 +50,11 @@ export default {
       'initialized',
       'user'
     ]),
+
     authorized() {
-      return this.user === true;
-    }
+      return this.user.id !== null;
+    },
+
   },
 
   mounted() {
@@ -81,8 +85,26 @@ export default {
     },
 
     updateSigninStatus(isSignedIn) {
-      this.$store.commit(SET_USER, isSignedIn);
-    }
+      if (isSignedIn) {
+        let user = this.auth().currentUser.get();
+        let profile = user.getBasicProfile();
+        this.$store.commit(SET_USER, {
+          id: profile.getId(),
+          name: profile.getName(),
+          email: profile.getEmail()
+        });
+      } else {
+        this.$store.commit(CLEAR_USER);
+      }
+    },
+
+    onSignInClicked() {
+      this.auth().signIn();
+    },
+
+    onSignOutClicked() {
+      this.auth().signOut();
+    },
   }
 
 }
@@ -119,6 +141,20 @@ export default {
     <v-toolbar color="orange" dark fixed app :clipped-left="true">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
+      <v-spacer />
+      <template v-if="authorized">
+        <span>{{ user.email }}</span>
+        <v-btn icon @click="onSignOutClicked">
+          <v-icon>exit_to_app</v-icon>
+        </v-btn>
+        <v-btn icon>
+          <v-icon>settings</v-icon>
+        </v-btn>
+      </template>
+      <template v-else-if="initialized">
+        <v-btn flat @click="onSignInClicked">Sign In</v-btn>
+      </template>
+      
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
