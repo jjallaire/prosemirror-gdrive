@@ -2,6 +2,8 @@ import Vue from 'vue'
 
 import Vuetify from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
+import 'typeface-roboto'
+import 'material-icons/iconfont/material-icons.css'
 Vue.use(Vuetify, {
   iconfont: 'md',
 })
