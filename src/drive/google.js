@@ -55,13 +55,13 @@ export default {
     if (auth().isSignedIn.get()) {
       let user = auth().currentUser.get();
       let profile = user.getBasicProfile();
-      return {
+      return Promise.resolve({
         id: profile.getId(),
         name: profile.getName(),
         email: profile.getEmail()
-      };
+      });
     } else {
-      return null;
+      return Promise.resolve(null);
     }
   },
 

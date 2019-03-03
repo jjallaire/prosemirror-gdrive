@@ -54,7 +54,10 @@ export default {
   methods: {
   
     onSignInChanged() {
-      this.$store.commit(SET_USER, drive.signedInUser());
+      drive.signedInUser()
+        .then(user => {
+          this.$store.commit(SET_USER, user);
+        })
     },
 
     onSignInClicked() {

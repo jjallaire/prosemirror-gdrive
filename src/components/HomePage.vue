@@ -2,8 +2,9 @@
 
 <script>
 
+import drive from '../drive'
 
-const gapi = window.gapi;
+
 
 export default {
   name: 'HomePage',
@@ -14,34 +15,13 @@ export default {
     }
   },
 
-
-  computed: {
-    username: function() {
-      let user = this.auth().currentUser.get();
-      let profile = user.getBasicProfile();
-      return profile.getEmail();
-    },
-  },
-
   mounted() {
-    gapi.client.drive.files.list({
-      pageSize: 10,
-      fields: 'nextPageToken, files(id, name)'
-    }).then(response => {
-      if (response.result.files)
-        this.files = response.result.files;
-    });    
-
-    let auth = this.auth();
-    console.log(auth.currentUser.get());
+    drive.listFiles().then(files => {
+      this.files = files;
+    })
   },
   
-
   methods: {
-
-    auth() {
-      return gapi.auth2.getAuthInstance();
-    },
 
   }
 }
