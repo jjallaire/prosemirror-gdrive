@@ -102,7 +102,7 @@ export default {
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="orange" dark fixed app :clipped-left="true">
+    <v-toolbar color="orange" dark fixed app dense :clipped-left="true">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
         <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
@@ -141,7 +141,7 @@ export default {
 }
 
 .v-navigation-drawer {
-  padding-top: 70px;
+  padding-top: 55px;
 }
 
 .v-navigation-drawer.v-navigation-drawer--is-mobile {
