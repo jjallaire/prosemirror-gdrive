@@ -82,7 +82,7 @@ export default {
       app
     >
       <v-list v-if="authorized" dense>
-        <v-list-tile @click.stop="">
+        <v-list-tile :to="{ path: '/' }" @click.stop="">
           <v-list-tile-action>
             <v-icon>home</v-icon>
           </v-list-tile-action>
@@ -90,12 +90,12 @@ export default {
             <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click.stop="">
+        <v-list-tile :to="{path: '/settings/' }" @click.stop="">
           <v-list-tile-action>
-            <v-icon>contact_mail</v-icon>
+            <v-icon>settings</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Contact</v-list-tile-title>
+            <v-list-tile-title>Settings</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
