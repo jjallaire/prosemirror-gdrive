@@ -8,7 +8,7 @@ import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
 import { mapGetters } from 'vuex'
 
 import AuthPage from './components/AuthPage.vue'
-import LoadingPage from './components/LoadingPage.vue'
+import ProgressSpinner from './components/core/ProgressSpinner.vue'
 
 import { SET_INITIALIZED, SET_USER } from './store/mutations'
 
@@ -21,7 +21,8 @@ export default {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
     VSpacer, VBtn, VIcon,
     VList, VListTile, VListTileAction, VListTileContent,
-    LoadingPage, AuthPage
+    ProgressSpinner,
+    AuthPage
   },
 
   data () {
@@ -123,7 +124,7 @@ export default {
     </v-toolbar>
     <v-content>
       <v-container fluid>
-        <LoadingPage v-if="!initialized" />
+        <ProgressSpinner v-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
         <router-view v-else />
       </v-container>

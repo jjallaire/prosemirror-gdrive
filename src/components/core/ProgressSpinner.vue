@@ -1,11 +1,10 @@
 
-
 <script>
 
 import { VProgressCircular } from 'vuetify/lib'
 
 export default {
-  name: 'LoadingPage',
+  name: 'ProgressSpinner',
 
   components: {
     VProgressCircular
@@ -14,10 +13,9 @@ export default {
 
 </script>
 
-
 <template>
 
-  <div class="progress-container text-xs-center">
+  <div class="progress-spinner text-xs-center">
 
     <v-progress-circular
       :size="70"
@@ -31,8 +29,9 @@ export default {
 </template>
 
 <style scoped>
-.progress-container {
+.progress-spinner {
   margin-top: 200px;
   width: 100%;
 }
 </style>
+
