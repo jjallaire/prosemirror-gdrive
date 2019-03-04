@@ -28,10 +28,10 @@ export default {
 
 </template>
 
-<style scoped>
+<style>
 .progress-spinner {
-  margin-top: 200px;
   width: 100%;
+  padding-bottom: 200px;
 }
 </style>
 

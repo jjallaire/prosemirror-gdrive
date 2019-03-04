@@ -20,7 +20,7 @@ export default {
 
 <template>
 
-  <div class="home-container text-xs-center">
+  <div class="auth-container text-xs-center">
 
     <p class="display-2">Welcome to ProseMirror GDrive</p>
 
@@ -38,16 +38,16 @@ export default {
 
 <style>
 
-.home-container { 
-  margin-top: 100px;
+.auth-container { 
   width: 100%;
+  padding-bottom: 200px;
 }
 
-.home-container .display-2 {
+.auth-container .display-2 {
   margin-bottom: 50px;
 }
 
-.google-sign-in {
+.auth-container .google-sign-in {
   margin-top: 10px;
   background-image: url('/images/sign-in-with-google.png');
   background-size: 191px 46px;

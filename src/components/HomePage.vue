@@ -35,14 +35,23 @@ export default {
 
 <template>
 
-  <div v-if="files">
+  <div class="home-container text-xs-center">
+    <div v-if="files">
 
-    <div v-for="file in files" :key="file.id">
-      {{ file.name }} - {{ file.id }}
+      <div v-for="file in files" :key="file.id">
+        {{ file.name }} - {{ file.id }}
+      </div>
+
     </div>
+
+    <ProgressSpinner v-else />
 
   </div>
 
-  <ProgressSpinner v-else />
-
 </template>
+
+<style>
+.home-container {
+  width: 100%;
+}
+</style>

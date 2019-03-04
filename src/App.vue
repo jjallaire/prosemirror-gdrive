@@ -123,7 +123,7 @@ export default {
       
     </v-toolbar>
     <v-content>
-      <v-container fluid>
+      <v-container fluid fill-height>
         <ProgressSpinner v-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
         <router-view v-else />
