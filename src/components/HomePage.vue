@@ -6,9 +6,6 @@ import drive from '../drive'
 
 import ProgressSpinner from './core/ProgressSpinner.vue'
 
-// generic progress treatment for pages that load GDrive info
-
-
 export default {
   name: 'HomePage',
 
