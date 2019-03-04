@@ -1,6 +1,6 @@
 
 
-
+const kAppId = "880472811488"
 const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
 const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
 const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
@@ -21,14 +21,14 @@ export default {
 
   connect(onSignInChanged) {
     return new Promise((resolve, reject) => {
-      return gapi.load('client:auth2', () => {
+      return gapi.load('client:auth2:picker', () => {
         gapi.client.init({
           apiKey: kApiKey,
           clientId: kClientId,
           discoveryDocs: kDiscoveryDocs,
           scope: kScopes.join(' '),
           ux_mode: 'redirect',
-          redirect_uri: window.location.href
+          redirect_uri: window.location.origin + "/"
         })
         .then(() => {
           auth().isSignedIn.listen(onSignInChanged);
@@ -73,6 +73,25 @@ export default {
       return response.result.files;
     });  
   },
+
+  openFile() {
+    return new Promise((resolve) => {
+      let api = gapi.picker.api;
+      let user = auth().currentUser.get();
+      let view = new api.DocsView(api.ViewId.DOCS)
+        .setMode(api.DocsViewMode.LIST);
+      let picker = new api.PickerBuilder()
+        .setAppId(kAppId)
+        .setOAuthToken(user.getAuthResponse().access_token)
+        .addView(view)
+        .addView(api.ViewId.FOLDERS)
+        .setCallback(data => {
+          if (data[api.Response.ACTION] === api.Action.PICKED)
+            resolve(data.docs[0]);
+        }).build();
+      picker.setVisible(true);
+    });
+  }
 
 };
 

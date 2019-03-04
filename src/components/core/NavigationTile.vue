@@ -15,7 +15,7 @@ export default {
   props: {
     path: {
       type: String,
-      required: true
+      default: null
     },
     icon: {
       type: String,
@@ -34,7 +34,7 @@ export default {
 
 <template>
 
-  <v-list-tile :to="{path: path}">
+  <v-list-tile :to="path ? {path: path} : null" @click="$emit('click', $event)">
     <v-list-tile-action>
       <v-icon>{{ icon }}</v-icon>
     </v-list-tile-action>

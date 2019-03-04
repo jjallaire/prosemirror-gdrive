@@ -67,6 +67,13 @@ export default {
     onSignOutClicked() {
       drive.signOut();
     },
+
+    onOpenDocumentClicked() {
+      drive.openFile()
+        .then(doc => {
+          this.$router.push({ path: "/edit/" + doc.id });
+        });
+    }
   }
 
 }
@@ -85,6 +92,11 @@ export default {
       <v-list dense>
 
         <NavigationTile path="/" icon="home" caption="Home" />
+
+        <v-divider />
+
+        <NavigationTile path="/edit/" icon="add" caption="New Document" />
+        <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
 
         <v-divider />
 
