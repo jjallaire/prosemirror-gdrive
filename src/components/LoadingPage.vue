@@ -32,6 +32,7 @@ export default {
 
 <style scoped>
 .progress-container {
+  margin-top: 200px;
   width: 100%;
 }
 </style>

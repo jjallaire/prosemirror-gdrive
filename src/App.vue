@@ -76,12 +76,13 @@ export default {
 
 <template>
   <v-app>
-    <v-navigation-drawer
+    <v-navigation-drawer 
+      v-if="authorized"
       v-model="drawer"
       fixed
       app
     >
-      <v-list v-if="authorized" dense>
+      <v-list dense>
         <v-list-tile :to="{ path: '/' }" @click.stop="">
           <v-list-tile-action>
             <v-icon>home</v-icon>
@@ -101,7 +102,7 @@ export default {
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="orange" dark fixed app :clipped-left="true">
-      <v-toolbar-side-icon v-if="authorized" @click.stop="drawer = !drawer" />
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
         <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
       </router-link>
