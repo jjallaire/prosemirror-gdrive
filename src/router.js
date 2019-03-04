@@ -3,7 +3,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import HomePage from './components/HomePage.vue'
-import SettingsPage from './components/SettingsPage.vue'
+import SettingsPage from './components/settings/SettingsPage.vue'
 
 Vue.use(VueRouter)
 

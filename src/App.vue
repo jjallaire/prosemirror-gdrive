@@ -7,7 +7,7 @@ import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
 
 import { mapGetters } from 'vuex'
 
-import AuthPage from './components/AuthPage.vue'
+import AuthPage from './components/auth/AuthPage.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
 
 import { SET_INITIALIZED, SET_USER } from './store/mutations'

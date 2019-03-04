@@ -1,7 +1,7 @@
 <script>
 
 
-import drive from '../drive'
+import drive from '../../drive'
 
 export default {
   name: 'AuthPage',
