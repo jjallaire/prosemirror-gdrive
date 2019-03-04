@@ -101,7 +101,7 @@ export default {
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="orange" dark fixed app :clipped-left="true">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-toolbar-side-icon v-if="authorized" @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
         <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
       </router-link>
@@ -121,7 +121,7 @@ export default {
       
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fluid>
         <LoadingPage v-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
         <router-view v-else />
