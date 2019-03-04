@@ -102,14 +102,16 @@ export default {
     </v-navigation-drawer>
     <v-toolbar color="orange" dark fixed app :clipped-left="true">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
+      <router-link to="/" class="toolbar-title">
+        <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
+      </router-link>
       <v-spacer />
       <template v-if="authorized">
         <span>{{ user.email }}</span>
         <v-btn icon @click="onSignOutClicked">
           <v-icon>exit_to_app</v-icon>
         </v-btn>
-        <v-btn icon>
+        <v-btn :to="{ path: '/settings/' }" icon>
           <v-icon>settings</v-icon>
         </v-btn>
       </template>
@@ -130,6 +132,11 @@ export default {
 
 
 <style>
+
+.toolbar-title {
+  color: inherit;
+  text-decoration: inherit;
+}
 
 .v-navigation-drawer {
   padding-top: 70px;
