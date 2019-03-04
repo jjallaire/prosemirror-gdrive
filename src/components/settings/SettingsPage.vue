@@ -22,7 +22,7 @@ export default {
 
 <template>
 
-  <div>
+  <div class="settings-container">
 
     Settings
 
@@ -30,3 +30,9 @@ export default {
 
 </template>
 
+<style>
+.settings-container {
+  width: 100%;
+  height: 100%;
+}
+</style>

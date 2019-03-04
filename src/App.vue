@@ -2,13 +2,13 @@
 <script>
 
 import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-         VSpacer, VBtn, VIcon,
-         VList, VListTile, VListTileAction, VListTileContent } from 'vuetify/lib'
+         VSpacer, VBtn, VIcon, VDivider, VList } from 'vuetify/lib'
 
 import { mapGetters } from 'vuex'
 
 import AuthPage from './components/auth/AuthPage.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
+import NavigationTile from './components/core/NavigationTile.vue'
 
 import { SET_INITIALIZED, SET_USER } from './store/mutations'
 
@@ -19,9 +19,8 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-    VSpacer, VBtn, VIcon,
-    VList, VListTile, VListTileAction, VListTileContent,
-    ProgressSpinner,
+    VSpacer, VBtn, VIcon, VDivider, VList, 
+    ProgressSpinner, NavigationTile,
     AuthPage
   },
 
@@ -84,22 +83,16 @@ export default {
       app
     >
       <v-list dense>
-        <v-list-tile :to="{ path: '/' }" @click.stop="">
-          <v-list-tile-action>
-            <v-icon>home</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Home</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile :to="{path: '/settings/' }" @click.stop="">
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Settings</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+
+        <NavigationTile path="/" icon="home" caption="Home" />
+
+        <v-divider />
+
+        <NavigationTile path="/settings/" icon="settings" caption="Settings" />
+        <NavigationTile path="/help" icon="help" caption="Help" />
+
+        <v-divider />
+    
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true">
