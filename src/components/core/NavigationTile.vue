@@ -34,8 +34,8 @@ export default {
 
 <template>
 
-  <v-list-tile :to="path ? {path: path} : null" @click="$emit('click', $event)">
-    <v-list-tile-action>
+  <v-list-tile :to="path ? {path: path} : null" exact @click="$emit('click', $event)">
+    <v-list-tile-action v-if="icon">
       <v-icon>{{ icon }}</v-icon>
     </v-list-tile-action>
     <v-list-tile-content>

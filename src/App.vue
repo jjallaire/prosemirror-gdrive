@@ -2,7 +2,7 @@
 <script>
 
 import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-         VSpacer, VBtn, VIcon, VDivider, VList } from 'vuetify/lib'
+         VListGroup, VSpacer, VBtn, VIcon, VDivider, VList } from 'vuetify/lib'
 
 import { mapGetters } from 'vuex'
 
@@ -19,14 +19,15 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-    VSpacer, VBtn, VIcon, VDivider, VList, 
+    VListGroup, VSpacer, VBtn, VIcon, VDivider, VList, 
     ProgressSpinner, NavigationTile,
     AuthPage
   },
 
   data () {
     return {
-      drawer: false
+      drawer: false,
+      recent_docs: true
     }
   },
 
@@ -98,7 +99,20 @@ export default {
         <NavigationTile path="/edit/" icon="add" caption="New Document" />
         <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
 
-        <v-divider />
+        <v-list-group
+          v-model="recent_docs"
+          no-action=""
+        >
+          <template v-slot:activator>
+            <NavigationTile icon="history" caption="Recent Documents" />
+          </template>
+
+          <NavigationTile caption="Doc 1" path="/edit/1H6jTeEFhj9B8ZOsXR8_3T0ih9-uxfW4Y" />
+          <NavigationTile caption="Doc 2" path="/edit/1iW6BuaqZd7J2061X_UiUGi4da2X9sgTS" />
+          <NavigationTile caption="Doc 3" path="/edit/1tu3tcVkUPq3bC60YDKh4rYOvCMRyPKUD" />
+
+        </v-list-group>
+
 
         <NavigationTile path="/settings/" icon="settings" caption="Settings" />
         <NavigationTile path="/help" icon="help" caption="Help" />
