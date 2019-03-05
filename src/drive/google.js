@@ -23,7 +23,7 @@ export default {
 
   connect(onSignInChanged) {
     return new Promise((resolve, reject) => {
-      return gapi.load('client:auth2:picker', () => {
+      return gapi.load('client:auth2:picker:drive-share', () => {
         gapi.client.init({
           apiKey: kApiKey,
           clientId: kClientId,
@@ -122,6 +122,14 @@ export default {
         };
         return file; 
       });
+  },
+
+  shareFile(fileId) {
+    let user = auth().currentUser.get();
+    let share = new gapi.drive.share.ShareClient();
+    share.setOAuthToken(user.getAuthResponse().access_token);
+    share.setItemIds([fileId]);
+    share.showSettingsDialog();
   },
 
   openFile() {

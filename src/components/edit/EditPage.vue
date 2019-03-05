@@ -55,6 +55,10 @@ export default {
           });
       }
     },
+
+    onShareClicked() {
+      drive.shareFile(this.doc_id);
+    }
   }
 }
 
@@ -71,6 +75,10 @@ export default {
       <p>
         {{ content }}
       </p>
+      <p>
+        <button @click="onShareClicked">Share</button>
+      </p>
+
     </div>
     <div v-else>
       <ProgressSpinner />
