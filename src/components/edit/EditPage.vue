@@ -26,29 +26,35 @@ export default {
     }
   },
 
-  created() {
-    if (this.doc_id === null) {
-      drive.newFile().then(id => {
-        this.doc_id = id;
-        this.loadFile();
-      });
-    } else {
-      this.loadFile();
-    }
-
+  watch: {
+    '$route': 'initDoc'
   },
 
+  created() {
+    this.initDoc();
+  },
 
   methods: {
-    loadFile() {
-      drive.loadFile(this.doc_id)
-        .then(file => {
-          this.content = file.content;
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+
+    initDoc() {
+
+      this.content = null;
+
+      if (this.doc_id === null) {
+        drive.newFile()
+          .then(id => {
+            this.$router.push({ path: "/edit/" + id });
+          });
+      } else {
+        drive.loadFile(this.doc_id)
+          .then(file => {
+            this.content = file.content;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    },
   }
 }
 

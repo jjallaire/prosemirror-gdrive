@@ -17,7 +17,7 @@ const kScopes = [
 
 const gapi = window.gapi;
 
-
+import MultipartBuilder from './multipart'
 
 export default {
 
@@ -78,33 +78,29 @@ export default {
   },
 
   newFile() {
-
-    // conside using gapi request:
-    // https://github.com/gsuitedevs/drive-quickeditors/blob/master/web/src/components/drive/drive.service.js
-
-    return new Promise(resolve => {
-      let user = auth().currentUser.get();
-      let fileContent = 'sample text'; // As a sample, upload a text file.
-      let file = new Blob([fileContent], {type: 'application/vnd.google.drive.ext-type.pmdoc'});
-      let metadata = {
-        'name': 'Untitled', // Filename at Google Drive
-        'mimeType': 'application/vnd.google.drive.ext-type.pmdoc', // mimeType at Google Drive
-      };
-      let accessToken = user.getAuthResponse().access_token;
-      var form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
-      form.append('file', file);
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
-      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-      xhr.responseType = 'json';
-      xhr.onload = () => {
-        resolve(xhr.response.id); // Retrieve uploaded file ID.
-      };
-      xhr.onerror = error => {
-        console.log(error);
-      };
-      xhr.send(form);
+    let fileContent = 'more sample text'; // As a sample, upload a text file.
+    let metadata = {
+      'name': 'Untitled', // Filename at Google Drive
+      'mimeType': 'application/vnd.google.drive.ext-type.pmdoc', // mimeType at Google Drive
+    };
+    let path = '/upload/drive/v3/files';
+    let method = 'POST';
+    let multipart = new MultipartBuilder()
+      .append('application/json', JSON.stringify(metadata))
+      .append('application/vnd.google.drive.ext-type.pmdoc', fileContent)
+      .finish();
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        uploadType: 'multipart',
+        supportsTeamDrives: true,
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : multipart.type },
+      body: multipart.body
+    }).then(response => {
+      return response.result.id;
     });
   },
 
