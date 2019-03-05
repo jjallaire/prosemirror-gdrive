@@ -17,6 +17,8 @@ const kScopes = [
 
 const gapi = window.gapi;
 
+
+
 export default {
 
   connect(onSignInChanged) {
@@ -67,6 +69,7 @@ export default {
 
   listFiles() {
     return gapi.client.drive.files.list({
+      q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc"',
       pageSize: 10,
       fields: 'nextPageToken, files(id, name)'
     }).then(response => {
@@ -74,15 +77,69 @@ export default {
     });  
   },
 
+  newFile() {
+
+    // conside using gapi request:
+    // https://github.com/gsuitedevs/drive-quickeditors/blob/master/web/src/components/drive/drive.service.js
+
+    return new Promise(resolve => {
+      let user = auth().currentUser.get();
+      let fileContent = 'sample text'; // As a sample, upload a text file.
+      let file = new Blob([fileContent], {type: 'application/vnd.google.drive.ext-type.pmdoc'});
+      let metadata = {
+        'name': 'Untitled', // Filename at Google Drive
+        'mimeType': 'application/vnd.google.drive.ext-type.pmdoc', // mimeType at Google Drive
+      };
+      let accessToken = user.getAuthResponse().access_token;
+      var form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+      form.append('file', file);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+      xhr.responseType = 'json';
+      xhr.onload = () => {
+        resolve(xhr.response.id); // Retrieve uploaded file ID.
+      };
+      xhr.onerror = error => {
+        console.log(error);
+      };
+      xhr.send(form);
+    });
+  },
+
+  loadFile(fileId) {
+    let metadataRequest = gapi.client.drive.files.get({
+      fileId: fileId,
+      supportsTeamDrives: true
+    });
+    var contentRequest = gapi.client.drive.files.get({
+      fileId: fileId,
+      supportsTeamDrives: true,
+      alt: 'media'
+    });
+    return Promise.all([metadataRequest, contentRequest])
+      .then(responses => {
+        let file = {
+          metadata: responses[0].result,
+          content: responses[1].body
+        };
+        return file; 
+      });
+  },
+
   openFile() {
     return new Promise((resolve) => {
       let api = gapi.picker.api;
       let user = auth().currentUser.get();
       let view = new api.DocsView(api.ViewId.DOCS)
-        .setMode(api.DocsViewMode.LIST);
+        .setMode(api.DocsViewMode.LIST)
+        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
       let picker = new api.PickerBuilder()
         .setAppId(kAppId)
         .setOAuthToken(user.getAuthResponse().access_token)
+        .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
+        .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
         .addView(view)
         .addView(api.ViewId.FOLDERS)
         .setCallback(data => {

@@ -35,7 +35,7 @@ export default {
 
 <template>
 
-  <div class="home-container text-xs-center">
+  <div class="home-container">
     <div v-if="files">
 
       <div v-for="file in files" :key="file.id">
