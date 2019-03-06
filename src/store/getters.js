@@ -6,6 +6,8 @@ export default {
 
   authorized: (state) => state.user !== null,
 
-  user: (state) => state.user
+  user: (state) => state.user,
+
+  recent_files: (state) => state.recent_files
 
 }

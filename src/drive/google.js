@@ -15,14 +15,11 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
-
-// we can query this endpoint for changes:
-   // https://developers.google.com/drive/api/v3/reference/changes/list
-// perhaps force a query when we know one should have occurred
-
 const gapi = window.gapi;
 
 import MultipartBuilder from './multipart'
+import store from '../store'
+import { SET_RECENT_FILES } from '../store/mutations'
 
 export class GAPIError extends Error {
   constructor(error) {
@@ -37,7 +34,9 @@ export class GAPIError extends Error {
 
 export default {
 
+
   connect(onSignInChanged) {
+
     return new Promise((resolve, reject) => {
       return gapi.load('client:auth2:picker:drive-share', () => {
         gapi.client.init({
@@ -50,6 +49,9 @@ export default {
         })
         .then(() => {
           auth().isSignedIn.listen(onSignInChanged);
+          return this.updateRecentFiles();
+        })
+        .then(() => {
           resolve();
         })
         .catch(error => {
@@ -86,18 +88,19 @@ export default {
   listFiles() {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc"',
-      pageSize: 10,
-      fields: 'nextPageToken, files(id, name)'
+      pageSize: 100,
+      fields: 'nextPageToken, files(id, name)',
+      orderBy: 'recency desc'
     }).then(response => {
       return response.result.files;
     });  
   },
 
   newFile() {
-    let fileContent = 'more sample text'; // As a sample, upload a text file.
+    let fileContent = 'more sample text'; 
     let metadata = {
-      'name': 'Untitled', // Filename at Google Drive
-      'mimeType': 'application/vnd.google.drive.ext-type.pmdoc', // mimeType at Google Drive
+      'name': 'Brand New Doc',
+      'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let path = '/upload/drive/v3/files';
     let method = 'POST';
@@ -116,6 +119,10 @@ export default {
       headers: { 'Content-Type' : multipart.type },
       body: multipart.body
     }).then(response => {
+      // update model w/ new file
+      this.updateRecentFiles();
+
+      // return id
       return response.result.id;
     });
   },
@@ -172,9 +179,25 @@ export default {
         }).build();
       picker.setVisible(true);
     });
+  },
+
+  // update the store with recent files. this is done on startup,
+  // after a new file is created, and periodically in the background
+  updateRecentFiles() {
+
+    return this.listFiles().then(files => {
+      store.commit(SET_RECENT_FILES, files);
+    });
+
+    // we can query this endpoint for changes:
+    // https://developers.google.com/drive/api/v3/reference/changes/list
+    // perhaps force a query when we know one should have occurred
   }
 
 };
+
+
+
 
 
 function auth() {

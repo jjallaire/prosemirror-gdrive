@@ -4,6 +4,7 @@
 export function initialState() {
   return {
     initialized: false,
-    user: null
+    user: null,
+    recent_files: []
   };
 }

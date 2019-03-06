@@ -2,27 +2,16 @@
 
 <script>
 
-import drive from '../drive'
 
-import ProgressSpinner from './core/ProgressSpinner.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'HomePage',
 
-  components: {
-    ProgressSpinner
-  },
-
-  data: function() {
-    return {
-      files: null
-    }
-  },
-
-  mounted() {
-    drive.listFiles().then(files => {
-      this.files = files;
-    })
+  computed: {
+    ...mapGetters([
+      'recent_files'
+    ])
   },
   
   methods: {
@@ -36,16 +25,9 @@ export default {
 <template>
 
   <div class="home-container">
-    <div v-if="files">
-
-      <div v-for="file in files" :key="file.id">
-        {{ file.name }} - {{ file.id }}
-      </div>
-
+    <div v-for="file in recent_files" :key="file.id">
+      {{ file.name }} - {{ file.id }}
     </div>
-
-    <ProgressSpinner v-else />
-
   </div>
 
 </template>

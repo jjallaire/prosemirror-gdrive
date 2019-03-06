@@ -2,32 +2,30 @@
 <script>
 
 import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-         VListGroup, VSpacer, VBtn, VIcon, VDivider, VList } from 'vuetify/lib'
+         VSpacer, VBtn, VIcon } from 'vuetify/lib'
 
 import { mapGetters } from 'vuex'
 
 import AuthPage from './components/auth/AuthPage.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
-import NavigationTile from './components/core/NavigationTile.vue'
+import NavigationList from './components/navigation/NavigationList.vue'
 
 import { SET_INITIALIZED, SET_USER } from './store/mutations'
 
 import drive from './drive'
 
 export default {
+  
   name: 'App',
 
   components: {
-    VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
-    VListGroup, VSpacer, VBtn, VIcon, VDivider, VList, 
-    ProgressSpinner, NavigationTile,
-    AuthPage
+    VApp, VNavigationDrawer, VToolbar, VContent, VContainer, VSpacer, VBtn, VIcon, 
+    ProgressSpinner, NavigationList, AuthPage
   },
 
   data () {
     return {
-      drawer: false,
-      recent_docs: true
+      drawer: false
     }
   },
 
@@ -68,13 +66,6 @@ export default {
     onSignOutClicked() {
       drive.signOut();
     },
-
-    onOpenDocumentClicked() {
-      drive.openFile()
-        .then(doc => {
-          this.$router.push({ path: "/edit/" + doc.id });
-        });
-    }
   }
 
 }
@@ -84,43 +75,11 @@ export default {
 
 <template>
   <v-app>
-    <v-navigation-drawer 
-      v-if="authorized"
-      v-model="drawer"
-      fixed
-      app
-    >
-      <v-list dense>
 
-        <NavigationTile path="/" icon="home" caption="Home" />
-
-        <v-divider />
-
-        <NavigationTile path="/edit/" icon="add" caption="New Document" />
-        <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
-
-        <v-list-group
-          v-model="recent_docs"
-          no-action=""
-        >
-          <template v-slot:activator>
-            <NavigationTile icon="history" caption="Recent Documents" />
-          </template>
-
-          <NavigationTile caption="Doc 1" path="/edit/1H6jTeEFhj9B8ZOsXR8_3T0ih9-uxfW4Y" />
-          <NavigationTile caption="Doc 2" path="/edit/1iW6BuaqZd7J2061X_UiUGi4da2X9sgTS" />
-          <NavigationTile caption="Doc 3" path="/edit/1tu3tcVkUPq3bC60YDKh4rYOvCMRyPKUD" />
-
-        </v-list-group>
-
-
-        <NavigationTile path="/settings/" icon="settings" caption="Settings" />
-        <NavigationTile path="/help" icon="help" caption="Help" />
-
-        <v-divider />
-    
-      </v-list>
+    <v-navigation-drawer v-if="authorized" v-model="drawer" fixed app>
+      <NavigationList />
     </v-navigation-drawer>
+    
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
