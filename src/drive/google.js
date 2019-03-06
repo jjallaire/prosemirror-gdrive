@@ -48,7 +48,19 @@ export default {
           redirect_uri: window.location.origin + "/"
         })
         .then(() => {
-          auth().isSignedIn.listen(onSignInChanged);
+          // listen for sign-in changed
+          auth().isSignedIn.listen(() => {
+            if (this.isSignedIn()) {
+              this.updateRecentFiles();
+            } else {
+              this._changesPageToken = null;
+              store.commit(SET_RECENT_FILES, []);
+            }
+            // notify caller
+            onSignInChanged();
+          });
+    
+          // populate files to start
           return this.updateRecentFiles();
         })
         .then(() => {
@@ -71,8 +83,12 @@ export default {
     auth().signOut();
   },
 
+  isSignedIn() {
+    return auth().isSignedIn.get();
+  },
+
   signedInUser() {
-    if (auth().isSignedIn.get()) {
+    if (this.isSignedIn()) {
       let user = auth().currentUser.get();
       let profile = user.getBasicProfile();
       return Promise.resolve({
@@ -119,7 +135,8 @@ export default {
       headers: { 'Content-Type' : multipart.type },
       body: multipart.body
     }).then(response => {
-      // update model w/ new file
+
+      // update model w/ new file (async)
       this.updateRecentFiles();
 
       // return id
@@ -184,15 +201,44 @@ export default {
   // update the store with recent files. this is done on startup,
   // after a new file is created, and periodically in the background
   updateRecentFiles() {
+    return this._hasChanges()
+      .then(changes => {
+        if (changes) {
+          return this.listFiles().then(files => {
+            store.commit(SET_RECENT_FILES, files);
+          });
+        } else {
+          return Promise.resolve();
+        }
+      });
+  },
 
-    return this.listFiles().then(files => {
-      store.commit(SET_RECENT_FILES, files);
-    });
 
-    // we can query this endpoint for changes:
-    // https://developers.google.com/drive/api/v3/reference/changes/list
-    // perhaps force a query when we know one should have occurred
-  }
+  // lower cost way to check for changes
+  _hasChanges() {
+    if (this._changesPageToken === null) {
+      return gapi.client.drive.changes.getStartPageToken({
+        supportsTeamDrives: true
+      })
+      .then(response => {
+        this._changesPageToken = response.result.startPageToken;
+        return true;
+      })
+    } else {
+      return gapi.client.drive.changes.list({
+        pageToken: this._changesPageToken,
+        restrictToMyDrive: true,
+        supportsTeamDrives: true
+      })
+      .then(response => {
+        this._changesPageToken = response.result.newStartPageToken;
+        return response.result.changes.length > 0;
+      })
+    }
+  },
+
+  // page token for checking for changes
+  _changesPageToken: null
 
 };
 
