@@ -19,7 +19,7 @@ export default {
     },
     icon: {
       type: String,
-      required: true
+      default: null
     },
     caption: {
       type: String,
