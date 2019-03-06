@@ -20,7 +20,7 @@ class ChangeMonitor  {
     this._eventBus.$off('drivechanged', handler);
   }
 
-  start(interval = 10000) {
+  start(interval = 30000) {
     
     this.stop();
 
@@ -31,20 +31,24 @@ class ChangeMonitor  {
       this._pageToken = response.result.startPageToken;
       let thiz = this;
       this._timer = setInterval(() => { 
-        gapi.client.drive.changes.list({
-          pageToken: thiz._pageToken,
-          restrictToMyDrive: true,
-          supportsTeamDrives: true
-        })
-        .then(response => {
-          thiz._pageToken = response.result.newStartPageToken;
-          let changes = response.result.changes;
-          if (changes.length > 0)
-            thiz._eventBus.$emit('drivechanged', changes);
-        }) 
+        thiz.check();
       }, interval);
     });
 
+  }
+
+  check() {
+    gapi.client.drive.changes.list({
+      pageToken: this._pageToken,
+      restrictToMyDrive: true,
+      supportsTeamDrives: true
+    })
+    .then(response => {
+      this._pageToken = response.result.newStartPageToken;
+      let changes = response.result.changes;
+      if (changes.length > 0)
+        this._eventBus.$emit('drivechanged', changes);
+    }) 
   }
 
   stop() {
