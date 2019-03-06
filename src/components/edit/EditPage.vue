@@ -41,8 +41,8 @@ export default {
 
     initDoc() {
 
-      this.error = null;
       this.content = null;
+      this.error = null;
 
       if (this.doc_id === null) {
         drive.newFile()
