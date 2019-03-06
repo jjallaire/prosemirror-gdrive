@@ -105,7 +105,7 @@ export default {
 }
 
 .v-navigation-drawer {
-  padding-top: 55px;
+  padding-top: 48px;
 }
 
 .v-navigation-drawer.v-navigation-drawer--is-mobile {
