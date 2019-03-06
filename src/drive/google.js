@@ -24,6 +24,17 @@ const gapi = window.gapi;
 
 import MultipartBuilder from './multipart'
 
+export class GAPIError extends Error {
+  constructor(error) {
+    super(error.message); 
+    this.name = "GAPIError";
+    this.domain = error.domain;
+    this.location =  error.location;
+    this.locationType = error.locationType;
+    this.reason = error.reason;
+  }
+}
+
 export default {
 
   connect(onSignInChanged) {
@@ -126,6 +137,10 @@ export default {
           content: responses[1].body
         };
         return file; 
+      })
+      .catch(error => {
+        let err = error.result.error.errors[0];
+        return Promise.reject(new GAPIError(err));
       });
   },
 

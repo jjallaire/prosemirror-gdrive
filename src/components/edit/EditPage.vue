@@ -4,13 +4,15 @@
 // eslint-disable-next-line 
 import drive from '../../drive'
 
+import { VAlert } from 'vuetify/lib'
+
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 
 export default {
   name: 'EditPage',
 
   components: {
-    ProgressSpinner
+    ProgressSpinner, VAlert
   },
 
   props: {
@@ -22,7 +24,8 @@ export default {
 
   data: function() {
     return {
-      content: null
+      content: null,
+      error: null
     }
   },
 
@@ -38,6 +41,7 @@ export default {
 
     initDoc() {
 
+      this.error = null;
       this.content = null;
 
       if (this.doc_id === null) {
@@ -51,7 +55,7 @@ export default {
             this.content = file.content;
           })
           .catch(error => {
-            console.log(error);
+            this.error = error.message;
           });
       }
     },
@@ -79,6 +83,14 @@ export default {
         <button @click="onShareClicked">Share</button>
       </p>
 
+    </div>
+    <div v-else-if="error">
+      <v-alert
+        :value="true"
+        type="error"
+      >
+        {{ error }}
+      </v-alert>
     </div>
     <div v-else>
       <ProgressSpinner />
