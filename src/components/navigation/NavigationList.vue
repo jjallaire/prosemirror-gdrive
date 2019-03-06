@@ -56,6 +56,7 @@ export default {
 
     <v-list-group
       v-model="show_recent"
+      class="recent-documents"
       no-action=""
     >
       <template v-slot:activator>
@@ -80,6 +81,9 @@ export default {
 
 <style>
 
+.recent-documents .v-list__group__items .v-list__tile--link {
+  font-weight: 400 !important;
+}
 
 
 
