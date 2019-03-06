@@ -21,7 +21,8 @@ import MultipartBuilder from './multipart'
 import store from '../store'
 import { SET_RECENT_FILES } from '../store/mutations'
 
-export class GAPIError extends Error {
+
+class GAPIError extends Error {
   constructor(error) {
     super(error.message); 
     this.name = "GAPIError";
@@ -32,8 +33,85 @@ export class GAPIError extends Error {
   }
 }
 
-export default {
 
+class RecentFileMonitor extends Object {
+
+  constructor() {
+    super();
+    this._timer = null;
+    this._pageToken = null;
+  }
+
+  start(interval = 10000) {
+    this.stop();
+    let thiz = this;
+    this._timer = setInterval(() => { thiz._updateRecentFiles() }, interval);
+    return this._updateRecentFiles();
+  }
+
+  stop() {
+    if (this._timer) {
+      clearInterval(this._timer);
+      this._timer = null;
+    }
+    this._pageToken = null;
+    store.commit(SET_RECENT_FILES, []);
+  }
+
+  update() {
+    return this._updateRecentFiles();
+  }
+
+  _hasChanges() {
+    if (this._pageToken === null) {
+      return gapi.client.drive.changes.getStartPageToken({
+        supportsTeamDrives: true
+      })
+      .then(response => {
+        this._pageToken = response.result.startPageToken;
+        return true;
+      })
+    } else {
+      return gapi.client.drive.changes.list({
+        pageToken: this._pageToken,
+        restrictToMyDrive: true,
+        supportsTeamDrives: true
+      })
+      .then(response => {
+        this._pageToken = response.result.newStartPageToken;
+        return response.result.changes.length > 0;
+      })
+    }
+  }
+
+  _updateRecentFiles() {
+    return this._hasChanges()
+      .then(changes => {
+        if (changes) {
+          return listFiles().then(files => {
+            store.commit(SET_RECENT_FILES, files);
+          });
+        } else {
+          return Promise.resolve();
+        }
+      });
+  }
+}
+
+
+function listFiles() {
+  return gapi.client.drive.files.list({
+    q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
+    pageSize: 100,
+    fields: 'nextPageToken, files(id, name, trashed)',
+    orderBy: 'recency desc'
+  }).then(response => {
+    return response.result.files.filter(file => !file.trashed);
+  });  
+}
+
+
+export default {
 
   connect(onSignInChanged) {
 
@@ -48,20 +126,25 @@ export default {
           redirect_uri: window.location.origin + "/"
         })
         .then(() => {
+          
           // listen for sign-in changed
           auth().isSignedIn.listen(() => {
+            
             if (this.isSignedIn()) {
-              this.updateRecentFiles();
+              this._recentFileMonitor.start();
             } else {
-              this._changesPageToken = null;
-              store.commit(SET_RECENT_FILES, []);
+              this._recentFileMonitor.stop();
             }
+
             // notify caller
             onSignInChanged();
           });
-    
-          // populate files to start
-          return this.updateRecentFiles();
+
+          // get recent files if we are signed in
+          if (this.isSignedIn())
+            return this._recentFileMonitor.start();
+          else
+            return Promise.resolve();
         })
         .then(() => {
           resolve();
@@ -102,14 +185,7 @@ export default {
   },
 
   listFiles() {
-    return gapi.client.drive.files.list({
-      q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc"',
-      pageSize: 100,
-      fields: 'nextPageToken, files(id, name)',
-      orderBy: 'recency desc'
-    }).then(response => {
-      return response.result.files;
-    });  
+    return listFiles();  
   },
 
   newFile() {
@@ -137,7 +213,7 @@ export default {
     }).then(response => {
 
       // update model w/ new file (async)
-      this.updateRecentFiles();
+      this._recentFileMonitor.update();
 
       // return id
       return response.result.id;
@@ -198,54 +274,13 @@ export default {
     });
   },
 
-  // update the store with recent files. this is done on startup,
-  // after a new file is created, and periodically in the background
-  updateRecentFiles() {
-    return this._hasChanges()
-      .then(changes => {
-        if (changes) {
-          return this.listFiles().then(files => {
-            store.commit(SET_RECENT_FILES, files);
-          });
-        } else {
-          return Promise.resolve();
-        }
-      });
-  },
-
-
-  // lower cost way to check for changes
-  _hasChanges() {
-    if (this._changesPageToken === null) {
-      return gapi.client.drive.changes.getStartPageToken({
-        supportsTeamDrives: true
-      })
-      .then(response => {
-        this._changesPageToken = response.result.startPageToken;
-        return true;
-      })
-    } else {
-      return gapi.client.drive.changes.list({
-        pageToken: this._changesPageToken,
-        restrictToMyDrive: true,
-        supportsTeamDrives: true
-      })
-      .then(response => {
-        this._changesPageToken = response.result.newStartPageToken;
-        return response.result.changes.length > 0;
-      })
-    }
-  },
-
-  // page token for checking for changes
-  _changesPageToken: null
+  // monitor the list of recent files
+  _recentFileMonitor: new RecentFileMonitor()
 
 };
-
-
-
 
 
 function auth() {
   return gapi.auth2.getAuthInstance();
 }
+
