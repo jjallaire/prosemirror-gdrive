@@ -10,12 +10,10 @@ import AuthPage from './components/auth/AuthPage.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
 import NavigationList from './components/navigation/NavigationList.vue'
 
-import { SET_INITIALIZED, SET_USER } from './store/mutations'
-
 import drive from './drive'
 
 export default {
-  
+
   name: 'App',
 
   components: {
@@ -39,12 +37,7 @@ export default {
   },
 
   mounted() {
-
-    drive.connect(this.onSignInChanged)
-      .then(() => {
-         this.$store.commit(SET_INITIALIZED, true);
-         this.onSignInChanged();
-      })
+    drive.connect()
       .catch(error => {
         window.alert(error.message);
       });
@@ -52,13 +45,6 @@ export default {
 
   methods: {
   
-    onSignInChanged() {
-      drive.signedInUser()
-        .then(user => {
-          this.$store.commit(SET_USER, user);
-        })
-    },
-
     onSignInClicked() {
       drive.signIn();
     },
