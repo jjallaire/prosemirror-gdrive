@@ -15,6 +15,11 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
+
+// we can query this endpoint for changes:
+   // https://developers.google.com/drive/api/v3/reference/changes/list
+// perhaps force a query when we know one should have occurred
+
 const gapi = window.gapi;
 
 import MultipartBuilder from './multipart'
