@@ -69,13 +69,13 @@ export default {
 
              // subscribe to drive changes
             changemonitor.subscribe(() => {
-              this._updateRecentFiles();
+              this.updateRecentFiles();
             });
 
             // listen for changes then update recent files
             return changemonitor.start()
               .then(() => { 
-                return this._updateRecentFiles();
+                return this.updateRecentFiles();
               })
               .then(() => {
                 store.commit(SET_INITIALIZED, true);
@@ -159,7 +159,7 @@ export default {
     }).then(response => {
 
       // update model w/ new file (async)
-      this._recentFileMonitor.update();
+      this.updateRecentFiles();
 
       // return id
       return response.result.id;
@@ -220,9 +220,7 @@ export default {
     });
   },
 
-  
-
-  _updateRecentFiles() {
+  updateRecentFiles() {
     return this.listFiles().then(files => {
       store.commit(SET_RECENT_FILES, files);
     });

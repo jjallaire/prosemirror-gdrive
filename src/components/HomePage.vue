@@ -5,6 +5,8 @@
 
 import { mapGetters } from 'vuex'
 
+import drive from '../drive'
+
 export default {
   name: 'HomePage',
 
@@ -12,6 +14,10 @@ export default {
     ...mapGetters([
       'recent_files'
     ])
+  },
+
+  mounted() {
+    drive.updateRecentFiles();
   },
   
   methods: {
