@@ -130,14 +130,14 @@ export default {
       fields: 'nextPageToken, files(id, name, trashed)',
       orderBy: 'recency desc'
     }).then(response => {
-      return response.result.files.filter(file => !file.trashed);
+      return response.result.files;
     });  
   },
 
   newFile() {
     let fileContent = 'more sample text'; 
     let metadata = {
-      'name': 'Brand New Doc',
+      'name': 'New Tip',
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let path = '/upload/drive/v3/files';
