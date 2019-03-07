@@ -21,7 +21,7 @@ import MultipartBuilder from './multipart'
 import changemonitor from './changemonitor'
 
 import store from '../store'
-import { SET_INITIALIZED, SET_USER, SET_RECENT_FILES } from '../store/mutations'
+import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_FILES } from '../store/mutations'
 
 
 class GAPIError extends Error {
@@ -29,9 +29,9 @@ class GAPIError extends Error {
     super(error.message); 
     this.name = "GAPIError";
     this.domain = error.domain;
+    this.reason = error.reason;
     this.location =  error.location;
     this.locationType = error.locationType;
-    this.reason = error.reason;
   }
 }
 
@@ -40,7 +40,7 @@ export default {
 
   connect() {
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       return gapi.load('client:auth2:picker:drive-share', () => {
         gapi.client.init({
           apiKey: kApiKey,
@@ -89,8 +89,8 @@ export default {
           }
         })
         .catch(error => {
-          let message = error.error.errors[0].message;
-          reject(new Error(message));
+          store.commit(SET_INIT_ERROR, new GAPIError(error.error.errors[0]));
+          resolve();
         });
       });
 
@@ -184,8 +184,8 @@ export default {
         };
         return file; 
       })
-      .catch(error => {
-        let err = error.result.error.errors[0];
+      .catch(response => {
+        let err = response.result.error.errors[0];
         return Promise.reject(new GAPIError(err));
       });
   },

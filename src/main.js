@@ -10,11 +10,17 @@ Vue.use(Vuetify, {
 
 import App from './App.vue'
 
+import drive from './drive'
 import router from './router'
 import store from './store/'
 
+
 Vue.config.productionTip = false
 
+// connect to drive
+drive.connect()
+
+// create app
 new Vue({
   router,
   store,
