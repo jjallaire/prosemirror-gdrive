@@ -55,6 +55,7 @@ export default {
     <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
 
     <v-list-group
+      v-if="recent_files.length > 0"
       v-model="show_recent"
       class="recent-documents"
       no-action=""
@@ -68,6 +69,7 @@ export default {
       />
     
     </v-list-group>
+    <v-divider v-else />
 
     <NavigationTile path="/settings/" icon="settings" caption="Settings" />
     <NavigationTile path="/help" icon="help" caption="Help" />
