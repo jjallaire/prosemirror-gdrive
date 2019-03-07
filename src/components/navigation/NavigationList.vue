@@ -20,7 +20,7 @@ export default {
 
   data () {
     return {
-      show_recent: false
+      show_recent: true
     }
   },
 
