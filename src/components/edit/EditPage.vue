@@ -1,18 +1,16 @@
 <script>
 
 
-// eslint-disable-next-line 
 import drive from '../../drive'
 
-import { VAlert } from 'vuetify/lib'
-
+import ErrorPage from '../core/ErrorPage.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 
 export default {
   name: 'EditPage',
 
   components: {
-    ProgressSpinner, VAlert
+    ProgressSpinner, ErrorPage
   },
 
   props: {
@@ -48,6 +46,9 @@ export default {
         drive.newFile()
           .then(id => {
             this.$router.push({ path: "/edit/" + id });
+          })
+          .catch(error => {
+            this.error = error;
           });
       } else {
         drive.loadFile(this.doc_id)
@@ -55,7 +56,7 @@ export default {
             this.content = file.content;
           })
           .catch(error => {
-            this.error = error.message;
+            this.error = error;
           });
       }
     },
@@ -85,12 +86,7 @@ export default {
 
     </div>
     <div v-else-if="error">
-      <v-alert
-        :value="true"
-        type="error"
-      >
-        {{ error }}
-      </v-alert>
+      <ErrorPage :error="error" />
     </div>
     <div v-else>
       <ProgressSpinner />

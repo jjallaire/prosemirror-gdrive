@@ -83,7 +83,7 @@ export default {
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
-        <ErrorPage v-if="init_error" />
+        <ErrorPage v-if="init_error" :error="init_error" />
         <ProgressSpinner v-else-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
         <router-view v-else />

@@ -163,6 +163,11 @@ export default {
 
       // return id
       return response.result.id;
+    }).catch(response => {
+      if (response.result === false)
+        return Promise.reject(new Error("Error " + response.status + ": " + response.body));
+      else
+        return Promise.reject(new Error("Error uploading document to Google Drive"));
     });
   },
 
