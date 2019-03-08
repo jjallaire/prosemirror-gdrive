@@ -116,11 +116,7 @@ export default {
 <style>
 .home-container {
   width: 100%;
-  height: 100%;
-}
 
-.home-container .recent-documents {
-  height: 100%;
 }
 
 .home-container .recent-documents .add-button {

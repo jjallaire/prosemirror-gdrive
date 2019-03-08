@@ -82,7 +82,7 @@ export default {
       
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fluid>
         <ErrorPage v-if="init_error" :error="init_error" />
         <ProgressSpinner v-else-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
