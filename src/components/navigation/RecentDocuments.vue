@@ -97,7 +97,7 @@ export default {
         <td><img :src="props.item.icon"></td>
         <td><router-link :to="'/edit/' + props.item.id">{{ props.item.name }}</router-link></td>
         <td>{{ props.item.owner }}</td>
-        <td>{{ new Date(props.item.modifiedTime).toLocaleTimeString() }}</td>
+        <td>{{ new Date(props.item.modifiedTime).toDateString() }}</td>
         <td>{{ props.item.size | bytes }}</td>
         <td align="center">
           <v-icon small @click="onRemoveDocument(props.item)">delete</v-icon>
