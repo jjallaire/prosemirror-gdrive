@@ -3,7 +3,7 @@ import Vue from 'vue'
 // vuetify
 import Vuetify, { 
   VDialog, VCard, VCardTitle, VCardText, VCardActions, VSpacer, 
-  VBtn, VToolbar, VIcon, VToolbarTitle } from 'vuetify/lib'
+  VBtn, VToolbar, VIcon, VToolbarTitle, VTextField } from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 import 'typeface-roboto'
 import 'material-icons/iconfont/material-icons.css'
@@ -11,7 +11,7 @@ Vue.use(Vuetify, {
   iconfont: 'md',
   components: {
     VDialog, VCard, VCardTitle, VCardText, VCardActions, VSpacer, 
-    VBtn, VToolbar, VIcon, VToolbarTitle
+    VBtn, VToolbar, VIcon, VToolbarTitle, VTextField
   }
 })
 

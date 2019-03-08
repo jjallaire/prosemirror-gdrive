@@ -124,5 +124,9 @@ export default {
   margin-left: 4px;
 }
 
+.home-container .recent-documents td > a {
+  text-decoration: none;
+}
+
 
 </style>

@@ -142,10 +142,10 @@ export default {
     });  
   },
 
-  newFile() {
+  newFile(title) {
     let fileContent = 'more sample text'; 
     let metadata = {
-      'name': 'Shared with Me',
+      'name': title,
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let path = '/upload/drive/v3/files';
