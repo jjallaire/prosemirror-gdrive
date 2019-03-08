@@ -72,8 +72,7 @@ export default {
     <v-divider v-else />
 
     <NavigationTile path="/settings/" icon="settings" caption="Settings" />
-    <NavigationTile path="/help" icon="help" caption="Help" />
-
+  
     <v-divider />
 
   </v-list>
