@@ -86,11 +86,9 @@ export default {
       :items="recent_docs"
       item-key="id"
       :pagination.sync="pagination_sync"
-      :rows-per-page-items="[25, 50, 100]"
-      rows-per-page-text="Recent documents:"
+      :rows-per-page-items="[100]"
       no-data-text="No recent documents"
       :hide-actions="true"
-      :total-items="100"
       class="elevation-1"
     >
       <template v-slot:items="props">

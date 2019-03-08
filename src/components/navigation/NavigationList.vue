@@ -64,7 +64,7 @@ export default {
         <NavigationTile icon="history" caption="Recent Documents" />
       </template>
 
-      <NavigationTile v-for="file in recent_docs.slice(0,5)" :key="file.id"
+      <NavigationTile v-for="file in recent_docs.slice(0,8)" :key="file.id"
                       :caption="file.name" :path="'/edit/' + file.id" 
       />
     
