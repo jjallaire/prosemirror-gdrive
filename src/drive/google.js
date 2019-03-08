@@ -73,15 +73,11 @@ export default {
             });
 
             // listen for changes then update recent files
-            return changemonitor.start()
-              .then(() => { 
-                return this.updateRecentFiles();
-              })
-              .then(() => {
-                store.commit(SET_INITIALIZED, true);
-                resolve();
-              });
-
+            changemonitor.start();
+            this.updateRecentFiles();
+            store.commit(SET_INITIALIZED, true);
+            resolve();
+            
           // signed out, initialize w/o drive state populated
           } else {
             store.commit(SET_INITIALIZED, true);

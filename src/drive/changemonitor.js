@@ -21,34 +21,28 @@ class ChangeMonitor  {
   }
 
   start(interval = 30000) {
-    
     this.stop();
-
-    return gapi.client.drive.changes.getStartPageToken({
-      supportsTeamDrives: true
-    })
-    .then(response => {
-      this._pageToken = response.result.startPageToken;
-      let thiz = this;
-      this._timer = setInterval(() => { 
-        thiz.check();
-      }, interval);
-    });
-
+    let thiz = this;
+    this._timer = setInterval(() => { 
+      thiz.check();
+    }, interval);
   }
 
   check() {
-    gapi.client.drive.changes.list({
-      pageToken: this._pageToken,
-      restrictToMyDrive: true,
-      supportsTeamDrives: true
-    })
-    .then(response => {
-      this._pageToken = response.result.newStartPageToken;
-      let changes = response.result.changes;
-      if (changes.length > 0)
-        this._eventBus.$emit('drivechanged', changes);
-    }) 
+    this.ensurePageToken()
+      .then(() => {
+        return gapi.client.drive.changes.list({
+          pageToken: this._pageToken,
+          restrictToMyDrive: true,
+          supportsTeamDrives: true
+        })
+      })
+      .then(response => {
+        this._pageToken = response.result.newStartPageToken;
+        let changes = response.result.changes;
+        if (changes.length > 0)
+          this._eventBus.$emit('drivechanged', changes);
+      });
   }
 
   stop() {
@@ -57,6 +51,19 @@ class ChangeMonitor  {
       this._timer = null;
     }
     this._pageToken = null;
+  }
+
+  ensurePageToken() {
+    if (this._pageToken !== null) {
+      return Promise.resolve();
+    } else {
+      return gapi.client.drive.changes.getStartPageToken({
+        supportsTeamDrives: true
+      })
+      .then(response => {
+        this._pageToken = response.result.startPageToken;
+      });
+    }
   }
 }
 
