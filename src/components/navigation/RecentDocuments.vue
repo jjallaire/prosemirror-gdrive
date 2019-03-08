@@ -76,7 +76,7 @@ export default {
   <div class="recent-documents">
 
     <div class="add-button">
-      <v-btn dark fab small color="primary" @click="onNewDocument">
+      <v-btn dark fab small color="info" @click="onNewDocument">
         <v-icon>add</v-icon>
       </v-btn>
     </div>
