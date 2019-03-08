@@ -127,17 +127,29 @@ export default {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
       pageSize: 100,
-      fields: 'nextPageToken, files(id, name, trashed)',
+      fields: 'nextPageToken, files(id, name, iconLink, modifiedTime, sharingUser, size)',
       orderBy: 'recency desc'
     }).then(response => {
-      return response.result.files;
+      return response.result.files.map(file => {
+        let owner = "Me";
+        if (file.sharingUser && !file.sharingUser.me)
+          owner = file.sharingUser.displayName;
+        return {
+          id: file.id,
+          name: file.name,
+          icon: file.iconLink,
+          owner: owner,
+          modifiedTime: Date.parse(file.modifiedTime),
+          size: parseInt(file.size)
+        }
+      });
     });  
   },
 
   newFile() {
     let fileContent = 'more sample text'; 
     let metadata = {
-      'name': 'New Tip',
+      'name': 'Shared with Me',
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let path = '/upload/drive/v3/files';

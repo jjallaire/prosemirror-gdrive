@@ -1,5 +1,6 @@
 import Vue from 'vue'
 
+// vuetify
 import Vuetify from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 import 'typeface-roboto'
@@ -8,8 +9,12 @@ Vue.use(Vuetify, {
   iconfont: 'md',
 })
 
-import App from './App.vue'
+// Numeral.js filters
+import vueNumeralFilterInstaller from 'vue-numeral-filter';
+Vue.use(vueNumeralFilterInstaller, { locale: 'en-gb' });
 
+// application
+import App from './App.vue'
 import drive from './drive'
 import router from './router'
 import store from './store/'
