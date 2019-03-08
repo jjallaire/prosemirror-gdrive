@@ -19,11 +19,12 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: '', value: 'icon', sortable: false, width: '3%' },
+        { text: '', value: 'icon', sortable: false, width: '5%' },
         { text: 'Name', value: 'name' },
         { text: 'Owner', value: 'owner' },
         { text: 'Last modified', value: 'modifiedTime' },
-        { text: 'File size', value: 'size' }
+        { text: 'File size', value: 'size' },
+        { text: 'Actions', sortable: false , width: '5%'}
       ],
       pagination_sync: {
         sortBy: 'modifiedTime',
@@ -43,7 +44,25 @@ export default {
   },
   
   methods: {
-
+    removeDocument(doc) {
+      this.$dialog.confirm ({
+        text: 'Are you sure you want to remove this document?',
+        title: 'Remove Document',
+      }).then(confirmed => {
+        if (confirmed) {
+          drive.removeFile(doc.id)
+            .then(() => {
+              drive.updateRecentFiles();
+            })
+            .catch(error => {
+              this.$dialog.error({
+                text: error.message,
+                title: "Error Removing Document"
+              })
+            });
+        }
+      });
+    }
   }
 }
 
@@ -61,8 +80,11 @@ export default {
         :items="recent_files"
         item-key="id"
         :pagination.sync="pagination_sync"
-        :rows-per-page-items="[50,100,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
+        :rows-per-page-items="[25, 50, 100]"
+        rows-per-page-text="Recent documents:"
         no-data-text="No recent documents"
+        :hide-actions="true"
+        :total-items="100"
         class="elevation-1"
       >
         <template v-slot:items="props">
@@ -71,6 +93,9 @@ export default {
           <td>{{ props.item.owner }}</td>
           <td>{{ new Date(props.item.modifiedTime).toLocaleTimeString() }}</td>
           <td>{{ props.item.size | bytes }}</td>
+          <td align="center">
+            <v-icon small @click="removeDocument(props.item)">delete</v-icon>
+          </td>
         </template>
       </v-data-table>
     </div>
@@ -87,5 +112,6 @@ export default {
 .home-container .recent-documents {
   height: 100%;
 }
+
 
 </style>

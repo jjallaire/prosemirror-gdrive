@@ -42,6 +42,9 @@ class ChangeMonitor  {
         let changes = response.result.changes;
         if (changes.length > 0)
           this._eventBus.$emit('drivechanged', changes);
+      })
+      .catch(() => {
+        this._pageToken = null;
       });
   }
 

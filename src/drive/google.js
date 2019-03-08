@@ -233,6 +233,20 @@ export default {
     });
   },
 
+
+  removeFile(fileId) {
+    return gapi.client.drive.files.delete({
+      fileId: fileId,
+      supportsTeamDrives: true
+    })
+    .then(() => {
+
+    })
+    .catch(response => {
+      return Promise.reject(new GAPIError(response.result.error.errors[0]));
+    });
+  },
+
   updateRecentFiles() {
     return this.listFiles().then(files => {
       store.commit(SET_RECENT_FILES, files);
