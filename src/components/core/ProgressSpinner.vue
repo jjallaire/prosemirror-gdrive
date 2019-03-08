@@ -33,7 +33,7 @@ export default {
 <style>
 .progress-spinner {
   width: 100%;
-  padding-bottom: 200px;
+  padding-top: 200px;
 }
 
 .progress-spinner .progress-glass {
