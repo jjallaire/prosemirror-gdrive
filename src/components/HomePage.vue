@@ -44,7 +44,11 @@ export default {
   },
   
   methods: {
-    removeDocument(doc) {
+    onNewDocument() {
+      this.$router.push({ path: "/edit/" });
+    },
+
+    onRemoveDocument(doc) {
       this.$dialog.confirm ({
         text: 'Are you sure you want to remove this document?',
         title: 'Remove Document',
@@ -75,6 +79,12 @@ export default {
 
     <div class="recent-documents">
 
+      <div class="add-button">
+        <v-btn dark fab small color="primary" @click="onNewDocument">
+          <v-icon>add</v-icon>
+        </v-btn>
+      </div>
+
       <v-data-table 
         :headers="headers"
         :items="recent_files"
@@ -94,7 +104,7 @@ export default {
           <td>{{ new Date(props.item.modifiedTime).toLocaleTimeString() }}</td>
           <td>{{ props.item.size | bytes }}</td>
           <td align="center">
-            <v-icon small @click="removeDocument(props.item)">delete</v-icon>
+            <v-icon small @click="onRemoveDocument(props.item)">delete</v-icon>
           </td>
         </template>
       </v-data-table>
@@ -111,6 +121,11 @@ export default {
 
 .home-container .recent-documents {
   height: 100%;
+}
+
+.home-container .recent-documents .add-button {
+  margin-bottom: -27px;
+  margin-left: 4px;
 }
 
 
