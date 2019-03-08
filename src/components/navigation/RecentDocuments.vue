@@ -33,12 +33,12 @@ export default {
 
   computed: {
     ...mapGetters([
-      'recent_files'
+      'recent_docs'
     ])
   },
 
   mounted() {
-    drive.updateRecentFiles();
+    drive.updateRecentDocs();
   },
   
   methods: {
@@ -54,7 +54,7 @@ export default {
         if (confirmed) {
           drive.removeFile(doc.id)
             .then(() => {
-              drive.updateRecentFiles();
+              drive.updateRecentDocs();
             })
             .catch(error => {
               this.$dialog.error({
@@ -83,7 +83,7 @@ export default {
 
     <v-data-table 
       :headers="headers"
-      :items="recent_files"
+      :items="recent_docs"
       item-key="id"
       :pagination.sync="pagination_sync"
       :rows-per-page-items="[25, 50, 100]"

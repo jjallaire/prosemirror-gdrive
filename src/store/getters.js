@@ -10,6 +10,6 @@ export default {
 
   user: (state) => state.user,
 
-  recent_files: (state) => state.recent_files
+  recent_docs: (state) => state.recent_docs
 
 }

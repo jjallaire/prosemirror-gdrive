@@ -26,7 +26,7 @@ export default {
 
   computed: {
     ...mapGetters([
-      'recent_files'
+      'recent_docs'
     ])
   },
 
@@ -55,7 +55,7 @@ export default {
     <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
 
     <v-list-group
-      v-if="recent_files.length > 0"
+      v-if="recent_docs.length > 0"
       v-model="show_recent"
       class="recent-documents"
       no-action=""
@@ -64,7 +64,7 @@ export default {
         <NavigationTile icon="history" caption="Recent Documents" />
       </template>
 
-      <NavigationTile v-for="file in recent_files.slice(0,5)" :key="file.id"
+      <NavigationTile v-for="file in recent_docs.slice(0,5)" :key="file.id"
                       :caption="file.name" :path="'/edit/' + file.id" 
       />
     

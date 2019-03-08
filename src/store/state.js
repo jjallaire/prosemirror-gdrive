@@ -9,6 +9,6 @@ export function initialState() {
 
     // current user and drive files
     user: null,
-    recent_files: []
+    recent_docs: []
   };
 }

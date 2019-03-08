@@ -21,7 +21,7 @@ import MultipartBuilder from './multipart'
 import changemonitor from './changemonitor'
 
 import store from '../store'
-import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_FILES } from '../store/mutations'
+import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
 
 
 class GAPIError extends Error {
@@ -62,19 +62,19 @@ export default {
             auth().isSignedIn.listen(() => {
               if (!this.isSignedIn()) {
                 changemonitor.stop();
-                this._clearRecentFiles();
+                this._clearRecentDocs();
                 store.commit(SET_USER, null);
               }
             });
 
              // subscribe to drive changes
             changemonitor.subscribe(() => {
-              this.updateRecentFiles();
+              this.updateRecentDocs();
             });
 
             // listen for changes then update recent files
             changemonitor.start();
-            this.updateRecentFiles();
+            this.updateRecentDocs();
             store.commit(SET_INITIALIZED, true);
             resolve();
             
@@ -167,7 +167,7 @@ export default {
     }).then(response => {
 
       // update model w/ new file (async)
-      this.updateRecentFiles();
+      this.updateRecentDocs();
 
       // return id
       return response.result.id;
@@ -247,14 +247,14 @@ export default {
     });
   },
 
-  updateRecentFiles() {
+  updateRecentDocs() {
     return this.listFiles().then(files => {
-      store.commit(SET_RECENT_FILES, files);
+      store.commit(SET_RECENT_DOCS, files);
     });
   },
 
-  _clearRecentFiles() {
-    store.commit(SET_RECENT_FILES, []);
+  _clearRecentDocs() {
+    store.commit(SET_RECENT_DOCS, []);
   },
   
 
