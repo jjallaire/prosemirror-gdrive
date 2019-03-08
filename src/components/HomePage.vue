@@ -5,7 +5,7 @@
 
 import { mapGetters } from 'vuex'
 
-import { VDataTable, VCheckbox } from 'vuetify/lib'
+import { VDataTable } from 'vuetify/lib'
 
 import drive from '../drive'
 
@@ -13,21 +13,14 @@ export default {
   name: 'HomePage',
 
   components: {
-    VDataTable, VCheckbox
+    VDataTable
   },
 
   data: function() {
     return {
       headers: [
-        { 
-          text: '', value: 'selected', sortable: false
-        },
-        {
-          text: 'Name', value: 'name'
-        },
-        {
-          text: 'ID', value: 'id'
-        }
+        { text: 'Name', value: 'name' },
+        { text: 'ID', value: 'id' }
       ]
     }
   },
@@ -55,21 +48,15 @@ export default {
   <div class="home-container">
 
     <div class="recent-documents">
+
       <v-data-table 
         :headers="headers"
         :items="recent_files"
         item-key="id"
-        :rows-per-page-items="[10,20,30,50,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
+        :rows-per-page-items="[50,100,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
         class="elevation-1"
       >
         <template v-slot:items="props">
-          <td>
-            <v-checkbox
-              :input-value="props.selected"
-              primary
-              hide-details
-            />
-          </td>
           <td><router-link :to="'/edit/' + props.item.id">{{ props.item.name }}</router-link></td>
           <td>{{ props.item.id }}</td>
         </template>
@@ -88,4 +75,5 @@ export default {
 .home-container .recent-documents {
   height: 100%;
 }
+
 </style>
