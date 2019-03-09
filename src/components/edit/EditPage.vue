@@ -23,7 +23,7 @@ export default {
   data: function() {
     return {
       title: null,
-      content: null,
+      doc: null,
       error: null
     }
   },
@@ -40,7 +40,7 @@ export default {
 
     initDoc() {
 
-      this.content = null;
+      this.doc = null;
       this.error = null;
 
       if (this.doc_id === null) {
@@ -49,10 +49,12 @@ export default {
           title: 'New Document'
         })
         .then(title => {
-          if (title)
+          if (title) {
+            this.title = title;
             return drive.newFile(title);
-          else
+          } else {
             return Promise.resolve();
+          }
         })
         .then(id => {
           if (id)
@@ -75,7 +77,7 @@ export default {
         drive.loadFile(this.doc_id)
           .then(file => {
             this.title = file.name;
-            this.content = file.content;
+            this.doc = file;
           })
           .catch(error => {
             this.error = error;
@@ -95,23 +97,22 @@ export default {
 <template>
 
   <div class="edit-container">
-    <div v-if="content">
+    <div v-if="error">
+      <ErrorPage :error="error" />
+    </div>
+    <div v-else-if="!doc_id && !title">
+      <!-- show title dialog -->
+    </div>
+    <div v-else-if="doc">
       <strong>
         {{ doc_id }}
       </strong>
       <p>
-        {{ content }}
+        {{ doc.content }}
       </p>
       <p>
         <button @click="onShareClicked">Share</button>
       </p>
-
-    </div>
-    <div v-else-if="error">
-      <ErrorPage :error="error" />
-    </div>
-    <div v-else-if="!title">
-      <!-- show title dialog -->
     </div>
     <div v-else>
       <ProgressSpinner />
