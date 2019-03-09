@@ -18,6 +18,7 @@ const kScopes = [
 const gapi = window.gapi;
 
 import MultipartBuilder from './multipart'
+import settings from './settings'
 import changemonitor from './changemonitor'
 
 import store from '../store'
@@ -55,28 +56,33 @@ export default {
           // if we are signed in then initialize
           if (this.isSignedIn()) {
 
-            // set user
-            store.commit(SET_USER, this.signedInUser());
+            // initialize settings before continuing
+            settings.init().then(() => {
+               
+              // set user
+              store.commit(SET_USER, this.signedInUser());
 
-            // listen for sign-out
-            auth().isSignedIn.listen(() => {
-              if (!this.isSignedIn()) {
-                changemonitor.stop();
-                this._clearRecentDocs();
-                store.commit(SET_USER, null);
-              }
-            });
+              // listen for sign-out
+              auth().isSignedIn.listen(() => {
+                if (!this.isSignedIn()) {
+                  changemonitor.stop();
+                  this._clearRecentDocs();
+                  store.commit(SET_USER, null);
+                }
+              });
 
-            // subscribe to drive changes
-            changemonitor.subscribe(() => {
+              // subscribe to drive changes
+              changemonitor.subscribe(() => {
+                this.updateRecentDocs();
+              });
+
+              // listen for changes then update recent files
+              changemonitor.start();
               this.updateRecentDocs();
-            });
+              store.commit(SET_INITIALIZED, true);
+              resolve();
 
-            // listen for changes then update recent files
-            changemonitor.start();
-            this.updateRecentDocs();
-            store.commit(SET_INITIALIZED, true);
-            resolve();
+            });
             
           // signed out, initialize w/o drive state populated
           } else {
