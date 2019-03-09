@@ -57,7 +57,7 @@ export default {
 <template>
   <v-app>
 
-    <v-navigation-drawer v-if="authorized" v-model="drawer" fixed app>
+    <v-navigation-drawer v-if="authorized" v-model="drawer" temporary fixed app>
       <NavigationList />
     </v-navigation-drawer>
     
@@ -101,7 +101,7 @@ export default {
 }
 
 .v-navigation-drawer {
-  padding-top: 48px;
+  padding-top: 0px;
 }
 
 .v-navigation-drawer.v-navigation-drawer--is-mobile {
