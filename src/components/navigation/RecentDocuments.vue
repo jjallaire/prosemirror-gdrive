@@ -76,7 +76,7 @@ export default {
   <div class="recent-documents">
 
     <div class="add-button">
-      <v-btn dark fab small color="info" @click="onNewDocument">
+      <v-btn color="primary" outline fab small @click="onNewDocument">
         <v-icon>add</v-icon>
       </v-btn>
     </div>
@@ -110,7 +110,7 @@ export default {
 <style>
 
 .recent-documents .add-button {
-  margin-bottom: -27px;
+  margin-bottom: -35px;
   margin-left: 4px;
 }
 
