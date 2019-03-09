@@ -224,13 +224,17 @@ export default {
       let view = new api.DocsView(api.ViewId.DOCS)
         .setMode(api.DocsViewMode.LIST)
         .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+      let folderView = new api.DocsView(api.ViewId.FOLDERS)
+        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+    
       let picker = new api.PickerBuilder()
         .setAppId(kAppId)
         .setOAuthToken(user.getAuthResponse().access_token)
         .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
         .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
         .addView(view)
-        .addView(api.ViewId.FOLDERS)
+        .addView(api.ViewId.RECENTLY_PICKED)
+        .addView(folderView)
         .setCallback(data => {
           if (data[api.Response.ACTION] === api.Action.PICKED)
             resolve(data.docs[0]);
