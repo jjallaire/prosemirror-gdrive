@@ -10,6 +10,8 @@ export default {
 
   user: (state) => state.user,
 
+  settings: (state) => state.settings,
+
   recent_docs: (state) => state.recent_docs
 
 }

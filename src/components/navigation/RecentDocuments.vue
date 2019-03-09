@@ -33,7 +33,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      'recent_docs'
+      'recent_docs',
+      'settings'
     ])
   },
 
@@ -86,7 +87,7 @@ export default {
       :items="recent_docs"
       item-key="id"
       :pagination.sync="pagination_sync"
-      :rows-per-page-items="[100]"
+      :rows-per-page-items="[settings.document_history]"
       no-data-text="No recent documents"
       :hide-actions="true"
       class="elevation-1"

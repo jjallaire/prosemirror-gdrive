@@ -122,7 +122,7 @@ export default {
   listFiles() {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
-      pageSize: 100,
+      pageSize: store.getters.settings.document_history,
       fields: 'nextPageToken, files(id, name, iconLink, modifiedTime, sharingUser, size)',
       orderBy: 'recency desc'
     }).then(response => {
