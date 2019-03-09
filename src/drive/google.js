@@ -67,7 +67,7 @@ export default {
               }
             });
 
-             // subscribe to drive changes
+            // subscribe to drive changes
             changemonitor.subscribe(() => {
               this.updateRecentDocs();
             });
