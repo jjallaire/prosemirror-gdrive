@@ -2,29 +2,44 @@
 
 
 import store from '../store'
+import { UPDATE_SETTINGS } from '../store/mutations'
 
-export default {
+import drive from '.'
 
-  init() {
-    return new Promise(resolve => {
+export function initSettings() {
 
-      // watch for settings changes and write them to gdrive
+  const kSettingsFile = "settings.json";
+  const kSettingsMimeType = "application/json";
+
+  return drive
+    .readAppData(
+      null, 
+      kSettingsFile, 
+      kSettingsMimeType, 
+      JSON.stringify(store.getters.settings)
+    )
+    .then(file => {
+
+      // apply settings
+      let settings = JSON.parse(file.content);
+      store.commit(UPDATE_SETTINGS, settings);
+
+      // write settings back to the drive when they change
       store.watch(
         (state, getters) => getters.settings,
         (settings) => {
-          console.log("settings changed");
-          console.log(settings);
+          drive.writeAppData(
+            file.metadata.id, 
+            kSettingsFile, 
+            kSettingsMimeType, 
+            JSON.stringify(settings)
+          );
         },
         {
           deep: true
-        }
-        
+        } 
       );
-
-      resolve();
-    });
-  }
-
-
+  });
 
 }
+

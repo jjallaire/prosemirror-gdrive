@@ -15,10 +15,12 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
+const kFileListFields = 'nextPageToken, files(id, name, iconLink, modifiedTime, sharingUser, size)'
+
 const gapi = window.gapi;
 
 import MultipartBuilder from './multipart'
-import settings from './settings'
+import { initSettings } from './settings'
 import changemonitor from './changemonitor'
 
 import store from '../store'
@@ -57,7 +59,7 @@ export default {
           if (this.isSignedIn()) {
 
             // initialize settings before continuing
-            settings.init().then(() => {
+            initSettings().then(() => {
                
               // set user
               store.commit(SET_USER, this.signedInUser());
@@ -129,61 +131,26 @@ export default {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
       pageSize: store.getters.settings.document_history,
-      fields: 'nextPageToken, files(id, name, iconLink, modifiedTime, sharingUser, size)',
+      fields: kFileListFields,
       orderBy: 'recency desc'
-    }).then(response => {
-      return response.result.files.map(file => {
-        let owner = "Me";
-        if (file.sharingUser && !file.sharingUser.me)
-          owner = file.sharingUser.displayName;
-        return {
-          id: file.id,
-          name: file.name,
-          icon: file.iconLink,
-          owner: owner,
-          modifiedTime: Date.parse(file.modifiedTime),
-          size: parseInt(file.size)
-        }
-      });
-    });  
+    }).then(fileListResponse);  
   },
 
   newFile(title) {
-    let fileContent = 'more sample text'; 
     let metadata = {
       'name': title,
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
-    let path = '/upload/drive/v3/files';
-    let method = 'POST';
-    let multipart = new MultipartBuilder()
-      .append('application/json', JSON.stringify(metadata))
-      .append('application/vnd.google.drive.ext-type.pmdoc', fileContent)
-      .finish();
-    return gapi.client.request({
-      path: path,
-      method: method,
-      params: {
-        uploadType: 'multipart',
-        supportsTeamDrives: true,
-        fields: 'id'
-      },
-      headers: { 'Content-Type' : multipart.type },
-      body: multipart.body
-    }).then(response => {
+    let fileContent = 'more sample text'; 
+    return uploadFile(metadata, fileContent).then(file => {
 
-      // update model w/ new file (async)
-      this.updateRecentDocs();
+        // update model w/ new file (async)
+        this.updateRecentDocs();
 
-      // return id
-      return response.result.id;
-    }).catch(response => {
-      if (response.result === false)
-        return Promise.reject(new Error("Error " + response.status + ": " + response.body));
-      else
-        return Promise.reject(new Error("Error uploading document to Google Drive"));
+        return file.id;
     });
   },
+  
 
   loadFile(fileId) {
     let metadataRequest = gapi.client.drive.files.get({
@@ -257,6 +224,41 @@ export default {
     });
   },
 
+  
+  readAppData(id, name, mimeType, defaultContent) {
+    if (id) {
+      return this.loadFile(id);
+    } else {
+      return gapi.client.drive.files.list({
+        fields: kFileListFields,
+        pageSize: 1000,
+        spaces: "appDataFolder"
+      })
+      .then(response => {
+        let fileList = fileListResponse(response);
+        let file = fileList.find(file => file.name === name);
+        if (file !== undefined) {
+          return this.loadFile(file.id);
+        } else {
+          return this.writeAppData(null, name, mimeType, defaultContent)
+            .then(id => {
+              return this.loadFile(id);
+            });
+        }
+      });
+    }
+  },
+
+  writeAppData(id, name, mimeType, content) {
+    return uploadFile({
+      id: id,
+      name: name,
+      mimeType: mimeType,
+      parents: ["appDataFolder"]
+    }, content);
+  },
+
+
   updateRecentDocs() {
     return this.listFiles().then(files => {
       store.commit(SET_RECENT_DOCS, files);
@@ -275,3 +277,52 @@ function auth() {
   return gapi.auth2.getAuthInstance();
 }
 
+function fileListResponse(response) {
+  return response.result.files.map(file => {
+    let owner = "Me";
+    if (file.sharingUser && !file.sharingUser.me)
+      owner = file.sharingUser.displayName;
+    return {
+      id: file.id,
+      name: file.name,
+      icon: file.iconLink,
+      owner: owner,
+      modifiedTime: Date.parse(file.modifiedTime),
+      size: parseInt(file.size)
+    }
+  });  
+}
+
+function uploadFile(metadata, content) {
+  let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
+  let method = metadata.id ? 'PATCH' : 'POST';
+  let uploadMetadata = metadata.id ? 
+    { name: metadata.name, mimeType: metadata.mimeType } : 
+    metadata;
+  let multipart = new MultipartBuilder()
+    .append('application/json', JSON.stringify(uploadMetadata))
+    .append(metadata.mimeType, content)
+    .finish();
+  return gapi.client.request({
+    path: path,
+    method: method,
+    params: {
+      uploadType: 'multipart',
+      supportsTeamDrives: true,
+      fields: 'id'
+    },
+    headers: { 'Content-Type' : multipart.type },
+    body: multipart.body
+  }).then(response => {
+    // return id
+    if (response.result.id)
+      return response.result.id;
+    else
+      return response.result.result.id;
+  }).catch(response => {
+    if (response.result === false)
+      return Promise.reject(new Error("Error " + response.status + ": " + response.body));
+    else
+      return Promise.reject(new Error("Error uploading document to Google Drive"));
+  });
+}

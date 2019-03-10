@@ -1,10 +1,6 @@
 
 
-- Settings implementation:
-    - Write through
-    - Monitoring
-
-- Add Shared, Stared, Recent, etc. to drive picker
+- Consider whether we should place all docs in a folder (settings)
 
 - Affordance that leads to Rename, Remove, Open in New Tab  (rather than delete as now)
 
@@ -13,3 +9,5 @@
 - Add indexable content
 
 - Local implementation catchup
+
+- Settings monitoring?
