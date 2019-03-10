@@ -84,6 +84,10 @@ export default {
               store.commit(SET_INITIALIZED, true);
               resolve();
 
+            })
+            .catch(error => {
+              store.commit(SET_INIT_ERROR, error);
+              resolve();
             });
             
           // signed out, initialize w/o drive state populated

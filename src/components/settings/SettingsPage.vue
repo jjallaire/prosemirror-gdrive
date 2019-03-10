@@ -2,15 +2,26 @@
 
 <script>
 
+import ErrorPage from '../core/ErrorPage.vue'
+import ProgressSpinner from '../core/ProgressSpinner.vue'
 import { VContainer, VLayout, VFlex, VSubheader, VSelect } from 'vuetify/lib'
 
 import { UPDATE_SETTINGS } from '../../store/mutations'
+
+import { syncSettings } from '../../drive/settings'
 
 export default {
   name: 'SettingsPage',
 
   components: {
-     VContainer, VLayout, VFlex, VSubheader, VSelect
+     ErrorPage, ProgressSpinner, VContainer, VLayout, VFlex, VSubheader, VSelect
+  },
+
+  data: function() {
+    return {
+      error: null,
+      initialized: false
+    }
   },
 
   computed: {
@@ -23,6 +34,16 @@ export default {
       }
     },
 
+  },
+
+  mounted() {
+    syncSettings()
+      .then(() => {
+        this.initialized = true;
+      })
+      .catch(error => {
+        this.error = error;
+      });
   },
   
   methods: {
@@ -40,24 +61,31 @@ export default {
 
 <template>
 
+  
   <div class="settings-container">
-
-    <h1>Settings</h1>
-
-    <v-container fluid>
-      <v-layout row wrap align-center>
-        <v-flex xs6>
-          <v-subheader>Maximum documents in history:</v-subheader>
-        </v-flex>
-        <v-flex xs6>
-          <v-select
-            v-model="document_history"
-            :items="[1,3,5,10,50]"
-            solo
-          />
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <div v-if="error">
+      <ErrorPage :error="error" />
+    </div>
+    <div v-else-if="initialized">
+      <h1>Settings</h1>
+      <v-container fluid>
+        <v-layout row wrap align-center>
+          <v-flex xs6>
+            <v-subheader>Maximum documents in history:</v-subheader>
+          </v-flex>
+          <v-flex xs6>
+            <v-select
+              v-model="document_history"
+              :items="[1,3,5,10,50]"
+              solo
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </div>
+    <div v-else>
+      <ProgressSpinner />
+    </div>
 
   </div>
 
@@ -65,6 +93,6 @@ export default {
 
 <style>
 .settings-container {
-    width: 100%;
+  width: 100%;
 }
 </style>
