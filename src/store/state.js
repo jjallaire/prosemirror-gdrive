@@ -12,7 +12,7 @@ export function initialState() {
 
     // settings
     settings: {
-      document_history: 5
+      document_history: 50
     },
 
     // document history
