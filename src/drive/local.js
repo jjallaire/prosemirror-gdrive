@@ -23,12 +23,14 @@ var docStore = localforage.createInstance({
 export default {
 
   connect() {
-    return this._signedInUser()
-      .then(user => {
+    return this.readAppData(kUserAppData, kUserMimeType, null)
+      .then(file => {
+        let user = file.content;
         store.commit(SET_USER, user);
         if (user) {
           initSettings()
             .then(() => {
+              this.updateRecentDocs();
               store.commit(SET_INITIALIZED, true);
             });
         } else {
@@ -74,17 +76,6 @@ export default {
     // return { metadata, content } 
   },
 
-  shareFile(fileId) {
-    // no-op
-  },
-
-  selectFile() {
-    return new Promise((resolve) => {
-
-      // return id
-
-    });
-  },
 
   removeFile() {
 
@@ -133,8 +124,13 @@ export default {
     });
   },
 
-  _signedInUser() {
-    return this.readAppData(kUserAppData, kUserMimeType, null);
+
+  selectFile() {
+    // no-op
   },
 
+  // eslint-disable-next-line
+  shareFile(fileId) {
+    // no-op
+  }
 };

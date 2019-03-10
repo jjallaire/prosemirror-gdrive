@@ -162,40 +162,6 @@ export default {
       });
   },
 
-  shareFile(fileId) {
-    let user = auth().currentUser.get();
-    let share = new gapi.drive.share.ShareClient();
-    share.setOAuthToken(user.getAuthResponse().access_token);
-    share.setItemIds([fileId]);
-    share.showSettingsDialog();
-  },
-
-  selectFile() {
-    return new Promise((resolve) => {
-      let api = gapi.picker.api;
-      let user = auth().currentUser.get();
-      let view = new api.DocsView(api.ViewId.DOCS)
-        .setMode(api.DocsViewMode.LIST)
-        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
-      let folderView = new api.DocsView(api.ViewId.FOLDERS)
-        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
-    
-      let picker = new api.PickerBuilder()
-        .setAppId(kAppId)
-        .setOAuthToken(user.getAuthResponse().access_token)
-        .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
-        .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
-        .addView(view)
-        .addView(api.ViewId.RECENTLY_PICKED)
-        .addView(folderView)
-        .setCallback(data => {
-          if (data[api.Response.ACTION] === api.Action.PICKED)
-            resolve(data.docs[0].id);
-        }).build();
-      picker.setVisible(true);
-    });
-  },
-
 
   removeFile(fileId) {
     return gapi.client.drive.files.delete({
@@ -235,6 +201,40 @@ export default {
           parents: ["appDataFolder"]
         }, content);
       }); 
+  },
+
+  selectFile() {
+    return new Promise((resolve) => {
+      let api = gapi.picker.api;
+      let user = auth().currentUser.get();
+      let view = new api.DocsView(api.ViewId.DOCS)
+        .setMode(api.DocsViewMode.LIST)
+        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+      let folderView = new api.DocsView(api.ViewId.FOLDERS)
+        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+    
+      let picker = new api.PickerBuilder()
+        .setAppId(kAppId)
+        .setOAuthToken(user.getAuthResponse().access_token)
+        .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
+        .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
+        .addView(view)
+        .addView(api.ViewId.RECENTLY_PICKED)
+        .addView(folderView)
+        .setCallback(data => {
+          if (data[api.Response.ACTION] === api.Action.PICKED)
+            resolve(data.docs[0].id);
+        }).build();
+      picker.setVisible(true);
+    });
+  },
+
+  shareFile(fileId) {
+    let user = auth().currentUser.get();
+    let share = new gapi.drive.share.ShareClient();
+    share.setOAuthToken(user.getAuthResponse().access_token);
+    share.setItemIds([fileId]);
+    share.showSettingsDialog();
   },
 
   _appDataFileId(name) {
