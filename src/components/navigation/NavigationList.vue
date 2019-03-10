@@ -32,9 +32,9 @@ export default {
 
   methods: {
     onOpenDocumentClicked() {
-      drive.openFile()
-        .then(doc => {
-          this.$router.push({ path: "/edit/" + doc.id });
+      drive.selectFile()
+        .then(id => {
+          this.$router.push({ path: "/edit/" + id });
         });
     }
   }

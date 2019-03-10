@@ -56,17 +56,17 @@ export default {
         .then(() => {
           
           // if we are signed in then initialize
-          if (this.isSignedIn()) {
+          if (this._isSignedIn()) {
 
             // initialize settings before continuing
             initSettings().then(() => {
                
               // set user
-              store.commit(SET_USER, this.signedInUser());
+              store.commit(SET_USER, this._signedInUser());
 
               // listen for sign-out
               auth().isSignedIn.listen(() => {
-                if (!this.isSignedIn()) {
+                if (!this._isSignedIn()) {
                   changemonitor.stop();
                   this._clearRecentDocs();
                   store.commit(SET_USER, null);
@@ -111,24 +111,6 @@ export default {
 
   signOut() {
     auth().signOut();
-  },
-
-  isSignedIn() {
-    return auth().isSignedIn.get();
-  },
-
-  signedInUser() {
-    if (this.isSignedIn()) {
-      let user = auth().currentUser.get();
-      let profile = user.getBasicProfile();
-      return {
-        id: profile.getId(),
-        name: profile.getName(),
-        email: profile.getEmail()
-      };
-    } else {
-      return null
-    }
   },
 
   listFiles() {
@@ -188,7 +170,7 @@ export default {
     share.showSettingsDialog();
   },
 
-  openFile() {
+  selectFile() {
     return new Promise((resolve) => {
       let api = gapi.picker.api;
       let user = auth().currentUser.get();
@@ -208,7 +190,7 @@ export default {
         .addView(folderView)
         .setCallback(data => {
           if (data[api.Response.ACTION] === api.Action.PICKED)
-            resolve(data.docs[0]);
+            resolve(data.docs[0].id);
         }).build();
       picker.setVisible(true);
     });
@@ -229,11 +211,35 @@ export default {
   },
 
   
-  readAppData(id, name, mimeType, defaultContent) {
-    if (id) {
-      return this.loadFile(id);
-    } else {
-      return gapi.client.drive.files.list({
+  readAppData(name, mimeType, defaultContent) {
+    return this._appDataFileId(name)
+      .then(fileId => {
+        if (fileId) {
+          return this.loadFile(fileId);
+        } else {
+          return this.writeAppData(name, mimeType, defaultContent)
+            .then(fileId => {
+              return this.loadFile(fileId);
+            });
+        }
+      });
+  },
+
+  writeAppData(name, mimeType, content) {
+    return this._appDataFileId(name)
+      .then(fileId => {
+        return uploadFile({
+          id: fileId,
+          name: name,
+          mimeType: mimeType,
+          parents: ["appDataFolder"]
+        }, content);
+      }); 
+  },
+
+  _appDataFileId(name) {
+    return gapi.client.drive.files
+      .list({
         fields: kFileListFields,
         pageSize: 1000,
         spaces: "appDataFolder"
@@ -241,25 +247,11 @@ export default {
       .then(response => {
         let fileList = fileListResponse(response);
         let file = fileList.find(file => file.name === name);
-        if (file !== undefined) {
-          return this.loadFile(file.id);
-        } else {
-          return this.writeAppData(null, name, mimeType, defaultContent)
-            .then(id => {
-              return this.loadFile(id);
-            });
-        }
+        if (file)
+          return file.id;
+        else
+          return null;
       });
-    }
-  },
-
-  writeAppData(id, name, mimeType, content) {
-    return uploadFile({
-      id: id,
-      name: name,
-      mimeType: mimeType,
-      parents: ["appDataFolder"]
-    }, content);
   },
 
 
@@ -272,6 +264,25 @@ export default {
   _clearRecentDocs() {
     store.commit(SET_RECENT_DOCS, []);
   },
+
+  _isSignedIn() {
+    return auth().isSignedIn.get();
+  },
+
+  _signedInUser() {
+    if (this._isSignedIn()) {
+      let user = auth().currentUser.get();
+      let profile = user.getBasicProfile();
+      return {
+        id: profile.getId(),
+        name: profile.getName(),
+        email: profile.getEmail()
+      };
+    } else {
+      return null
+    }
+  },
+
   
 
 };
