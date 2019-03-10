@@ -1,6 +1,7 @@
 
 
 import localforage from 'localforage'
+import shortUuid from 'short-uuid'
 
 import store from '../store'
 import { SET_INITIALIZED, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
@@ -59,27 +60,53 @@ export default {
       });
   },
 
- 
 
   listFiles() {
-    return Promise.resolve([]);
+    let files = [];
+    return docStore.iterate(function(value, key) {
+      files.push({
+        id: key,
+        name: value.metadata.name,
+        icon: null,
+        owner: "Me",
+        modifiedTime: new Date().getTime(),
+        size: value.content.length 
+      });
+    }).then(function() {
+      return files;
+    })
   },
 
   newFile(title) {
 
+    let id = shortUuid().new();
     
+    let file = {
+      metadata: {
+        'name': title,
+        'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
+      },
+      content: 'more sample text'
+    };
+   
+    return docStore.setItem(id, file)
+      .then(() => {
+        this.updateRecentDocs();
+        return id;
+      });    
 
   },
 
   loadFile(fileId) {
-
-    // return { metadata, content } 
+    return docStore.getItem(fileId)
+      .then(file => {
+        return file;
+      });
   },
 
 
-  removeFile() {
-
-
+  removeFile(fileId) {
+    return docStore.removeItem(fileId);
   },
 
   readAppData(name, mimeType, defaultContent) {
@@ -126,7 +153,9 @@ export default {
 
 
   selectFile() {
-    // no-op
+    return new Promise(() => {
+
+    });
   },
 
   // eslint-disable-next-line
