@@ -131,12 +131,12 @@ export default {
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let fileContent = 'more sample text'; 
-    return uploadFile(metadata, fileContent).then(file => {
+    return uploadFile(metadata, fileContent).then(id => {
 
         // update model w/ new file (async)
         this.updateRecentDocs();
 
-        return file.id;
+        return id;
     });
   },
   
