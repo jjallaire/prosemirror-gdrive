@@ -1,6 +1,5 @@
 
 
-- Consider whether we should place all docs in a folder (settings)
 
 - Shared with column
 
