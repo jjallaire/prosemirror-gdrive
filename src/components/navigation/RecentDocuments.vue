@@ -24,7 +24,7 @@ export default {
         { text: 'Owner', value: 'owner' },
         { text: 'Last viewed', value: 'lastViewed' },
         { text: 'File size', value: 'size' },
-        { text: 'Actions', sortable: false , width: '5%'}
+        { text: '', sortable: false , width: '5%'}
       ],
       pagination_sync: {
         sortBy: 'lastViewed',
@@ -47,6 +47,13 @@ export default {
   methods: {
     onNewDocument() {
       this.$router.push({ path: "/edit/" });
+    },
+
+    onOpenDocument() {
+      drive.selectFile()
+        .then(id => {
+          this.$router.push({ path: "/edit/" + id });
+        });
     },
 
     onDocumentClicked(doc) {
@@ -107,6 +114,12 @@ export default {
 
   <div class="recent-documents">
 
+    <div class="action-buttons">
+      <v-btn title="Open file picker" icon @click="onOpenDocument">
+        <v-icon>folder_open</v-icon>
+      </v-btn>
+    </div>
+
     <div class="add-button">
       <v-btn title="Create new document" color="orange" dark fab small @click="onNewDocument">
         <v-icon>add</v-icon>
@@ -120,8 +133,9 @@ export default {
       :pagination.sync="pagination_sync"
       :rows-per-page-items="[settings.document_history]"
       :hide-actions="true"
-      class="elevation-1"
+      class="elevation-1 documents-table"
     >
+
       <template v-slot:no-data>
         <div class="table-status text-xs-center grey--text">
           (No documents)
@@ -172,6 +186,10 @@ export default {
 
 <style>
 
+.recent-documents {
+  position: relative;
+}
+
 .recent-documents .add-button {
   margin-bottom: -27px;
   margin-left: 4px;
@@ -179,6 +197,17 @@ export default {
 
 .recent-documents td > a {
   text-decoration: none;
+}
+
+
+.recent-documents .action-buttons {
+  position: absolute;
+  right: 25px;
+  top: 30px;
+}
+
+.recent-documents .action-buttons i {
+  color: rgba(0,0,0,0.54) !important;
 }
 
 .recent-documents .table-status {
@@ -196,6 +225,10 @@ export default {
 
 .recent-documents .table-row {
   cursor: pointer;
+}
+
+.recent-documents .table-row i {
+   color: rgba(0,0,0,0.54) !important;
 }
 
 </style>
