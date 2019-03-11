@@ -59,10 +59,6 @@ export default {
       });
     },
 
-    onShareDocument(doc) {
-      drive.shareFile(doc.id);
-    },
-
     onRenameDocument(doc) {
       this.$dialog.prompt({
         text: 'New name for document:',
@@ -73,6 +69,10 @@ export default {
           this.handleDriveRequest(drive.renameFile(doc.id, title));
       });
       utils.focusDialogTitle();
+    },
+
+    onShareDocument(doc) {
+      drive.shareFile(doc.id);
     },
 
     onOpenInNewTab(doc) {
@@ -112,10 +112,21 @@ export default {
       item-key="id"
       :pagination.sync="pagination_sync"
       :rows-per-page-items="[settings.document_history]"
-      no-data-text="No recent documents"
       :hide-actions="true"
       class="elevation-1"
     >
+      <template v-slot:no-data>
+        <div class="table-status text-xs-center grey--text">
+          (No documents)
+        </div>
+      </template>
+
+      <template v-slot:no-results>
+        <div class="table-status text-xs-center grey--text">
+          (No documents found)
+        </div>
+      </template>
+
       <template v-slot:items="props">
         <td><img :src="props.item.icon"></td>
         <td><router-link :to="'/edit/' + props.item.id">{{ props.item.name }}</router-link></td>
@@ -156,6 +167,11 @@ export default {
 
 .recent-documents td > a {
   text-decoration: none;
+}
+
+.recent-documents .table-status {
+  padding-top: 70px;
+  padding-bottom: 70px;
 }
 
 
