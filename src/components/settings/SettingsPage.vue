@@ -2,7 +2,7 @@
 
 <script>
 
-import ErrorPage from '../core/ErrorPage.vue'
+import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 import { VContainer, VLayout, VFlex, VSubheader, VSelect } from 'vuetify/lib'
 
@@ -14,7 +14,7 @@ export default {
   name: 'SettingsPage',
 
   components: {
-     ErrorPage, ProgressSpinner, VContainer, VLayout, VFlex, VSubheader, VSelect
+     ErrorDisplay, ProgressSpinner, VContainer, VLayout, VFlex, VSubheader, VSelect
   },
 
   data: function() {
@@ -64,7 +64,7 @@ export default {
   
   <div class="settings-container">
     <div v-if="error">
-      <ErrorPage :error="error" />
+      <ErrorDisplay :error="error" />
     </div>
     <div v-else-if="initialized">
       <h1>Settings</h1>

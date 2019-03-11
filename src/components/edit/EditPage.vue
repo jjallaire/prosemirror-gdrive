@@ -3,14 +3,14 @@
 import * as utils from '../core/utils'
 import drive from '../../drive'
 
-import ErrorPage from '../core/ErrorPage.vue'
+import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 
 export default {
   name: 'EditPage',
 
   components: {
-    ProgressSpinner, ErrorPage
+    ProgressSpinner, ErrorDisplay
   },
 
   props: {
@@ -94,7 +94,7 @@ export default {
 
   <div class="edit-container">
     <div v-if="error">
-      <ErrorPage :error="error" />
+      <ErrorDisplay :error="error" />
     </div>
     <div v-else-if="!doc_id && !title">
       <!-- show title dialog -->

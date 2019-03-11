@@ -3,7 +3,7 @@
 import { VAlert } from 'vuetify/lib'
 
 export default {
-  name: 'ErrorPage',
+  name: 'ErrorDisplay',
 
   components: {
     VAlert
