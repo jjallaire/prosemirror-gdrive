@@ -118,11 +118,11 @@ export default {
     <v-card>
       <v-card-title>
        
-        <v-btn title="Create new document" color="success" fab dark small @click="onNewDocument">
+        <v-btn title="Create new document" color="orange" fab outline dark small @click="onNewDocument">
           <v-icon>add</v-icon>
         </v-btn>
 
-        <v-btn title="Open file picker" color="info" fab dark small @click="onOpenDocument">
+        <v-btn title="Open file picker" color="orange" fab outline dark small @click="onOpenDocument">
           <v-icon>folder_open</v-icon>
         </v-btn>
       
