@@ -191,7 +191,7 @@ export default {
 }
 
 .recent-documents .table-doc-name i {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 .recent-documents .table-row {
