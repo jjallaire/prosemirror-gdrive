@@ -1,6 +1,6 @@
 <script>
 
-
+import * as utils from '../core/utils'
 import drive from '../../drive'
 
 import ErrorPage from '../core/ErrorPage.vue'
@@ -67,11 +67,7 @@ export default {
         });
 
         // auto-focus title
-        setTimeout(() => {
-          let titleInput = document.querySelector('.v-dialog input[autofocus]');
-        if (titleInput)
-          titleInput.focus();
-        }, 200);
+        utils.focusDialogTitle();
 
       } else {
         drive.loadFile(this.doc_id)

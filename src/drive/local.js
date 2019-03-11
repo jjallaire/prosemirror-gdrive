@@ -109,6 +109,18 @@ export default {
     return docStore.removeItem(fileId);
   },
 
+  renameFile(fileId, name) {
+    return docStore
+      .getItem(fileId)
+      .then(file => {
+        file.metadata.name = name;
+        return docStore.setItem(fileId, file);
+      })
+      .then(() => {
+        return fileId;
+      });
+  },
+
   readAppData(name, mimeType, defaultContent) {
     
     function appDataFile(content) {

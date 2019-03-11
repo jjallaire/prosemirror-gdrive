@@ -176,6 +176,24 @@ export default {
     });
   },
 
+  renameFile(fileId, name) {
+    let path = '/drive/v3/files/' + fileId;
+    let method = 'PATCH'
+    let metadata = { name: name };
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        supportsTeamDrives: true,
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : "application/json" },
+      body: JSON.stringify(metadata)
+    })
+    .then(handleIdResponse)
+    .catch(catchHttpRequest);
+  },
+
   
   readAppData(name, mimeType, defaultContent) {
     return this._appDataFileId(name)
@@ -328,16 +346,21 @@ function uploadFile(metadata, content) {
     },
     headers: { 'Content-Type' : multipart.type },
     body: multipart.body
-  }).then(response => {
-    // return id
-    if (response.result.id)
-      return response.result.id;
-    else
-      return response.result.result.id;
-  }).catch(response => {
-    if (response.result === false)
-      return Promise.reject(new Error("Error " + response.status + ": " + response.body));
-    else
-      return Promise.reject(new Error("Error uploading document to Google Drive"));
-  });
+  })
+  .then(handleIdResponse)
+  .catch(catchHttpRequest);
+}
+
+function handleIdResponse(response) {
+  if (response.result.id)
+    return response.result.id;
+  else
+    return response.result.result.id;
+}
+
+function catchHttpRequest(response) {
+  if (response.result === false)
+    return Promise.reject(new Error("Error " + response.status + ": " + response.body));
+  else
+    return Promise.reject(new Error("Error making HTTP request to Google Drive"));
 }

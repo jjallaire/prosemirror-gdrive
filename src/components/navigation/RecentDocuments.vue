@@ -4,14 +4,16 @@
 import { mapGetters } from 'vuex'
 
 import { VDataTable } from 'vuetify/lib'
+import MenuTile from '../core/MenuTile'
 
 import drive from '../../drive'
+import * as utils from '../core/utils'
 
 export default {
   name: 'RecentDocuments',
 
   components: {
-    VDataTable
+    VDataTable, MenuTile
   },
 
   data: function() {
@@ -52,21 +54,46 @@ export default {
         text: 'Are you sure you want to remove this document?',
         title: 'Remove Document',
       }).then(confirmed => {
-        if (confirmed) {
-          drive.removeFile(doc.id)
-            .then(() => {
-              drive.updateRecentDocs();
-            })
-            .catch(error => {
-              this.$dialog.error({
-                text: error.message,
-                title: "Error Removing Document"
-              })
-            });
-        }
+        if (confirmed)
+          this.handleDriveRequest(drive.removeFile(doc.id));
       });
+    },
+
+    onShareDocument(doc) {
+      drive.shareFile(doc.id);
+    },
+
+    onRenameDocument(doc) {
+      this.$dialog.prompt({
+        text: 'New name for document:',
+        title: 'Rename Document'
+      })
+      .then(title => {
+        if (title)
+          this.handleDriveRequest(drive.renameFile(doc.id, title));
+      });
+      utils.focusDialogTitle();
+    },
+
+    onOpenInNewTab(doc) {
+      window.open("/edit/" + doc.id, "_blank");
+    },
+
+    handleDriveRequest(request) {
+      request
+        .then(() => {
+          drive.updateRecentDocs();
+        })
+        .catch(error => {
+          this.$dialog.error({
+            text: error.message,
+            title: "Drive Error"
+          })
+        });
     }
-  }
+
+  },
+
 }
 
 </script>
@@ -99,7 +126,22 @@ export default {
         <td>{{ new Date(props.item.modifiedTime).toDateString() }}</td>
         <td>{{ props.item.size | bytes }}</td>
         <td align="center">
-          <v-icon small @click="onRemoveDocument(props.item)">delete</v-icon>
+          <v-menu bottom left nudge-left>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+              <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
+              <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
+              <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
+              <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
+            </v-list>
+          </v-menu>
         </td>
       </template>
     </v-data-table>
