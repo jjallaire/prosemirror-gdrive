@@ -166,6 +166,9 @@ export default {
       fileId: fileId,
       supportsTeamDrives: true
     })
+    .then(() => {
+      
+    })
     .catch(response => {
       return Promise.reject(new GAPIError(response.result.error.errors[0]));
     });
