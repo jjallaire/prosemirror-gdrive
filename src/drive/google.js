@@ -351,6 +351,11 @@ function uploadFile(metadata, content) {
   let uploadMetadata = metadata.id ? 
     { name: metadata.name, mimeType: metadata.mimeType } : 
     metadata;
+  uploadMetadata = { ...uploadMetadata,
+    contentHints: {
+      indexableText: content
+    }
+  };
   let multipart = new MultipartBuilder()
     .append('application/json', JSON.stringify(uploadMetadata))
     .append(metadata.mimeType, content)
