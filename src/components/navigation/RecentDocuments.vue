@@ -134,7 +134,10 @@ export default {
       <template v-slot:items="props">
         <tr class="table-row">
           <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
-          <td class="table-doc-name" @click="onDocumentClicked(props.item)">{{ props.item.name }}</td>
+          <td class="table-doc-name" @click="onDocumentClicked(props.item)">
+            {{ props.item.name }}
+            <v-icon title="Shared" v-if="props.item.shared" small>people</v-icon>
+          </td>
           <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
           <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.modifiedTime).toDateString() }}</td>
           <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
@@ -182,6 +185,10 @@ export default {
 
 .recent-documents .table-doc-name {
   font-weight: 500;
+}
+
+.recent-documents .table-doc-name i {
+  margin-left: 15px;
 }
 
 .recent-documents .table-row {

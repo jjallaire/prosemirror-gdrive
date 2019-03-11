@@ -71,6 +71,7 @@ export default {
         name: value.metadata.name,
         icon: null,
         owner: "Me",
+        shared: false,
         modifiedTime: new Date().getTime(),
         size: value.content.length 
       });

@@ -1,9 +1,6 @@
 
 
 
-
-- Settings in tabs
-
 - Shared with column
 
 - Availabilty of open file picker on main page

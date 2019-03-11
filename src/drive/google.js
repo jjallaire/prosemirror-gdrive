@@ -15,7 +15,7 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
-const kFileListFields = 'nextPageToken, files(id, name, iconLink, modifiedTime, sharingUser, size)'
+const kFileListFields = 'nextPageToken, files(id, name, iconLink, modifiedTime, shared, sharingUser, size)'
 
 const gapi = window.gapi;
 
@@ -326,6 +326,7 @@ function fileListResponse(response) {
       name: file.name,
       icon: file.iconLink,
       owner: owner,
+      shared: file.shared,
       modifiedTime: Date.parse(file.modifiedTime),
       size: parseInt(file.size)
     }
