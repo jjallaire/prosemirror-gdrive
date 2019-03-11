@@ -80,10 +80,13 @@ export default {
 
               // listen for changes then update recent files
               changemonitor.start();
-              this.updateRecentDocs();
+
+              // update recent docs
+              return this.updateRecentDocs();
+            })
+            .then(() => {
               store.commit(SET_INITIALIZED, true);
               resolve();
-
             })
             .catch(error => {
               store.commit(SET_INIT_ERROR, error);
