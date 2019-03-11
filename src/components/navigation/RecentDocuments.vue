@@ -19,17 +19,18 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: '', value: 'icon', sortable: false, width: '5%' },
+        { text: 'Type', value: 'icon', sortable: false, width: '5%' },
         { text: 'Name', value: 'name' },
         { text: 'Owner', value: 'owner' },
         { text: 'Last viewed', value: 'lastViewed' },
         { text: 'File size', value: 'size' },
-        { text: '', sortable: false , width: '5%'}
+        { text: 'Actions', sortable: false , width: '5%'}
       ],
       pagination_sync: {
         sortBy: 'lastViewed',
         descending: true
-      }
+      },
+      search: null
     }
   },
 
@@ -114,105 +115,101 @@ export default {
 
   <div class="recent-documents">
 
-    <div class="action-buttons">
-      <v-btn title="Open file picker" icon @click="onOpenDocument">
-        <v-icon>folder_open</v-icon>
-      </v-btn>
-    </div>
+    <v-card>
+      <v-card-title>
+       
+        <v-btn title="Create new document" color="success" fab dark small @click="onNewDocument">
+          <v-icon>add</v-icon>
+        </v-btn>
 
-    <div class="add-button">
-      <v-btn title="Create new document" color="orange" dark fab small @click="onNewDocument">
-        <v-icon>add</v-icon>
-      </v-btn>
-    </div>
+        <v-btn title="Open file picker" color="info" fab dark small @click="onOpenDocument">
+          <v-icon>folder_open</v-icon>
+        </v-btn>
+      
+        <v-spacer />
+        <v-spacer />
+        <v-spacer />
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        />
+      </v-card-title>
 
-    <v-data-table 
-      :headers="headers"
-      :items="recent_docs"
-      item-key="id"
-      :pagination.sync="pagination_sync"
-      :rows-per-page-items="[settings.document_history]"
-      :hide-actions="true"
-      class="elevation-1 documents-table"
-    >
+      <v-data-table 
+        :headers="headers"
+        :items="recent_docs"
+        item-key="id"
+        :pagination.sync="pagination_sync"
+        :rows-per-page-items="[settings.document_history]"
+        :hide-actions="true"
+        class="documents-table"
+      >
 
-      <template v-slot:no-data>
-        <div class="table-status text-xs-center grey--text">
-          (No documents)
-        </div>
-      </template>
+        <template v-slot:no-data>
+          <div class="table-status text-xs-center grey--text">
+            (No documents)
+          </div>
+        </template>
 
-      <template v-slot:no-results>
-        <div class="table-status text-xs-center grey--text">
-          (No documents found)
-        </div>
-      </template>
+        <template v-slot:no-results>
+          <div class="table-status text-xs-center grey--text">
+            (No documents found)
+          </div>
+        </template>
 
-      <template v-slot:items="props">
-        <tr class="table-row">
-          <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
-          <td class="table-doc-name" @click="onDocumentClicked(props.item)">
-            {{ props.item.name }}
-            <v-icon v-if="props.item.shared" title="Shared" small>people</v-icon>
-          </td>
-          <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
-          <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
-          <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
-          <td align="center">
-            <v-menu bottom left nudge-left>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                >
-                  <v-icon>more_vert</v-icon>
-                </v-btn>
-              </template>
-              <v-list dense>
-                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
-                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
-                <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
-                <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
-              </v-list>
-            </v-menu>
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
-  
+        <template v-slot:items="props">
+          <tr class="table-row">
+            <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
+            <td class="table-doc-name" @click="onDocumentClicked(props.item)">
+              {{ props.item.name }}
+              <v-icon v-if="props.item.shared" title="Shared" small>people</v-icon>
+            </td>
+            <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
+            <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
+            <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
+            <td align="center">
+              <v-menu bottom left nudge-left>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                  >
+                    <v-icon>more_vert</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
+                  <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
+                  <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
+                  <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
+                </v-list>
+              </v-menu>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 
 </template>
 
 <style>
 
-.recent-documents {
-  position: relative;
-}
-
-.recent-documents .add-button {
-  margin-bottom: -27px;
-  margin-left: 4px;
-}
 
 .recent-documents td > a {
   text-decoration: none;
 }
 
-
-.recent-documents .action-buttons {
-  position: absolute;
-  right: 25px;
-  top: 30px;
-}
-
-.recent-documents .action-buttons i {
-  color: rgba(0,0,0,0.54) !important;
+.recent-documents .v-card__title {
+  padding-left: 8px;
 }
 
 .recent-documents .table-status {
   padding-top: 70px;
-  padding-bottom: 70px;
+  padding-bottom: 80px;
 }
 
 .recent-documents .table-doc-name {
