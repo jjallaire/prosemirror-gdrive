@@ -81,9 +81,6 @@ export default {
 
     handleDriveRequest(request) {
       request
-        .then(() => {
-          drive.updateRecentDocs();
-        })
         .catch(error => {
           this.$dialog.error({
             text: error.message,

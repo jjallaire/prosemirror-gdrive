@@ -106,7 +106,11 @@ export default {
 
 
   removeFile(fileId) {
-    return docStore.removeItem(fileId);
+    return docStore
+      .removeItem(fileId)
+      .then(() => {
+        this.updateRecentDocs()
+      });
   },
 
   renameFile(fileId, name) {
@@ -117,6 +121,7 @@ export default {
         return docStore.setItem(fileId, file);
       })
       .then(() => {
+        this.updateRecentDocs();
         return fileId;
       });
   },

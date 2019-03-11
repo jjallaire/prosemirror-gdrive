@@ -169,7 +169,7 @@ export default {
       supportsTeamDrives: true
     })
     .then(() => {
-
+      this.updateRecentDocs();
     })
     .catch(response => {
       return Promise.reject(new GAPIError(response.result.error.errors[0]));
@@ -190,7 +190,10 @@ export default {
       headers: { 'Content-Type' : "application/json" },
       body: JSON.stringify(metadata)
     })
-    .then(handleIdResponse)
+    .then(id => {
+      this.updateRecentDocs();
+      return handleIdResponse(id);
+    })
     .catch(catchHttpRequest);
   },
 
