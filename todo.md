@@ -2,7 +2,7 @@
 
 
 
-- tooltips for buttons
+- Settings in tabs
 
 - Shared with column
 
