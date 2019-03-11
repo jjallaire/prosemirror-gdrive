@@ -69,10 +69,10 @@ export default {
       <v-spacer />
       <template v-if="authorized">
         <span>{{ user.email }}</span>
-        <v-btn icon @click="onSignOutClicked">
+        <v-btn title="Sign out" icon @click="onSignOutClicked">
           <v-icon>exit_to_app</v-icon>
         </v-btn>
-        <v-btn :to="{ path: '/settings/' }" icon>
+        <v-btn title="Settings" :to="{ path: '/settings/' }" icon>
           <v-icon>settings</v-icon>
         </v-btn>
       </template>

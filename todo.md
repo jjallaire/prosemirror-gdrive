@@ -1,9 +1,6 @@
 
 
 
-- New doc not showing new doc
-
-- full row click on table?
 
 - tooltips for buttons
 

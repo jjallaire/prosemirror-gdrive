@@ -49,6 +49,10 @@ export default {
       this.$router.push({ path: "/edit/" });
     },
 
+    onDocumentClicked(doc) {
+      this.$router.push({ path: "/edit/" + doc.id });
+    },
+
     onRemoveDocument(doc) {
       this.$dialog.confirm ({
         text: 'Are you sure you want to remove this document?',
@@ -101,7 +105,7 @@ export default {
   <div class="recent-documents">
 
     <div class="add-button">
-      <v-btn color="orange" dark fab small @click="onNewDocument">
+      <v-btn title="Create new document" color="orange" dark fab small @click="onNewDocument">
         <v-icon>add</v-icon>
       </v-btn>
     </div>
@@ -128,29 +132,31 @@ export default {
       </template>
 
       <template v-slot:items="props">
-        <td><img :src="props.item.icon"></td>
-        <td><router-link :to="'/edit/' + props.item.id">{{ props.item.name }}</router-link></td>
-        <td>{{ props.item.owner }}</td>
-        <td>{{ new Date(props.item.modifiedTime).toDateString() }}</td>
-        <td>{{ props.item.size | bytes }}</td>
-        <td align="center">
-          <v-menu bottom left nudge-left>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-              >
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </template>
-            <v-list dense>
-              <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
-              <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
-              <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
-              <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
-            </v-list>
-          </v-menu>
-        </td>
+        <tr class="table-row">
+          <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
+          <td class="table-doc-name" @click="onDocumentClicked(props.item)">{{ props.item.name }}</td>
+          <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
+          <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.modifiedTime).toDateString() }}</td>
+          <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
+          <td align="center">
+            <v-menu bottom left nudge-left>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                >
+                  <v-icon>more_vert</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
+                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
+                <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
+                <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
+              </v-list>
+            </v-menu>
+          </td>
+        </tr>
       </template>
     </v-data-table>
   
@@ -174,5 +180,12 @@ export default {
   padding-bottom: 70px;
 }
 
+.recent-documents .table-doc-name {
+  font-weight: 500;
+}
+
+.recent-documents .table-row {
+  cursor: pointer;
+}
 
 </style>
