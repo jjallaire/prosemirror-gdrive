@@ -31,7 +31,9 @@ export default {
         if (user) {
           initSettings()
             .then(() => {
-              this.updateRecentDocs();
+              return this.updateRecentDocs();
+            })
+            .then(() => {
               store.commit(SET_INITIALIZED, true);
             });
         } else {
