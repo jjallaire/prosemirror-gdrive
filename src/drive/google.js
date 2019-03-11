@@ -15,7 +15,8 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
-const kFileListFields = 'nextPageToken, files(id, name, iconLink, modifiedTime, shared, sharingUser, size)'
+const kFileListFields = 'nextPageToken, files(id, name, iconLink, viewedByMe, viewedByMeTime, ' +
+                        'sharedWithMeTime, modifiedTime, shared, sharingUser, size)'
 
 const gapi = window.gapi;
 
@@ -131,13 +132,7 @@ export default {
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
     let fileContent = 'more sample text'; 
-    return uploadFile(metadata, fileContent).then(id => {
-
-        // update model w/ new file (async)
-        this.updateRecentDocs();
-
-        return id;
-    });
+    return uploadFile(metadata, fileContent);
   },
   
 
@@ -171,18 +166,26 @@ export default {
       fileId: fileId,
       supportsTeamDrives: true
     })
-    .then(() => {
-      this.updateRecentDocs();
-    })
     .catch(response => {
       return Promise.reject(new GAPIError(response.result.error.errors[0]));
     });
   },
 
   renameFile(fileId, name) {
+    return this.updateFileMetadata(fileId, { 
+      name: name 
+  });
+  },
+
+  setFileViewed(fileId) {
+    return this.updateFileMetadata(fileId, { 
+      viewedByMeTime: new Date().toISOString()
+    })
+  },
+
+  updateFileMetadata(fileId, metadata) {
     let path = '/drive/v3/files/' + fileId;
     let method = 'PATCH'
-    let metadata = { name: name };
     return gapi.client.request({
       path: path,
       method: method,
@@ -194,7 +197,6 @@ export default {
       body: JSON.stringify(metadata)
     })
     .then(id => {
-      this.updateRecentDocs();
       return handleIdResponse(id);
     })
     .catch(catchHttpRequest);
@@ -318,16 +320,26 @@ function auth() {
 
 function fileListResponse(response) {
   return response.result.files.map(file => {
+    
+    // establish owner
     let owner = "Me";
     if (file.sharingUser && !file.sharingUser.me)
       owner = file.sharingUser.displayName;
+
+    // establish time
+    let lastViewed = file.modifiedTime;
+    if (file.viewedByMe)
+      lastViewed = file.viewedByMeTime;
+    else if (file.sharedWithMeTime)
+      lastViewed = file.sharedWithMeTime;
+
     return {
       id: file.id,
       name: file.name,
       icon: file.iconLink,
       owner: owner,
       shared: file.shared,
-      modifiedTime: Date.parse(file.modifiedTime),
+      lastViewed: Date.parse(lastViewed),
       size: parseInt(file.size)
     }
   });  

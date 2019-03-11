@@ -74,6 +74,10 @@ export default {
           .then(file => {
             this.title = file.name;
             this.doc = file;
+            return drive.setFileViewed(this.doc_id);
+          })
+          .then(() => {
+            drive.updateRecentDocs();
           })
           .catch(error => {
             this.error = error;

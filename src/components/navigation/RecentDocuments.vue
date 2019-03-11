@@ -22,12 +22,12 @@ export default {
         { text: '', value: 'icon', sortable: false, width: '5%' },
         { text: 'Name', value: 'name' },
         { text: 'Owner', value: 'owner' },
-        { text: 'Last modified', value: 'modifiedTime' },
+        { text: 'Last viewed', value: 'lastViewed' },
         { text: 'File size', value: 'size' },
         { text: 'Actions', sortable: false , width: '5%'}
       ],
       pagination_sync: {
-        sortBy: 'modifiedTime',
+        sortBy: 'lastViewed',
         descending: true
       }
     }
@@ -85,6 +85,9 @@ export default {
 
     handleDriveRequest(request) {
       request
+        .then(() => {
+          drive.updateRecentDocs();
+        })
         .catch(error => {
           this.$dialog.error({
             text: error.message,
@@ -136,10 +139,10 @@ export default {
           <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
           <td class="table-doc-name" @click="onDocumentClicked(props.item)">
             {{ props.item.name }}
-            <v-icon title="Shared" v-if="props.item.shared" small>people</v-icon>
+            <v-icon v-if="props.item.shared" title="Shared" small>people</v-icon>
           </td>
           <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
-          <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.modifiedTime).toDateString() }}</td>
+          <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
           <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
           <td align="center">
             <v-menu bottom left nudge-left>

@@ -72,7 +72,7 @@ export default {
         icon: null,
         owner: "Me",
         shared: false,
-        modifiedTime: new Date().getTime(),
+        lastViewed: new Date().getTime(),
         size: value.content.length 
       });
     }).then(function() {
@@ -94,7 +94,6 @@ export default {
    
     return docStore.setItem(id, file)
       .then(() => {
-        this.updateRecentDocs();
         return id;
       });    
 
@@ -109,11 +108,7 @@ export default {
 
 
   removeFile(fileId) {
-    return docStore
-      .removeItem(fileId)
-      .then(() => {
-        this.updateRecentDocs()
-      });
+    return docStore.removeItem(fileId);
   },
 
   renameFile(fileId, name) {
@@ -124,9 +119,13 @@ export default {
         return docStore.setItem(fileId, file);
       })
       .then(() => {
-        this.updateRecentDocs();
         return fileId;
       });
+  },
+
+  // eslint-disable-next-line
+  setFileViewed(fileId) {
+    // no-op
   },
 
   readAppData(name, mimeType, defaultContent) {
