@@ -85,7 +85,13 @@ export default {
       utils.focusDialogTitle();
     },
 
-    onSearchChanged: _debounce(function() { this.updateItems(false) }, 500),
+    onSearchChanged: _debounce(function() { 
+      if (this.search)
+        this.pagination.sortBy = '';
+      else
+        this.pagination.sortBy = 'lastViewed';
+      this.updateItems(false);
+    }, 500),
 
     onOpenDocument() {
       drive.selectFile()
@@ -131,7 +137,7 @@ export default {
     handleDriveRequest(request) {
       request
         .then(() => {
-          this.updateItems();
+          this.updateItems(false);
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -179,7 +185,7 @@ export default {
       </v-card-title>
 
       <v-data-table 
-        must-sort
+        :must-sort="!search"
         :headers="headers"
         :items="items"
         :loading="loading"

@@ -150,7 +150,7 @@ export default {
       .then(fileListResponse)
       .then(files => {
         // do client side sorting if this was a search
-        if (search) 
+        if (search && orderBy) 
           return _orderBy(files, [orderBy], [descending ? 'desc' : 'asc']);
         else
           return files;
