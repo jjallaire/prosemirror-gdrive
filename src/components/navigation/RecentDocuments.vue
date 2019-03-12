@@ -1,8 +1,6 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
-
 import { VDataTable } from 'vuetify/lib'
 import MenuTile from '../core/MenuTile'
 
@@ -30,19 +28,17 @@ export default {
         sortBy: 'lastViewed',
         descending: true
       },
-      search: ''
+      search: '',
+      loading: true,
+      items: []
     }
   },
-
-  computed: {
-    ...mapGetters([
-      'recent_docs',
-      'settings'
-    ])
-  },
-
   mounted() {
-    drive.updateRecentDocs();
+    // TODO: handle errors
+    drive.listFiles().then(files => {
+      this.items = files;
+      this.loading = false;
+    });
   },
   
   methods: {
@@ -150,7 +146,8 @@ export default {
 
       <v-data-table 
         :headers="headers"
-        :items="recent_docs"
+        :items="items"
+        :loading="loading"
         item-key="id"
         :rows-per-page-items="[50,100,250,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
         rows-per-page-text="Page size:"
@@ -161,7 +158,8 @@ export default {
 
         <template v-slot:no-data>
           <div class="table-status text-xs-center grey--text">
-            (No documents)
+            <span v-if="loading">Loading...</span>
+            <span v-else>(No documents)</span>
           </div>
         </template>
 

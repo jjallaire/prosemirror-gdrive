@@ -117,10 +117,10 @@ export default {
     auth().signOut();
   },
 
-  listFiles() {
+  listFiles(limit) {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
-      pageSize: store.getters.settings.recent_documents,
+      pageSize: limit || 1000,
       fields: kFileListFields,
       orderBy: 'recency desc'
     }).then(fileListResponse);  
@@ -285,7 +285,7 @@ export default {
 
 
   updateRecentDocs() {
-    return this.listFiles().then(files => {
+    return this.listFiles(store.getters.settings.recent_documents).then(files => {
       store.commit(SET_RECENT_DOCS, files);
     });
   },

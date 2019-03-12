@@ -8,6 +8,7 @@ import { VContainer, VLayout, VFlex, VSubheader, VSelect, VCard, VCardTitle } fr
 
 import { UPDATE_SETTINGS } from '../../store/mutations'
 
+import drive from '../../drive'
 import { syncSettings } from '../../drive/settings'
 
 export default {
@@ -31,6 +32,7 @@ export default {
       },
       set (value) {
         this.update_settings('recent_documents', value);
+        drive.updateRecentDocs();
       }
     },
 
@@ -77,7 +79,7 @@ export default {
             <v-flex xs6>
               <v-select
                 v-model="recent_documents"
-                :items="[100,250,500,1000]"
+                :items="[5, 8, 10, 15]"
                 solo
               />
             </v-flex>
