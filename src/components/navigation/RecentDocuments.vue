@@ -30,7 +30,7 @@ export default {
         sortBy: 'lastViewed',
         descending: true
       },
-      search: null
+      search: ''
     }
   },
 
@@ -142,9 +142,10 @@ export default {
         :headers="headers"
         :items="recent_docs"
         item-key="id"
+        :rows-per-page-items="[50,100,250,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
+        rows-per-page-text="Page size:"
         :pagination.sync="pagination_sync"
-        :rows-per-page-items="[settings.document_history]"
-        :hide-actions="true"
+        :search="search"
         class="documents-table"
       >
 

@@ -120,7 +120,7 @@ export default {
   listFiles() {
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
-      pageSize: store.getters.settings.document_history,
+      pageSize: store.getters.settings.recent_documents,
       fields: kFileListFields,
       orderBy: 'recency desc'
     }).then(fileListResponse);  
@@ -167,7 +167,7 @@ export default {
       supportsTeamDrives: true
     })
     .then(() => {
-      
+
     })
     .catch(response => {
       return Promise.reject(new GAPIError(response.result.error.errors[0]));

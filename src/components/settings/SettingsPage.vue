@@ -25,12 +25,12 @@ export default {
   },
 
   computed: {
-    document_history: {
+    recent_documents: {
       get () {
-        return this.$store.getters.settings.document_history;
+        return this.$store.getters.settings.recent_documents;
       },
       set (value) {
-        this.update_settings('document_history', value);
+        this.update_settings('recent_documents', value);
       }
     },
 
@@ -72,12 +72,12 @@ export default {
         <v-container fluid>
           <v-layout row wrap align-center>
             <v-flex xs6>
-              <v-subheader>Maximum documents in history:</v-subheader>
+              <v-subheader>Recent documents:</v-subheader>
             </v-flex>
             <v-flex xs6>
               <v-select
-                v-model="document_history"
-                :items="[1,3,5,10,50]"
+                v-model="recent_documents"
+                :items="[100,250,500,1000]"
                 solo
               />
             </v-flex>
