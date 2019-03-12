@@ -142,7 +142,7 @@ export default {
     };
 
     // add orderBy if this isn't a search
-    if (!search)
+    if (orderBy && !search)
       params.orderBy = orderByQuery + (descending ? ' desc' : '');
 
     // perform query
@@ -150,7 +150,7 @@ export default {
       .then(fileListResponse)
       .then(files => {
         // do client side sorting if this was a search
-        if (search && orderBy) 
+        if (orderBy && search) 
           return _orderBy(files, [orderBy], [descending ? 'desc' : 'asc']);
         else
           return files;
