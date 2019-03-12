@@ -2,13 +2,13 @@
 
 <script>
 
-import RecentDocuments from './navigation/RecentDocuments.vue'
+import DocumentListing from './navigation/DocumentListing.vue'
 
 export default {
   name: 'HomePage',
 
   components: {
-    RecentDocuments
+    DocumentListing
   } 
 }
 
@@ -18,7 +18,7 @@ export default {
 <template>
 
   <div class="home-container">
-    <RecentDocuments />
+    <DocumentListing />
   </div>
 
 </template>

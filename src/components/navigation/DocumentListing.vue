@@ -8,7 +8,7 @@ import drive from '../../drive'
 import * as utils from '../core/utils'
 
 export default {
-  name: 'RecentDocuments',
+  name: 'DocumentListing',
 
   components: {
     VDataTable, MenuTile
@@ -19,29 +19,55 @@ export default {
       headers: [
         { text: 'Type', value: 'icon', sortable: false, width: '5%' },
         { text: 'Name', value: 'name' },
-        { text: 'Owner', value: 'owner' },
+        { text: 'Owner', value: 'owner', sortable: false},
         { text: 'Last viewed', value: 'lastViewed' },
         { text: 'File size', value: 'size' },
         { text: 'Actions', sortable: false , width: '5%'}
       ],
-      pagination_sync: {
+      pagination: {
         sortBy: 'lastViewed',
-        descending: true
+        descending: true,
+        rowsPerPage: 50,
+        rowsPerPageItems: [50,100,250]
       },
       search: '',
       loading: true,
       items: []
     }
   },
-  mounted() {
-    // TODO: handle errors
-    drive.listFiles().then(files => {
-      this.items = files;
-      this.loading = false;
-    });
+
+  watch: {
+    pagination: {
+      handler () {
+        // re-query data for page 1
+        if (this.pagination.page === 1)
+          this.updateItems();
+      },
+      deep: true
+    }
   },
+
   
   methods: {
+
+    updateItems() {
+      this.items = [];
+      this.loading = true;
+      drive
+        .listFiles(this.pagination.sortBy, this.pagination.descending)
+        .then(files => {
+          this.items = files;
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.$dialog.error({
+            text: error.message,
+            title: "Drive Error"
+          });
+        });
+    },
+
     onNewDocument() {
       this.$dialog.prompt({
         text: 'Title',
@@ -100,6 +126,7 @@ export default {
     handleDriveRequest(request) {
       request
         .then(() => {
+          this.updateItems();
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -145,13 +172,13 @@ export default {
       </v-card-title>
 
       <v-data-table 
+        must-sort
         :headers="headers"
         :items="items"
         :loading="loading"
         item-key="id"
-        :rows-per-page-items="[50,100,250,{'text':'$vuetify.dataIterator.rowsPerPageAll','value':-1}]"
-        rows-per-page-text="Page size:"
-        :pagination.sync="pagination_sync"
+        :pagination.sync="pagination"
+        :rows-per-page-items="pagination.rowsPerPageItems"
         :search="search"
         class="documents-table"
       >

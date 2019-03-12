@@ -117,13 +117,26 @@ export default {
     auth().signOut();
   },
 
-  listFiles(limit) {
+  listFiles(orderBy = 'lastViewed', descending = true, limit = 1000) {
+
+    // adjust order by to cannonical names
+    if (orderBy === 'lastViewed')
+      orderBy = 'viewedByMeTime';
+    else if (orderBy === 'size')
+      orderBy = 'quotaBytesUsed';
+
+    // perform query
     return gapi.client.drive.files.list({
       q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
-      pageSize: limit || 1000,
+      pageSize: limit,
       fields: kFileListFields,
-      orderBy: 'recency desc'
-    }).then(fileListResponse);  
+      orderBy: orderBy + (descending ? ' desc' : '')
+    })
+    .then(fileListResponse)
+    .catch(response => {
+      let err = response.result.error.errors[0];
+      return Promise.reject(new GAPIError(err));
+     }); 
   },
 
   newFile(title) {
@@ -131,7 +144,7 @@ export default {
       'name': title,
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
-    let fileContent = 'more sample text'; 
+    let fileContent = 'more sample text part 2 of 2'; 
     return uploadFile(metadata, fileContent);
   },
   
@@ -285,9 +298,11 @@ export default {
 
 
   updateRecentDocs() {
-    return this.listFiles(store.getters.settings.recent_documents).then(files => {
-      store.commit(SET_RECENT_DOCS, files);
-    });
+    return this
+      .listFiles('recency', true, store.getters.settings.recent_documents)
+      .then(files => {
+        store.commit(SET_RECENT_DOCS, files);
+      });
   },
 
   _clearRecentDocs() {
