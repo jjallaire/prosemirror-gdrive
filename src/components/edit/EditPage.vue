@@ -44,31 +44,22 @@ export default {
       this.error = null;
 
       if (this.doc_id === null) {
-        this.$dialog.prompt({
-          text: 'Title',
-          title: 'New Document'
-        })
-        .then(title => {
-          if (title) {
-            this.title = title;
-            return drive.newFile(title);
-          } else {
-            return Promise.resolve();
-          }
-        })
-        .then(id => {
-          if (id)
-            this.$router.push({ path: "/edit/" + id });
-          else
-            this.$router.push({ path: "/"} );
-        })
-        .catch(error => {
-          this.error = error;
-        });
-
-        // auto-focus title
-        utils.focusDialogTitle();
-
+        
+        if (this.$route.query.newDoc) {
+          this.createNewDoc(this.$route.query.newDoc);
+        } else {
+          this.$dialog.prompt({
+            text: 'Title',
+            title: 'New Document'
+          })
+          .then(title => {
+            if (title)
+              this.createNewDoc(title);
+            else
+              this.$router.push({ path: "/" });
+          });
+          utils.focusDialogTitle();
+        }
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
@@ -83,6 +74,18 @@ export default {
             this.error = error;
           });
       }
+    },
+
+    createNewDoc(title) {
+      this.title = title;
+      drive
+        .newFile(title)
+        .then(id => {
+          this.$router.push({ path: "/edit/" + id });
+        })
+        .catch(error => {
+          this.error = error;
+        });
     },
 
     onShareClicked() {

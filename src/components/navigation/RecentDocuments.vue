@@ -47,7 +47,17 @@ export default {
   
   methods: {
     onNewDocument() {
-      this.$router.push({ path: "/edit/" });
+      this.$dialog.prompt({
+        text: 'Title',
+        title: 'New Document'
+      })
+      .then(title => {
+        if (title)
+          this.$router.push({ path: "/edit/" , query: { newDoc: title } });
+      });
+
+      // auto-focus title
+      utils.focusDialogTitle();
     },
 
     onOpenDocument() {
