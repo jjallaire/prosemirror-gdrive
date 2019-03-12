@@ -1,6 +1,8 @@
 
 <script>
 
+import _debounce from 'lodash/debounce'
+
 import { VDataTable } from 'vuetify/lib'
 import MenuTile from '../core/MenuTile'
 
@@ -50,11 +52,12 @@ export default {
   
   methods: {
 
-    updateItems() {
-      this.items = [];
+    updateItems(clear = true) {
+      if (clear)
+        this.items = [];
       this.loading = true;
       drive
-        .listFiles(this.pagination.sortBy, this.pagination.descending)
+        .listFiles(this.pagination.sortBy, this.pagination.descending, this.search)
         .then(files => {
           this.items = files;
           this.loading = false;
@@ -81,6 +84,8 @@ export default {
       // auto-focus title
       utils.focusDialogTitle();
     },
+
+    onSearchChanged: _debounce(function() { this.updateItems(false) }, 500),
 
     onOpenDocument() {
       drive.selectFile()
@@ -168,6 +173,8 @@ export default {
           label="Search"
           single-line
           hide-details
+          clearable
+          @input="onSearchChanged"
         />
       </v-card-title>
 
@@ -179,7 +186,7 @@ export default {
         item-key="id"
         :pagination.sync="pagination"
         :rows-per-page-items="pagination.rowsPerPageItems"
-        :search="search"
+        no-data-text="(No documents found)"
         class="documents-table"
       >
 

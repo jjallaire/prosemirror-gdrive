@@ -20,6 +20,8 @@ const kFileListFields = 'nextPageToken, files(id, name, iconLink, viewedByMe, vi
 
 const gapi = window.gapi;
 
+import _orderBy from 'lodash/orderBy'
+
 import MultipartBuilder from './multipart'
 import { initSettings } from './settings'
 import changemonitor from './changemonitor'
@@ -117,26 +119,46 @@ export default {
     auth().signOut();
   },
 
-  listFiles(orderBy = 'lastViewed', descending = true, limit = 1000) {
+  listFiles(orderBy = 'lastViewed', descending = true, search = null, limit = 1000) {
 
     // adjust order by to cannonical names
-    if (orderBy === 'lastViewed')
-      orderBy = 'viewedByMeTime';
-    else if (orderBy === 'size')
-      orderBy = 'quotaBytesUsed';
+    let orderByQuery = orderBy;
+    if (orderByQuery === 'lastViewed')
+      orderByQuery = 'viewedByMeTime';
+    else if (orderByQuery === 'size')
+      orderByQuery = 'quotaBytesUsed';
+
+    // build query
+    let query = 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false';
+    if (search) {
+      query = query + " and fullText contains '" + search.replace("'", "\\'") + "'";  
+    }
+
+    // build params
+    let params = {
+      q: query,
+      pageSize: limit,
+      fields: kFileListFields
+    };
+
+    // add orderBy if this isn't a search
+    if (!search)
+      params.orderBy = orderByQuery + (descending ? ' desc' : '');
 
     // perform query
-    return gapi.client.drive.files.list({
-      q: 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false',
-      pageSize: limit,
-      fields: kFileListFields,
-      orderBy: orderBy + (descending ? ' desc' : '')
-    })
-    .then(fileListResponse)
-    .catch(response => {
-      let err = response.result.error.errors[0];
-      return Promise.reject(new GAPIError(err));
-     }); 
+    return gapi.client.drive.files.list(params)
+      .then(fileListResponse)
+      .then(files => {
+        // do client side sorting if this was a search
+        if (search) 
+          return _orderBy(files, [orderBy], [descending ? 'desc' : 'asc']);
+        else
+          return files;
+      })
+      .catch(response => {
+        let err = response.result.error.errors[0];
+        return Promise.reject(new GAPIError(err));
+      }); 
   },
 
   newFile(title) {
@@ -299,7 +321,7 @@ export default {
 
   updateRecentDocs() {
     return this
-      .listFiles('recency', true, store.getters.settings.recent_documents)
+      .listFiles('recency', true, null, store.getters.settings.recent_documents)
       .then(files => {
         store.commit(SET_RECENT_DOCS, files);
       });
