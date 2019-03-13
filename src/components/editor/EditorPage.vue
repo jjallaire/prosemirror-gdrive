@@ -1,16 +1,19 @@
 <script>
 
+import { Editor, EditorContent } from 'tiptap'
+
 import * as utils from '../core/utils'
 import drive from '../../drive'
 
 import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
+import { mcall } from 'q';
 
 export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay
+    ProgressSpinner, ErrorDisplay, EditorContent
   },
 
   props: {
@@ -24,6 +27,7 @@ export default {
     return {
       title: null,
       doc: null,
+      editor: null,
       error: null
     }
   },
@@ -32,8 +36,12 @@ export default {
     '$route': 'initDoc'
   },
 
-  created() {
+  mounted() {
     this.initDoc();
+  },
+
+  beforeDestroy() {
+    this.destroyEditor();
   },
 
   methods: {
@@ -42,6 +50,7 @@ export default {
 
       this.doc = null;
       this.error = null;
+      this.destroyEditor();
 
       if (this.doc_id === null) {
         
@@ -63,8 +72,17 @@ export default {
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
+            // set title and doc
             this.title = file.metadata.name;
             this.doc = file;
+
+            // initialize editor
+            this.editor = new Editor({
+              content: this.doc.content,
+              autoFocus: true
+            });
+
+            // mark file viewed
             return drive.setFileViewed(this.doc_id);
           })
           .then(() => {
@@ -90,6 +108,13 @@ export default {
 
     onShareClicked() {
       drive.shareFile(this.doc_id);
+    },
+
+    destroyEditor() {
+      if (this.editor) {
+        this.editor.destroy();
+        this.editor = null;
+      }
     }
   }
 }
@@ -137,7 +162,9 @@ export default {
         </v-toolbar>
 
         <v-divider />
-        <v-card-text> {{ doc.content }}</v-card-text>
+        <v-card-text>
+          <editor-content :editor="editor" />
+        </v-card-text>
       </v-card>
     </div>
     <div v-else>
@@ -160,6 +187,7 @@ export default {
 
 .edit-container .edit-card {
   height: 100%;
+  position: relative;
 }
 
 .edit-container .edit-card .v-toolbar__content,
@@ -171,4 +199,17 @@ export default {
   margin: 6px 0;
 }
 
+.edit-container .v-card__text {
+  padding: 8px;
+  position: absolute;
+  top: 57px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+}
+
+.edit-container .ProseMirror {
+  outline: none;
+}
 </style>
