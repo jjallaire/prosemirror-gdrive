@@ -11,12 +11,14 @@ import drive from '../../drive'
 
 import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
+import PopupMenu from '../core/PopupMenu'
+import MenuTile from '../core/MenuTile'
 
 export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar
+    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, PopupMenu, MenuTile
   },
 
   props: {
@@ -146,9 +148,10 @@ export default {
 
           <v-spacer />
 
-          <v-btn icon>
-            <v-icon>more_vert</v-icon>
-          </v-btn>
+          <PopupMenu>
+            <MenuTile icon="text_fields" text="Rename..." />
+          </PopupMenu>
+          
         </v-toolbar>
 
         <v-divider />

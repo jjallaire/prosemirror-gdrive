@@ -4,6 +4,7 @@
 import _debounce from 'lodash/debounce'
 
 import { VDataTable } from 'vuetify/lib'
+import PopupMenu from '../core/PopupMenu'
 import MenuTile from '../core/MenuTile'
 
 import drive from '../../drive'
@@ -13,7 +14,7 @@ export default {
   name: 'DocumentListing',
 
   components: {
-    VDataTable, MenuTile
+    VDataTable, PopupMenu, MenuTile
   },
 
   data: function() {
@@ -220,22 +221,12 @@ export default {
             <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
             <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
             <td align="center">
-              <v-menu bottom left nudge-left>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    v-on="on"
-                  >
-                    <v-icon>more_vert</v-icon>
-                  </v-btn>
-                </template>
-                <v-list dense>
-                  <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
-                  <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
-                  <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
-                  <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
-                </v-list>
-              </v-menu>
+              <PopupMenu>
+                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
+                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
+                <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
+                <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
+              </PopupMenu>
             </td>
           </tr>
         </template>
