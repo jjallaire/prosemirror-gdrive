@@ -210,7 +210,7 @@ export default {
 
 .edit-container .edit-card .v-toolbar__content,
 .edit-container .edit-card .v-toolbar__extension {
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .edit-container .edit-card .v-btn--icon {
