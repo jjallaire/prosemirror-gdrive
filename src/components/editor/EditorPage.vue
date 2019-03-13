@@ -1,6 +1,10 @@
 <script>
 
-import { Editor, EditorContent } from 'tiptap'
+import { EditorContent } from 'tiptap'
+
+import editor from './editor'
+
+import EditorToolbar from './EditorToolbar.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
@@ -12,7 +16,7 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent
+    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar
   },
 
   props: {
@@ -74,10 +78,7 @@ export default {
             this.doc = file;
 
             // initialize editor
-            this.editor = new Editor({
-              content: this.doc.content,
-              autoFocus: true
-            });
+            this.editor = editor.create(this.doc.content);
 
             // mark file viewed
             return drive.setFileViewed(this.doc_id);
@@ -137,20 +138,12 @@ export default {
           :height="28"
         >
           <template v-slot:extension>
-            &nbsp;
+            <EditorToolbar :editor="editor" />
           </template>
 
           <v-toolbar-title class="body-2">{{ doc.metadata.name }}</v-toolbar-title>
 
           <v-spacer />
-
-          <v-btn icon>
-            <v-icon>search</v-icon>
-          </v-btn>
-
-          <v-btn icon>
-            <v-icon>apps</v-icon>
-          </v-btn>
 
           <v-btn icon>
             <v-icon>more_vert</v-icon>
