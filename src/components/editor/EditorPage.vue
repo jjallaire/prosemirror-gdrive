@@ -148,6 +148,12 @@ export default {
 
           <v-spacer />
 
+          <v-btn depressed small color="info" @click="onShareClicked">
+            <v-icon small light>people</v-icon>
+            &nbsp;
+            Share
+          </v-btn>
+
           <PopupMenu>
             <MenuTile icon="text_fields" text="Rename..." />
           </PopupMenu>
@@ -190,6 +196,15 @@ export default {
 
 .edit-container .edit-card .v-btn--icon {
   margin: 6px 0;
+}
+
+.edit-container .v-toolbar__content  .v-btn--small {
+  padding: 0 10px;
+  min-width: inherit;
+}
+
+.edit-container .v-toolbar__content .v-btn__content {
+  text-transform: none;
 }
 
 .edit-container .v-card__text {
