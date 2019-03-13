@@ -248,7 +248,7 @@ export default {
 }
 
 .v-text-field > .v-input__control:hover > .v-input__slot:before {
-  border-width: thin;
+  border-width: 0;
 }
 
 .edit-container .ProseMirror {
