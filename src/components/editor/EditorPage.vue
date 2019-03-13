@@ -247,6 +247,21 @@ export default {
   border-width: 0;
 }
 
+.v-text-field input {
+  margin-top: 5px;
+  padding-left: 3px;
+  margin-left: -3px;
+}
+
+.v-text-field input:hover {
+  outline: 1px solid;
+  outline-color: rgba(0,0,0,0.1);
+}
+
+.v-text-field input:focus {
+  outline: none;
+}
+
 .v-text-field > .v-input__control:hover > .v-input__slot:before {
   border-width: 0;
 }
