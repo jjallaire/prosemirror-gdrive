@@ -135,13 +135,14 @@ export default {
           dense
           prominent
           extended
-          :height="28"
+          extension-height="28"
+          :height="32"
         >
           <template v-slot:extension>
             <EditorToolbar :editor="editor" />
           </template>
 
-          <v-toolbar-title class="body-2">{{ doc.metadata.name }}</v-toolbar-title>
+          <v-toolbar-title class="document-title">{{ doc.metadata.name }}</v-toolbar-title>
 
           <v-spacer />
 
@@ -196,6 +197,10 @@ export default {
   bottom: 0;
   right: 0;
   overflow-y: scroll;
+}
+
+.edit-container .document-title {
+  font-size: 1.2em;
 }
 
 .edit-container .ProseMirror {
