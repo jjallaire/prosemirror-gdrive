@@ -63,7 +63,7 @@ export default {
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
-            this.title = file.name;
+            this.title = file.metadata.name;
             this.doc = file;
             return drive.setFileViewed(this.doc_id);
           })
@@ -107,15 +107,38 @@ export default {
       <!-- show title dialog -->
     </div>
     <div v-else-if="doc">
-      <strong>
-        {{ doc_id }}
-      </strong>
-      <p>
-        {{ doc.content }}
-      </p>
-      <p>
-        <button @click="onShareClicked">Share</button>
-      </p>
+      <v-card class="edit-card card--flex-toolbar">
+        <v-toolbar
+          card
+          dense
+          prominent
+          extended
+          :height="28"
+        >
+          <template v-slot:extension>
+            &nbsp;
+          </template>
+
+          <v-toolbar-title class="body-2">{{ title }}</v-toolbar-title>
+
+          <v-spacer />
+
+          <v-btn icon>
+            <v-icon>search</v-icon>
+          </v-btn>
+
+          <v-btn icon>
+            <v-icon>apps</v-icon>
+          </v-btn>
+
+          <v-btn icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-divider />
+        <v-card-text> {{ doc.content }}</v-card-text>
+      </v-card>
     </div>
     <div v-else>
       <ProgressSpinner />
@@ -129,8 +152,23 @@ export default {
 .edit-container { 
   width: 100%;
   height: 100%;
-  border: 1px solid black;
 }
 
+.edit-container > div {
+  height: 100%;
+}
+
+.edit-container .edit-card {
+  height: 100%;
+}
+
+.edit-container .edit-card .v-toolbar__content,
+.edit-container .edit-card .v-toolbar__extension {
+  padding: 0 16px;
+}
+
+.edit-container .edit-card .v-btn--icon {
+  margin: 6px 0;
+}
 
 </style>

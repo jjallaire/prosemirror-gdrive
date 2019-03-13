@@ -61,7 +61,7 @@ export default {
       <NavigationList />
     </v-navigation-drawer>
     
-    <v-toolbar color="orange" dark fixed app dense :clipped-left="true">
+    <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
         <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
