@@ -2,6 +2,8 @@
 
 import { EditorContent } from 'tiptap'
 
+import _debounce from 'lodash/debounce'
+
 import editor from './editor'
 
 import EditorToolbar from './EditorToolbar.vue'
@@ -109,11 +111,28 @@ export default {
       drive.shareFile(this.doc_id);
     },
 
+    onNameChanged: _debounce(function(value) {
+      this.handleDriveRequest(drive.renameFile(this.doc_id, value))
+    }, 1000),
+
     destroyEditor() {
       if (this.editor) {
         this.editor.destroy();
         this.editor = null;
       }
+    },
+
+    handleDriveRequest(request) {
+      request
+        .then(() => {
+          drive.updateRecentDocs();
+        })
+        .catch(error => {
+          this.$dialog.error({
+            text: error.message,
+            title: "Drive Error"
+          })
+        });
     }
   }
 }
@@ -135,7 +154,7 @@ export default {
         <v-toolbar
           card
           dense
-          :height="32"
+          :height="34"
           prominent
           extended
           :extension-height="32"
@@ -144,8 +163,8 @@ export default {
             <EditorToolbar :editor="editor" />
           </template>
 
-          <v-toolbar-title class="document-title">{{ doc.metadata.name }}</v-toolbar-title>
-
+          <v-text-field :value="doc.metadata.name" class="document-title" @input="onNameChanged" />
+                   
           <v-spacer />
 
           <v-btn depressed small color="info" @click="onShareClicked">
@@ -218,7 +237,18 @@ export default {
 }
 
 .edit-container .document-title {
+  margin-top: 20px;
   font-size: 1.2em;
+  color: rgba(100,100,100,1);
+  padding: 5px;
+}
+
+.v-text-field > .v-input__control > .v-input__slot:before {
+  border-width: 0;
+}
+
+.v-text-field > .v-input__control:hover > .v-input__slot:before {
+  border-width: thin;
 }
 
 .edit-container .ProseMirror {
