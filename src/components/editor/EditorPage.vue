@@ -7,7 +7,7 @@ import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 
 export default {
-  name: 'EditPage',
+  name: 'EditorPage',
 
   components: {
     ProgressSpinner, ErrorDisplay
