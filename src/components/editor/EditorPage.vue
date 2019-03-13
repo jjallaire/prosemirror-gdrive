@@ -82,7 +82,7 @@ export default {
             this.doc = file;
 
             // initialize editor
-            this.editor = editor.create(this.doc.content);
+            this.editor = editor.create(this.doc);
 
             // mark file viewed
             return drive.setFileViewed(this.doc_id);

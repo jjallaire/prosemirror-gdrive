@@ -89,7 +89,7 @@ export default {
         'name': title,
         'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
       },
-      content: 'more sample text'
+      content: ''
     };
    
     return docStore.setItem(id, file)

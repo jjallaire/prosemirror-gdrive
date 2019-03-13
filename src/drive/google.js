@@ -166,10 +166,17 @@ export default {
       'name': title,
       'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
     };
-    let fileContent = 'more sample text part 2 of 2'; 
+    let fileContent = ''; 
     return uploadFile(metadata, fileContent);
   },
   
+  saveFile(fileId, content, indexableText) {
+    let metadata = {
+      id: fileId,
+      viewedByMeTime: new Date().toISOString()
+    }
+    return uploadFile(metadata, content, indexableText);
+  },
 
   loadFile(fileId) {
     let metadataRequest = gapi.client.drive.files.get({
@@ -385,7 +392,7 @@ function fileListResponse(response) {
   });  
 }
 
-function uploadFile(metadata, content) {
+function uploadFile(metadata, content, indexableText) {
   let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
   let method = metadata.id ? 'PATCH' : 'POST';
   let uploadMetadata = metadata.id ? 
@@ -393,7 +400,7 @@ function uploadFile(metadata, content) {
     metadata;
   uploadMetadata = { ...uploadMetadata,
     contentHints: {
-      indexableText: content
+      indexableText: indexableText || content
     }
   };
   let multipart = new MultipartBuilder()
