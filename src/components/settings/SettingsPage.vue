@@ -98,9 +98,10 @@ export default {
 <style>
 .settings-container {
   width: 100%;
+  height: 100%;
 }
 
 .settings-card {
-  min-height: 80vh;
+  height: calc(100vh - 65px);
 }
 </style>
