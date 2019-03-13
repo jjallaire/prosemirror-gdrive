@@ -76,15 +76,6 @@ export default {
         <v-icon>format_quote</v-icon>
       </v-btn>
       
-      <v-divider inset vertical />
-
-      <v-btn flat title="Horizontal rule" @click="commands.horizontal_rule">
-        <v-icon>vertical_align_center</v-icon>
-      </v-btn>
-      
-
-
-
     </span>
 
   </editor-menu-bar>
