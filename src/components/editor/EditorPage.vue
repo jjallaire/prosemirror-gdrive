@@ -7,7 +7,6 @@ import drive from '../../drive'
 
 import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
-import { mcall } from 'q';
 
 export default {
   name: 'EditorPage',
@@ -25,7 +24,6 @@ export default {
 
   data: function() {
     return {
-      title: null,
       doc: null,
       editor: null,
       error: null
@@ -72,8 +70,7 @@ export default {
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
-            // set title and doc
-            this.title = file.metadata.name;
+            // set doc
             this.doc = file;
 
             // initialize editor
@@ -95,7 +92,6 @@ export default {
     },
 
     createNewDoc(title) {
-      this.title = title;
       drive
         .newFile(title)
         .then(id => {
@@ -128,7 +124,7 @@ export default {
     <div v-if="error">
       <ErrorDisplay :error="error" />
     </div>
-    <div v-else-if="!doc_id && !title">
+    <div v-else-if="!doc_id">
       <!-- show title dialog -->
     </div>
     <div v-else-if="doc">
@@ -144,7 +140,7 @@ export default {
             &nbsp;
           </template>
 
-          <v-toolbar-title class="body-2">{{ title }}</v-toolbar-title>
+          <v-toolbar-title class="body-2">{{ doc.metadata.name }}</v-toolbar-title>
 
           <v-spacer />
 
