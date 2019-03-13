@@ -133,10 +133,10 @@ export default {
         <v-toolbar
           card
           dense
+          :height="32"
           prominent
           extended
-          extension-height="28"
-          :height="32"
+          :extension-height="32"
         >
           <template v-slot:extension>
             <EditorToolbar :editor="editor" />
@@ -192,7 +192,7 @@ export default {
 .edit-container .v-card__text {
   padding: 8px;
   position: absolute;
-  top: 57px;
+  top: 65px;
   left: 0;
   bottom: 0;
   right: 0;
