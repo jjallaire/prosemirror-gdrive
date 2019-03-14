@@ -1,8 +1,11 @@
 <script>
 
 import { EditorContent } from 'tiptap'
+ 
+import { VSnackbar } from 'vuetify/lib'
 
 import _debounce from 'lodash/debounce'
+import _throttle from 'lodash/throttle'
 
 import editor from './editor'
 
@@ -20,7 +23,8 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, PopupMenu, MenuTile
+    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, PopupMenu, MenuTile,
+    VSnackbar
   },
 
   props: {
@@ -34,7 +38,26 @@ export default {
     return {
       doc: null,
       editor: null,
-      error: null
+      error: null,
+      snackbar: null,
+      editor_update: {
+        last: new Date().getTime(),
+        last_saved: new Date().getTime()
+      },
+      saveToDriveThrottled: _throttle(
+        this.saveToDrive,
+        5000, 
+        { leading: false, trailing: true }
+      ),
+    }
+  },
+
+  computed: {
+    dirty: function() {
+      return this.editor_update.last > this.editor_update.last_saved;
+    },
+    saved: function() {
+      return this.editor_update.last === this.editor_update.last_saved;
     }
   },
 
@@ -78,15 +101,12 @@ export default {
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
-            
+
             // set doc
             this.doc = file;
 
             // initialize editor
-            this.editor = editor.create(
-              this.editorContent(),
-              this.saveToDrive
-            );
+            this.editor = this.createEditor();
 
             // mark file viewed
             return drive.setFileViewed(this.doc_id);
@@ -98,6 +118,36 @@ export default {
             this.error = error;
           });
       }
+    },
+
+    createEditor() {
+
+      // determine initial editor content (either an empty string for a
+      // new document or json for an existing document)
+      let content = this.doc.content;
+      if (content.length > 0)
+        content = JSON.parse(content);
+    
+      // create a throttled version of saveToDrive
+      let saveToDriveThrottled = _throttle(
+        this.saveToDrive,
+        5000, 
+        { leading: false, trailing: true }
+      );
+
+      // create and return the editor
+      return editor.create(
+
+        // initial content
+        content,
+
+        // on update
+        update => {
+          this.editor_update.last = update.transaction.time;
+          saveToDriveThrottled(update);
+        }
+      );
+
     },
 
     createNewDoc(title) {
@@ -126,13 +176,6 @@ export default {
       }
     },
 
-    editorContent() {
-      let content = this.doc.content;
-      if (content.length > 0)
-        content = JSON.parse(content);
-      return content;
-    },
-
     saveToDrive(update) {
       drive
         .saveFile(
@@ -141,9 +184,10 @@ export default {
           update.getHTML()
         )
         .then(() => {
-
+          this.editor_update.last_saved = update.transaction.time;
         })
         .catch(error => {
+          // TODO: actually handle errors w/ snackbar and retry
           console.log(error);
         });
     },
@@ -193,6 +237,13 @@ export default {
                    
           <v-spacer />
 
+          <span v-if="saved">
+            Saved
+          </span>
+          <span v-if="dirty">
+            Dirty
+          </span>
+
           <v-btn depressed small color="info" @click="onShareClicked">
             <v-icon small light>people</v-icon>
             &nbsp;
@@ -214,6 +265,12 @@ export default {
     <div v-else>
       <ProgressSpinner />
     </div>
+
+    <v-snackbar
+      v-model="snackbar"
+    >
+      Snackbar
+    </v-snackbar>
   </div>
   
 </template>

@@ -2,8 +2,6 @@
 
 import { Editor } from 'tiptap'
 
-import _throttle from 'lodash/throttle'
-
 import {
   Blockquote,
   HardBreak,
@@ -44,7 +42,7 @@ export default {
         new Underline(),
         new History(),
       ],
-      onUpdate: _throttle(onUpdate, 5000, { leading: false, trailing: true })
+      onUpdate: onUpdate
     });
   }
 }
