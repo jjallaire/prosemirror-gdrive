@@ -6,18 +6,24 @@ import { VBtn, VIcon, VDivider } from 'vuetify/lib'
 
 import { EditorMenuBar } from 'tiptap'
 
+import EditorSaveStatus from './EditorSaveStatus.vue'
+
 export default {
 
   name: 'EditorToolbar',
 
   components: {
-    VBtn, VIcon, VDivider, EditorMenuBar
+    VBtn, VIcon, VDivider, EditorMenuBar, EditorSaveStatus
   },
 
   props: {
     editor: {
       type: Object,
       default: null
+    },
+    editor_updates: {
+      type: Object,
+      required: true
     }
   },
 
@@ -75,6 +81,10 @@ export default {
       <v-btn flat title="Blockquote" :class="{ 'v-btn--active': isActive.blockquote() }" @click="commands.blockquote">
         <v-icon>format_quote</v-icon>
       </v-btn>
+
+      <v-divider inset vertical />
+
+      <EditorSaveStatus :editor_updates="editor_updates" />
       
     </span>
 
@@ -102,6 +112,11 @@ export default {
   height: 15px;
   margin: 0 5px;
 }
+
+.editor-toolbar-buttons .editor-save-status {
+  margin-left: 5px;
+}
+
 
 </style>
 

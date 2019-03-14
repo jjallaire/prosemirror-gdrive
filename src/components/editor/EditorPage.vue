@@ -40,24 +40,10 @@ export default {
       editor: null,
       error: null,
       snackbar: null,
-      editor_update: {
-        last: new Date().getTime(),
-        last_saved: new Date().getTime()
-      },
-      saveToDriveThrottled: _throttle(
-        this.saveToDrive,
-        5000, 
-        { leading: false, trailing: true }
-      ),
-    }
-  },
-
-  computed: {
-    dirty: function() {
-      return this.editor_update.last > this.editor_update.last_saved;
-    },
-    saved: function() {
-      return this.editor_update.last === this.editor_update.last_saved;
+      editor_updates: {
+        last: null,
+        last_saved: null
+      }
     }
   },
 
@@ -131,7 +117,7 @@ export default {
       // create a throttled version of saveToDrive
       let saveToDriveThrottled = _throttle(
         this.saveToDrive,
-        5000, 
+        3000, 
         { leading: false, trailing: true }
       );
 
@@ -143,7 +129,7 @@ export default {
 
         // on update
         update => {
-          this.editor_update.last = update.transaction.time;
+          this.editor_updates.last = update.transaction.time;
           saveToDriveThrottled(update);
         }
       );
@@ -184,7 +170,7 @@ export default {
           update.getHTML()
         )
         .then(() => {
-          this.editor_update.last_saved = update.transaction.time;
+          this.editor_updates.last_saved = update.transaction.time;
         })
         .catch(error => {
           // TODO: actually handle errors w/ snackbar and retry
@@ -230,20 +216,13 @@ export default {
           :extension-height="32"
         >
           <template v-slot:extension>
-            <EditorToolbar :editor="editor" />
+            <EditorToolbar :editor="editor" :editor_updates="editor_updates" />
           </template>
 
           <v-text-field :value="doc.metadata.name" class="document-title" @input="onNameChanged" />
                    
           <v-spacer />
-
-          <span v-if="saved">
-            Saved
-          </span>
-          <span v-if="dirty">
-            Dirty
-          </span>
-
+  
           <v-btn depressed small color="info" @click="onShareClicked">
             <v-icon small light>people</v-icon>
             &nbsp;
