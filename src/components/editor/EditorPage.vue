@@ -1,8 +1,6 @@
 <script>
 
 import { EditorContent } from 'tiptap'
- 
-import { VSnackbar } from 'vuetify/lib'
 
 import _throttle from 'lodash/throttle'
 
@@ -11,6 +9,7 @@ import editor from './editor'
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
+import EditorSaveError from './EditorSaveError.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
@@ -25,8 +24,8 @@ export default {
 
   components: {
     ProgressSpinner, ErrorDisplay, EditorContent, 
-    EditorToolbar, EditorShareButton, EditorDocTitle,
-    PopupMenu, MenuTile, VSnackbar
+    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError,
+    PopupMenu, MenuTile
   },
 
   props: {
@@ -38,14 +37,20 @@ export default {
 
   data: function() {
     return {
+
+      // document (or document load error)
       doc: null,
       error: null,
-      snackbar: null,
+      
+      // editor
       editor: null,
       editor_updates: {
         last: null,
         last_saved: null
-      }
+      },
+
+      // save errors
+      save_error: null,
     }
   },
 
@@ -68,6 +73,7 @@ export default {
       this.doc = null;
       this.error = null;
       this.snackbar = null;
+      this.snackbar_error = null;
       this.destroyEditor();
 
       if (this.doc_id === null) {
@@ -161,6 +167,7 @@ export default {
     },
 
     saveToDrive(update) {
+      this.save_error = null;
       drive
         .saveFile(
           this.doc.metadata.id, 
@@ -171,8 +178,9 @@ export default {
           this.editor_updates.last_saved = update.transaction.time;
         })
         .catch(error => {
-          // TODO: actually handle errors w/ snackbar and retry
-          console.log(error);
+          this.save_error = 
+            "Unable to save changes (" + error.message + "). " +
+            "Please ensure you are online so that you don't lose work.";
         });
     },
   }
@@ -226,11 +234,7 @@ export default {
       <ProgressSpinner />
     </div>
 
-    <v-snackbar
-      v-model="snackbar"
-    >
-      Snackbar
-    </v-snackbar>
+    <EditorSaveError :error="save_error" @closed="save_error = null" />
   </div>
   
 </template>
