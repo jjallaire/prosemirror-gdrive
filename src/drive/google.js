@@ -433,6 +433,12 @@ function handleIdResponse(response) {
 function catchHttpRequest(response) {
   if (response.result === false)
     return Promise.reject(new Error("Error " + response.status + ": " + response.body));
-  else
+  else if (response.result && response.result.error) {
+    if (response.result.error.errors)
+      return Promise.reject(new GAPIError(response.result.error.errors[0]));
+     else
+      return Promise.reject(new Error(response.result.error.message));
+  } else {
     return Promise.reject(new Error("Error making HTTP request to Google Drive"));
+  }
 }
