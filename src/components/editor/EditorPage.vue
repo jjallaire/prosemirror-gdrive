@@ -179,8 +179,28 @@ export default {
           this.editor_updates.last_save_time = update.transaction.time;
         })
         .catch(error => {
+
+          // default error code and message
+          let code = null;
+          let message = error.message;
+
+          // handle GAPIError
+          if (error.name === "GAPIError") {
+
+            // record code
+            code = error.code;
+
+            // add code to message if we have one
+            if (code > 0)
+              message = error.code + " - " + message;
+
+            // TODO: exponential retry
+            console.log("Error code: " + error.code);
+          }
+
+          // set error status 
           this.save_error = 
-            "Unable to save changes (" + error.message + "). " +
+            "Unable to save changes (" + message + "). " +
             "Please ensure you are online so that you don't lose work.";
         });
     },

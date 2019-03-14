@@ -34,10 +34,14 @@ class GAPIError extends Error {
   constructor(error) {
     super(error.message); 
     this.name = "GAPIError";
-    this.domain = error.domain;
-    this.reason = error.reason;
-    this.location =  error.location;
-    this.locationType = error.locationType;
+    this.code = error.code;
+    if (error.errors) {
+      let cause = error.errors[0];
+      this.domain = cause.domain;
+      this.reason = cause.reason;
+      this.location =  cause.location;
+      this.locationType = cause.locationType;
+    }
   }
 }
 
@@ -156,8 +160,7 @@ export default {
           return files;
       })
       .catch(response => {
-        let err = response.result.error.errors[0];
-        return Promise.reject(new GAPIError(err));
+        return Promise.reject(new GAPIError(response.result.error));
       }); 
   },
 
@@ -198,8 +201,7 @@ export default {
         return file; 
       })
       .catch(response => {
-        let err = response.result.error.errors[0];
-        return Promise.reject(new GAPIError(err));
+        return Promise.reject(new GAPIError(response.result.error));
       });
   },
 
@@ -213,7 +215,7 @@ export default {
 
     })
     .catch(response => {
-      return Promise.reject(new GAPIError(response.result.error.errors[0]));
+      return Promise.reject(new GAPIError(response.result.error));
     });
   },
 
@@ -433,12 +435,8 @@ function handleIdResponse(response) {
 function catchHttpRequest(response) {
   if (response.result === false)
     return Promise.reject(new Error("Error " + response.status + ": " + response.body));
-  else if (response.result && response.result.error) {
-    if (response.result.error.errors)
-      return Promise.reject(new GAPIError(response.result.error.errors[0]));
-     else
-      return Promise.reject(new Error(response.result.error.message));
-  } else {
+  else if (response.result && response.result.error)
+    return Promise.reject(new GAPIError(response.result.error));
+  else
     return Promise.reject(new Error("Error making HTTP request to Google Drive"));
-  }
 }
