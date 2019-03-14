@@ -10,6 +10,7 @@ import _throttle from 'lodash/throttle'
 import editor from './editor'
 
 import EditorToolbar from './EditorToolbar.vue'
+import EditorShareButton from './EditorShareButton.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
@@ -23,8 +24,8 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, PopupMenu, MenuTile,
-    VSnackbar
+    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, EditorShareButton,
+    PopupMenu, MenuTile, VSnackbar
   },
 
   props: {
@@ -147,10 +148,6 @@ export default {
         });
     },
 
-    onShareClicked() {
-      drive.shareFile(this.doc_id);
-    },
-
     onNameChanged: _debounce(function(value) {
       this.handleDriveRequest(drive.renameFile(this.doc_id, value))
     }, 1000),
@@ -223,12 +220,8 @@ export default {
                    
           <v-spacer />
   
-          <v-btn depressed small color="info" @click="onShareClicked">
-            <v-icon small light>people</v-icon>
-            &nbsp;
-            Share
-          </v-btn>
-
+          <EditorShareButton :doc_id="doc_id" />
+          
           <PopupMenu>
             <MenuTile icon="text_fields" text="Rename..." />
           </PopupMenu>
