@@ -173,6 +173,7 @@ export default {
   saveFile(fileId, content, indexableText) {
     let metadata = {
       id: fileId,
+      mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
       viewedByMeTime: new Date().toISOString()
     }
     return uploadFile(metadata, content, indexableText);
