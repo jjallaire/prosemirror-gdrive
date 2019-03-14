@@ -15,8 +15,8 @@ export default {
     save_status: function() {
       if (this.editor_updates.last === null) {
         return "clean";
-      } else if (this.editor_updates.last_saved === null ||
-               this.editor_updates.last > this.editor_updates.last_saved) {
+      } else if (this.editor_updates.last_save_time === null ||
+               this.editor_updates.last.transaction.time > this.editor_updates.last_save_time) {
         return "dirty";      
       } else {
         return "saved";

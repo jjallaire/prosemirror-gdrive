@@ -46,7 +46,7 @@ export default {
       editor: null,
       editor_updates: {
         last: null,
-        last_saved: null
+        last_save_time: null
       },
 
       // save errors
@@ -124,8 +124,8 @@ export default {
         content = JSON.parse(content);
     
       // create a throttled version of saveToDrive
-      let saveToDriveThrottled = _throttle(
-        this.saveToDrive,
+      let saveLastUpdateThrottled = _throttle(
+        this.saveLastUpdate,
         3000, 
         { leading: false, trailing: true }
       );
@@ -138,8 +138,8 @@ export default {
 
         // on update
         update => {
-          this.editor_updates.last = update.transaction.time;
-          saveToDriveThrottled(update);
+          this.editor_updates.last = update;
+          saveLastUpdateThrottled();
         }
       );
     },
@@ -151,7 +151,7 @@ export default {
       }
       this.editor_updates = {
         last: null,
-        last_saved: null
+        last_save_time: null
       }
     },
 
@@ -166,7 +166,8 @@ export default {
         });
     },
 
-    saveToDrive(update) {
+    saveLastUpdate() {
+      let update = this.editor_updates.last;
       this.save_error = null;
       drive
         .saveFile(
@@ -175,7 +176,7 @@ export default {
           update.getHTML()
         )
         .then(() => {
-          this.editor_updates.last_saved = update.transaction.time;
+          this.editor_updates.last_save_time = update.transaction.time;
         })
         .catch(error => {
           this.save_error = 
