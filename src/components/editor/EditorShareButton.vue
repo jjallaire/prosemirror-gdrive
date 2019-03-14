@@ -29,11 +29,11 @@ export default {
 
 <template>
 
-<v-btn depressed small color="info" @click="onShareClicked">
-  <v-icon small light>people</v-icon>
-  &nbsp;
-  Share
-</v-btn>
+  <v-btn depressed small color="info" @click="onShareClicked">
+    <v-icon small light>people</v-icon>
+    &nbsp;
+    Share
+  </v-btn>
 
 </template>
 

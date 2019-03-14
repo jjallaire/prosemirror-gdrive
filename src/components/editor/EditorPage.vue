@@ -4,13 +4,13 @@ import { EditorContent } from 'tiptap'
  
 import { VSnackbar } from 'vuetify/lib'
 
-import _debounce from 'lodash/debounce'
 import _throttle from 'lodash/throttle'
 
 import editor from './editor'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
+import EditorDocTitle from './EditorDocTitle.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
@@ -24,7 +24,8 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent, EditorToolbar, EditorShareButton,
+    ProgressSpinner, ErrorDisplay, EditorContent, 
+    EditorToolbar, EditorShareButton, EditorDocTitle,
     PopupMenu, MenuTile, VSnackbar
   },
 
@@ -38,9 +39,9 @@ export default {
   data: function() {
     return {
       doc: null,
-      editor: null,
       error: null,
       snackbar: null,
+      editor: null,
       editor_updates: {
         last: null,
         last_saved: null
@@ -66,6 +67,7 @@ export default {
 
       this.doc = null;
       this.error = null;
+      this.snackbar = null;
       this.destroyEditor();
 
       if (this.doc_id === null) {
@@ -87,10 +89,10 @@ export default {
         }
       } else {
         drive.loadFile(this.doc_id)
-          .then(file => {
+          .then(doc => {
 
             // set doc
-            this.doc = file;
+            this.doc = doc;
 
             // initialize editor
             this.editor = this.createEditor();
@@ -134,7 +136,17 @@ export default {
           saveToDriveThrottled(update);
         }
       );
+    },
 
+    destroyEditor() {
+      if (this.editor) {
+        this.editor.destroy();
+        this.editor = null;
+      }
+      this.editor_updates = {
+        last: null,
+        last_saved: null
+      }
     },
 
     createNewDoc(title) {
@@ -146,17 +158,6 @@ export default {
         .catch(error => {
           this.error = error;
         });
-    },
-
-    onNameChanged: _debounce(function(value) {
-      this.handleDriveRequest(drive.renameFile(this.doc_id, value))
-    }, 1000),
-
-    destroyEditor() {
-      if (this.editor) {
-        this.editor.destroy();
-        this.editor = null;
-      }
     },
 
     saveToDrive(update) {
@@ -174,19 +175,6 @@ export default {
           console.log(error);
         });
     },
-
-    handleDriveRequest(request) {
-      request
-        .then(() => {
-          drive.updateRecentDocs();
-        })
-        .catch(error => {
-          this.$dialog.error({
-            text: error.message,
-            title: "Drive Error"
-          })
-        });
-    }
   }
 }
 
@@ -216,7 +204,7 @@ export default {
             <EditorToolbar :editor="editor" :editor_updates="editor_updates" />
           </template>
 
-          <v-text-field :value="doc.metadata.name" class="document-title" @input="onNameChanged" />
+          <EditorDocTitle :doc_id="doc_id" :title="doc.metadata.name" />
                    
           <v-spacer />
   
@@ -289,36 +277,6 @@ export default {
   bottom: 0;
   right: 0;
   overflow-y: scroll;
-}
-
-.edit-container .document-title {
-  margin-top: 20px;
-  font-size: 1.2em;
-  color: rgba(100,100,100,1);
-  padding: 5px;
-}
-
-.edit-container .edit-card .v-text-field > .v-input__control > .v-input__slot:before {
-  border-width: 0;
-}
-
-.edit-container .edit-card .v-text-field input {
-  margin-top: 5px;
-  padding-left: 3px;
-  margin-left: -3px;
-}
-
-.edit-container .edit-card .v-text-field input:hover {
-  outline: 1px solid;
-  outline-color: rgba(0,0,0,0.1);
-}
-
-.edit-container .edit-card .v-text-field input:focus {
-  outline: none;
-}
-
-.edit-container .edit-card .v-text-field > .v-input__control:hover > .v-input__slot:before {
-  border-width: 0;
 }
 
 .edit-container .ProseMirror {
