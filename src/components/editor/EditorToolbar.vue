@@ -36,7 +36,7 @@ export default {
 
   <editor-menu-bar :editor="editor">
 
-    <span slot-scope="{ commands, isActive }" class="editor-toolbar-buttons">
+    <span slot-scope="{ commands, isActive }" class="editor-toolbar">
       
       <v-btn flat title="Undo" @click="commands.undo">
         <v-icon>undo</v-icon>
@@ -95,7 +95,7 @@ export default {
 
 <style>
 
-.editor-toolbar-buttons .v-btn {
+.editor-toolbar .v-btn {
   height: 24px;
   padding: 0;
   min-width: inherit;
@@ -104,16 +104,16 @@ export default {
   color: rgba(100,100,100,1);
 }
 
-.editor-toolbar-buttons .v-btn--active {
+.editor-toolbar .v-btn--active {
   background-color :rgba(192,192,192,0.1);
 }
 
-.editor-toolbar-buttons .v-divider--vertical.v-divider--inset {
+.editor-toolbar .v-divider--vertical.v-divider--inset {
   height: 15px;
   margin: 0 5px;
 }
 
-.editor-toolbar-buttons .editor-save-status {
+.editor-toolbar .editor-save-status {
   margin-left: 5px;
 }
 
