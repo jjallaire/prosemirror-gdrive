@@ -78,11 +78,15 @@ export default {
       } else {
         drive.loadFile(this.doc_id)
           .then(file => {
+            
             // set doc
             this.doc = file;
 
             // initialize editor
-            this.editor = editor.create(this.doc);
+            this.editor = editor.create(
+              this.editorContent(),
+              this.saveToDrive
+            );
 
             // mark file viewed
             return drive.setFileViewed(this.doc_id);
@@ -120,6 +124,28 @@ export default {
         this.editor.destroy();
         this.editor = null;
       }
+    },
+
+    editorContent() {
+      let content = this.doc.content;
+      if (content.length > 0)
+        content = JSON.parse(content);
+      return content;
+    },
+
+    saveToDrive(update) {
+      drive
+        .saveFile(
+          this.doc.metadata.id, 
+          JSON.stringify(update.getJSON()), 
+          update.getHTML()
+        )
+        .then(() => {
+
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
 
     handleDriveRequest(request) {

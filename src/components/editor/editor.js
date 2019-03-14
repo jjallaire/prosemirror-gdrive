@@ -4,8 +4,6 @@ import { Editor } from 'tiptap'
 
 import _throttle from 'lodash/throttle'
 
-import drive from '../../drive'
-
 import {
   Blockquote,
   HardBreak,
@@ -25,12 +23,7 @@ import {
 
 export default {
 
-  create(doc) {
-
-    // parse doc if it's not empty
-    let content = doc.content;
-    if (content.length > 0)
-      content = JSON.parse(doc.content);
+  create(content, onUpdate) {
 
     return new Editor({
       content: content,
@@ -51,25 +44,7 @@ export default {
         new Underline(),
         new History(),
       ],
-      onUpdate: _throttle(function(update) {
-        saveToDrive(doc, update);
-      }, 5000, { leading: false, trailing: true })
+      onUpdate: _throttle(onUpdate, 5000, { leading: false, trailing: true })
     });
   }
-
-}
-
-function saveToDrive(doc, update) {
-  drive
-    .saveFile(
-      doc.metadata.id, 
-      JSON.stringify(update.getJSON()), 
-      update.getHTML()
-    )
-    .then(() => {
-
-    })
-    .catch(error => {
-      console.log(error);
-    });
 }
