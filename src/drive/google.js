@@ -15,8 +15,10 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
-const kFileListFields = 'nextPageToken, files(id, name, iconLink, viewedByMe, viewedByMeTime, ' +
-                        'sharedWithMeTime, modifiedTime, shared, sharingUser, size)'
+const kFileFields = 'id, name, iconLink, viewedByMe, viewedByMeTime, ' +
+                    'sharedWithMeTime, modifiedTime, shared, sharingUser, size, appProperties';
+
+const kFileListFields = 'nextPageToken, files(' + kFileFields + ')';
 
 const gapi = window.gapi;
 
@@ -30,7 +32,7 @@ import store from '../store'
 import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
 
 
-class GAPIError extends Error {
+export class GAPIError extends Error {
   constructor(error) {
     super(error.message); 
     this.name = "GAPIError";
@@ -85,10 +87,10 @@ export default {
                 this.updateRecentDocs();
               });
 
-              // listen for changes then update recent files
-              changemonitor.start();
-
-              // update recent docs
+              // listen for changes 
+              return changemonitor.start();
+            })
+            .then(() => {
               return this.updateRecentDocs();
             })
             .then(() => {
@@ -166,11 +168,11 @@ export default {
 
   newFile(title) {
     let metadata = {
-      'name': title,
-      'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
+      name: title,
+      mimeType: 'application/vnd.google.drive.ext-type.pmdoc'
     };
     let fileContent = ''; 
-    return uploadFile(metadata, fileContent);
+    return this._uploadFile(metadata, fileContent);
   },
   
   saveFile(fileId, content, indexableText) {
@@ -179,7 +181,13 @@ export default {
       mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
       viewedByMeTime: new Date().toISOString()
     }
-    return uploadFile(metadata, content, indexableText);
+    return this._uploadFile(metadata, content, indexableText);
+  },
+
+  renameFile(fileId, name) {
+    return this._uploadFileMetadata(fileId, { 
+      name: name
+    });
   },
 
   loadFile(fileId) {
@@ -187,7 +195,7 @@ export default {
       fileId: fileId,
       supportsTeamDrives: true
     });
-    var contentRequest = gapi.client.drive.files.get({
+    let contentRequest = gapi.client.drive.files.get({
       fileId: fileId,
       supportsTeamDrives: true,
       alt: 'media'
@@ -205,6 +213,20 @@ export default {
       });
   },
 
+  loadFileMetadata(fileId) {
+    return gapi.client.drive.files
+      .get({
+        fileId: fileId,
+        supportsTeamDrives: true,
+        fields: kFileFields
+      })
+      .then(response => {
+        return response.result;
+      })
+      .catch(response => {
+        return Promise.reject(new GAPIError(response.result.error));
+      });
+  },
 
   removeFile(fileId) {
     return gapi.client.drive.files.delete({
@@ -219,19 +241,13 @@ export default {
     });
   },
 
-  renameFile(fileId, name) {
-    return this.uploadFileMetadata(fileId, { 
-      name: name 
-    });
-  },
-
   setFileViewed(fileId) {
-    return this.uploadFileMetadata(fileId, { 
+    return this._uploadFileMetadata(fileId, { 
       viewedByMeTime: new Date().toISOString()
     })
   },
 
-  uploadFileMetadata(fileId, metadata) {
+  _uploadFileMetadata(fileId, metadata) {
     let path = '/drive/v3/files/' + fileId;
     let method = 'PATCH'
     return gapi.client.request({
@@ -250,6 +266,36 @@ export default {
     .catch(catchHttpRequest);
   },
 
+  _uploadFile(metadata, content, indexableText) {
+    let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
+    let method = metadata.id ? 'PATCH' : 'POST';
+    let uploadMetadata = metadata.id ? 
+      { name: metadata.name, mimeType: metadata.mimeType } : 
+      metadata;
+    uploadMetadata = { 
+      ...uploadMetadata,
+      contentHints: {
+        indexableText: indexableText || content
+      }
+    };
+    let multipart = new MultipartBuilder()
+      .append('application/json', JSON.stringify(uploadMetadata))
+      .append(metadata.mimeType, content)
+      .finish();
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        uploadType: 'multipart',
+        supportsTeamDrives: true,
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : multipart.type },
+      body: multipart.body
+    })
+    .then(handleIdResponse)
+    .catch(catchHttpRequest);
+  },
   
   readAppData(name, mimeType, defaultContent) {
     return this._appDataFileId(name)
@@ -268,7 +314,7 @@ export default {
   writeAppData(name, mimeType, content) {
     return this._appDataFileId(name)
       .then(fileId => {
-        return uploadFile({
+        return this._uploadFile({
           id: fileId,
           name: name,
           mimeType: mimeType,
@@ -325,6 +371,9 @@ export default {
           return file.id;
         else
           return null;
+      })
+      .catch(response => {
+        return Promise.reject(new GAPIError(response.result.error));
       });
   },
 
@@ -334,7 +383,7 @@ export default {
       .listFiles('recency', true, null, store.getters.settings.recent_documents)
       .then(files => {
         store.commit(SET_RECENT_DOCS, files);
-      });
+      })
   },
 
   _clearRecentDocs() {
@@ -357,10 +406,7 @@ export default {
     } else {
       return null
     }
-  },
-
-  
-
+  },  
 };
 
 
@@ -393,36 +439,6 @@ function fileListResponse(response) {
       size: parseInt(file.size)
     }
   });  
-}
-
-function uploadFile(metadata, content, indexableText) {
-  let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
-  let method = metadata.id ? 'PATCH' : 'POST';
-  let uploadMetadata = metadata.id ? 
-    { name: metadata.name, mimeType: metadata.mimeType } : 
-    metadata;
-  uploadMetadata = { ...uploadMetadata,
-    contentHints: {
-      indexableText: indexableText || content
-    }
-  };
-  let multipart = new MultipartBuilder()
-    .append('application/json', JSON.stringify(uploadMetadata))
-    .append(metadata.mimeType, content)
-    .finish();
-  return gapi.client.request({
-    path: path,
-    method: method,
-    params: {
-      uploadType: 'multipart',
-      supportsTeamDrives: true,
-      fields: 'id'
-    },
-    headers: { 'Content-Type' : multipart.type },
-    body: multipart.body
-  })
-  .then(handleIdResponse)
-  .catch(catchHttpRequest);
 }
 
 function handleIdResponse(response) {

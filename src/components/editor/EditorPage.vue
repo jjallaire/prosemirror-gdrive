@@ -14,6 +14,7 @@ import EditorSaveStatus from './save/EditorSaveStatus.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
+import changemonitor from '../../drive/changemonitor'
 
 import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
@@ -59,17 +60,14 @@ export default {
   },
 
   beforeDestroy() {
-    this.destroyEditor();
+    this.clearDoc();
   },
 
   methods: {
 
     initDoc() {
 
-      this.doc = null;
-      this.error = null;
-      this.destroyEditor();
-      this.resetSaveStatus();
+      this.clearDoc();
 
       // no doc id, create a new doc
       if (this.doc_id === null) {
@@ -109,7 +107,10 @@ export default {
             // initialize editor
             this.editor = editor.create(content, this.onEditorUpdate);
 
-            // mark file viewed
+            // subscribe to file changes
+            return changemonitor.subscribe(this.onDriveChanged);
+          })
+          .then(() => {
             return drive.setFileViewed(this.doc_id);
           })
           .then(() => {
@@ -121,11 +122,15 @@ export default {
       }
     },
 
-    destroyEditor() {
+    clearDoc() {
+      this.doc = null;
+      this.error = null;
       if (this.editor) {
         this.editor.destroy();
         this.editor = null;
+        changemonitor.unsubscribe(this.onDriveChanged);
       }
+      this.resetSaveStatus();
     },
 
     createNewDoc(title) {
@@ -138,6 +143,12 @@ export default {
           this.error = error;
         });
     },
+
+    // eslint-disable-next-line
+    onDriveChanged(changes) {
+      
+    },
+
   }
 }
 
