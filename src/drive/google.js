@@ -222,7 +222,7 @@ export default {
   renameFile(fileId, name) {
     return this.updateFileMetadata(fileId, { 
       name: name 
-  });
+    });
   },
 
   setFileViewed(fileId) {
