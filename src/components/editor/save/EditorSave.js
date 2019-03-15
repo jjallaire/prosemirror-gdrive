@@ -29,17 +29,24 @@ export default {
 
   methods: {
 
+    // called with each and every update to the editor
     onEditorUpdate(update) {
       this.editor_updates.last = update;
       this.saveLastUpdateThrottled();
     },
 
+    // called on a throttled basic (no more than every 3 seconds)
+    // to save the editor contents to drive
     saveLastUpdate() {
-      let update = this.editor_updates.last;
+
+      // reset error status
       this.save_error = null;
+
+      // attempt save to drive
+      let update = this.editor_updates.last;
       drive
         .saveFile(
-          this.doc.metadata.id, 
+          this.doc_id, 
           JSON.stringify(update.getJSON()), 
           update.getHTML()
         )
