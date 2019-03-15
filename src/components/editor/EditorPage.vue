@@ -190,7 +190,7 @@ export default {
       <ProgressSpinner />
     </div>
 
-    <EditorSaveError :error="save_error" @closed="save_error = null" />
+    <EditorSaveError :error="save_error" @close="save_error = null" />
   </div>
   
 </template>

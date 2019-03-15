@@ -25,7 +25,7 @@ export default {
 
   methods: {
     onCloseClicked() {
-      this.$emit('closed');
+      this.$emit('close');
     }
   }
 }
@@ -34,19 +34,9 @@ export default {
 
 <template>
 
-  <v-snackbar
-    :value="snackbar"
-    top
-    :multi-line="true"
-  >
+  <v-snackbar :value="snackbar" top :multi-line="true" @input="$emit('close')">
     {{ error }}
-    <v-btn
-      dark
-      flat
-      @click="onCloseClicked"
-    >
-      Close
-    </v-btn>
+    <v-btn dark flat @click="$emit('close')">Close</v-btn>
   </v-snackbar>
 
 </template>
