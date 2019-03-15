@@ -220,18 +220,18 @@ export default {
   },
 
   renameFile(fileId, name) {
-    return this.updateFileMetadata(fileId, { 
+    return this.uploadFileMetadata(fileId, { 
       name: name 
     });
   },
 
   setFileViewed(fileId) {
-    return this.updateFileMetadata(fileId, { 
+    return this.uploadFileMetadata(fileId, { 
       viewedByMeTime: new Date().toISOString()
     })
   },
 
-  updateFileMetadata(fileId, metadata) {
+  uploadFileMetadata(fileId, metadata) {
     let path = '/drive/v3/files/' + fileId;
     let method = 'PATCH'
     return gapi.client.request({
