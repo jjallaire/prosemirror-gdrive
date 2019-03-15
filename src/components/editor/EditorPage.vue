@@ -4,11 +4,13 @@ import { EditorContent } from 'tiptap'
 
 import _throttle from 'lodash/throttle'
 
-import editor from './editor'
+import editor from './tiptap/editor'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
+
+import EditorSave from './save/EditorSave.js'
 import EditorSaveError from './save/EditorSaveError.vue'
 import EditorSaveStatus from './save/EditorSaveStatus.vue'
 
@@ -28,6 +30,8 @@ export default {
     EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError, EditorSaveStatus,
     PopupMenu, MenuTile
   },
+
+  mixins: [EditorSave],
 
   props: {
     doc_id: {
