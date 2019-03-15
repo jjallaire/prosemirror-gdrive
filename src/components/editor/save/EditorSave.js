@@ -1,4 +1,5 @@
 import _throttle from 'lodash/throttle'
+import _retry from 'async/retry'
 
 import drive from '../../../drive'
 
@@ -14,6 +15,9 @@ export default {
         last: null,
         last_save_time: null
       },
+
+      // track wheter we have a save last update pending
+      save_last_update_pending: false,
 
       // save errors
       save_error: null,
@@ -31,53 +35,114 @@ export default {
 
     // called with each and every update to the editor
     onEditorUpdate(update) {
+
+      // record last update
       this.editor_updates.last = update;
+
+      // schedule a save 
       this.saveLastUpdateThrottled();
     },
 
-    // called on a throttled basic (no more than every 3 seconds)
-    // to save the editor contents to drive
+    // called on a throttled basis (no more than every 3 seconds)
     saveLastUpdate() {
 
-      // reset error status
-      this.save_error = null;
+      // if we already have an async operation pending that will save the 
+      // last update, then this is a no-op
+      if (this.save_last_update_pending)
+        return;
 
-      // attempt save to drive
-      let update = this.editor_updates.last;
-      drive
-        .saveFile(
-          this.doc_id, 
-          JSON.stringify(update.getJSON()), 
-          update.getHTML()
-        )
-        .then(() => {
-          this.editor_updates.last_save_time = update.transaction.time;
-        })
-        .catch(error => {
+      // note that we have a save in flight
+      this.save_last_update_pending = true;
 
-          // default error code and message
-          let code = null;
-          let message = error.message;
+      _retry(
+        {
+          // retry up to 5 times
+          times: 5,
 
-          // handle GAPIError
-          if (error.name === "GAPIError") {
+          // use exponential backoff (2s, 4s, 8s, 16s, 32s)
+          interval: function(retryCount) {
+            return 1000 * Math.pow(2, retryCount);
+          },
 
-            // record code
-            code = error.code;
+          // error retry filter
+          errorFilter: (error) => {
+            if (error.name === "GAPIError") {
 
-            // add code to message if we have one
-            if (code > 0)
-              message = error.code + " - " + message;
+              // check wheter we should retry
+              let retry = error.code === -1 || error.code === 429 || error.code >= 500;
+              
+              // if we are going to retry then note that we have a save pending
+              if (retry)
+                this.save_last_update_pending = true;
+              
+              // return retry status
+              return retry;
 
-            // TODO: exponential retry
-            console.log("Error code: " + error.code);
+            } else {
+              return false;
+            }
           }
+        },
 
-          // set error status 
-          this.save_error = 
-            "Unable to save changes (" + message + "). " +
-            "Please ensure you are online so that you don't lose work.";
-        });
+        // save function
+        callback => {
+          
+          // we are going to collect the last update, so we no longer
+          // have a save in flight that will cover subsequent updates
+          this.save_last_update_pending = false;
+          
+          // perform save
+          let update = this.editor_updates.last;
+          drive
+            .saveFile(
+              this.doc_id, 
+              JSON.stringify(update.getJSON()), 
+              update.getHTML()
+            )
+            .then(() => {
+              callback(null, update.transaction.time);
+            })
+            .catch(error => {
+              callback(error, null);
+            });
+        },
+
+        // result function
+        (error, result) => {
+
+          // success! (record last save time)
+          if (result) {
+
+            this.editor_updates.last_save_time = result;
+
+          // error (display to user)
+          } else if (error) {
+
+            // update is no longer pending
+            this.save_last_update_pending = false;
+
+            // default error code and message
+            let code = null;
+            let message = error.message;
+
+            // handle GAPIError
+            if (error.name === "GAPIError") {
+
+              // record code
+              code = error.code;
+
+              // add code to message if we have one
+              if (code > 0)
+                message = error.code + " - " + message;
+            }
+
+            // set save_error (will result in )
+            this.save_error = 
+              "Unable to save changes (" + message + "). " +
+              "Please ensure you are online so that you don't lose work.";
+            }
+        }
+      );
     },
 
     resetSaveStatus() {

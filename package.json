@@ -11,6 +11,7 @@
     "deploy": "export VUE_APP_BRANCH=$BRANCH && npm run build"
   },
   "dependencies": {
+    "async": "^2.6.2",
     "localforage": "^1.7.3",
     "lodash": "^4.17.11",
     "material-icons": "^0.3.0",
