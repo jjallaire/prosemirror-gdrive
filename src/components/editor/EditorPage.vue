@@ -10,6 +10,7 @@ import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveError from './EditorSaveError.vue'
+import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import * as utils from '../core/utils'
 import drive from '../../drive'
@@ -24,7 +25,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorDisplay, EditorContent, 
-    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError,
+    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError, EditorSaveStatus,
     PopupMenu, MenuTile
   },
 
@@ -237,6 +238,7 @@ export default {
                    
           <v-spacer />
   
+          <EditorSaveStatus :editor_updates="editor_updates" />
           <EditorShareButton :doc_id="doc_id" />
           
           <PopupMenu>
@@ -303,6 +305,12 @@ export default {
   right: 0;
   overflow-y: scroll;
 }
+
+.edit-container .editor-save-status {
+  margin-right: 5px;
+}
+
+
 
 .edit-container .ProseMirror {
   outline: none;
