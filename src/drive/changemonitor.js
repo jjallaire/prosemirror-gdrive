@@ -4,6 +4,8 @@ import Vue from 'vue'
 
 const gapi = window.gapi;
 
+import { GAPIError } from './google'
+
 class ChangeMonitor  {
 
   constructor() {
@@ -23,9 +25,12 @@ class ChangeMonitor  {
   start(interval = 30000) {
     this.stop();
     let thiz = this;
-    this._timer = setInterval(() => { 
-      thiz.check();
-    }, interval);
+    return this.ensurePageToken()
+      .then(() => {
+        this._timer = setInterval(() => { 
+          thiz.check();
+        }, interval);
+      })
   }
 
   check() {
@@ -38,7 +43,8 @@ class ChangeMonitor  {
         })
       })
       .then(response => {
-        this._pageToken = response.result.newStartPageToken;
+        this._pageToken = response.result.nextPageToken ||
+                          response.result.newStartPageToken;
         let changes = response.result.changes;
         if (changes.length > 0)
           this._eventBus.$emit('drivechanged', changes);
@@ -65,6 +71,9 @@ class ChangeMonitor  {
       })
       .then(response => {
         this._pageToken = response.result.startPageToken;
+      })
+      .catch(response => {
+        return Promise.reject(new GAPIError(response.result.error));
       });
     }
   }
