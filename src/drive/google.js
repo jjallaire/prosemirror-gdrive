@@ -190,7 +190,7 @@ export default {
     });
   },
 
-  loadFile(fileId) {
+  getFile(fileId) {
     let metadataRequest = gapi.client.drive.files.get({
       fileId: fileId,
       supportsTeamDrives: true
@@ -213,7 +213,7 @@ export default {
       });
   },
 
-  loadFileMetadata(fileId) {
+  getFileMetadata(fileId) {
     return gapi.client.drive.files
       .get({
         fileId: fileId,
@@ -247,65 +247,15 @@ export default {
     })
   },
 
-  _uploadFileMetadata(fileId, metadata) {
-    let path = '/drive/v3/files/' + fileId;
-    let method = 'PATCH'
-    return gapi.client.request({
-      path: path,
-      method: method,
-      params: {
-        supportsTeamDrives: true,
-        fields: 'id'
-      },
-      headers: { 'Content-Type' : "application/json" },
-      body: JSON.stringify(metadata)
-    })
-    .then(id => {
-      return handleIdResponse(id);
-    })
-    .catch(catchHttpRequest);
-  },
-
-  _uploadFile(metadata, content, indexableText) {
-    let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
-    let method = metadata.id ? 'PATCH' : 'POST';
-    let uploadMetadata = metadata.id ? 
-      { name: metadata.name, mimeType: metadata.mimeType } : 
-      metadata;
-    uploadMetadata = { 
-      ...uploadMetadata,
-      contentHints: {
-        indexableText: indexableText || content
-      }
-    };
-    let multipart = new MultipartBuilder()
-      .append('application/json', JSON.stringify(uploadMetadata))
-      .append(metadata.mimeType, content)
-      .finish();
-    return gapi.client.request({
-      path: path,
-      method: method,
-      params: {
-        uploadType: 'multipart',
-        supportsTeamDrives: true,
-        fields: 'id'
-      },
-      headers: { 'Content-Type' : multipart.type },
-      body: multipart.body
-    })
-    .then(handleIdResponse)
-    .catch(catchHttpRequest);
-  },
-  
   readAppData(name, mimeType, defaultContent) {
     return this._appDataFileId(name)
       .then(fileId => {
         if (fileId) {
-          return this.loadFile(fileId);
+          return this.getFile(fileId);
         } else {
           return this.writeAppData(name, mimeType, defaultContent)
             .then(fileId => {
-              return this.loadFile(fileId);
+              return this.getFile(fileId);
             });
         }
       });
@@ -407,6 +357,56 @@ export default {
       return null
     }
   },  
+
+  _uploadFileMetadata(fileId, metadata) {
+    let path = '/drive/v3/files/' + fileId;
+    let method = 'PATCH'
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        supportsTeamDrives: true,
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : "application/json" },
+      body: JSON.stringify(metadata)
+    })
+    .then(id => {
+      return handleIdResponse(id);
+    })
+    .catch(catchHttpRequest);
+  },
+
+  _uploadFile(metadata, content, indexableText) {
+    let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
+    let method = metadata.id ? 'PATCH' : 'POST';
+    let uploadMetadata = metadata.id ? 
+      { name: metadata.name, mimeType: metadata.mimeType } : 
+      metadata;
+    uploadMetadata = { 
+      ...uploadMetadata,
+      contentHints: {
+        indexableText: indexableText || content
+      }
+    };
+    let multipart = new MultipartBuilder()
+      .append('application/json', JSON.stringify(uploadMetadata))
+      .append(metadata.mimeType, content)
+      .finish();
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        uploadType: 'multipart',
+        supportsTeamDrives: true,
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : multipart.type },
+      body: multipart.body
+    })
+    .then(handleIdResponse)
+    .catch(catchHttpRequest);
+  },
 };
 
 

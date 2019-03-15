@@ -99,7 +99,7 @@ export default {
 
   },
 
-  loadFile(fileId) {
+  getFile(fileId) {
     return docStore.getItem(fileId)
       .then(file => {
         return file;

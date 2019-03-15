@@ -93,7 +93,7 @@ export default {
 
       // bind to doc_id from url
       } else {
-        drive.loadFile(this.doc_id)
+        drive.getFile(this.doc_id)
           .then(doc => {
 
             // set doc
@@ -146,7 +146,7 @@ export default {
 
     // eslint-disable-next-line
     onDriveChanged(changes) {
-      
+
     },
 
   }
