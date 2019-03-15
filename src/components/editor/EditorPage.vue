@@ -2,8 +2,6 @@
 
 import { EditorContent } from 'tiptap'
 
-import _throttle from 'lodash/throttle'
-
 import editor from './tiptap/editor'
 
 import EditorToolbar from './EditorToolbar.vue'
@@ -49,13 +47,6 @@ export default {
       
       // editor
       editor: null,
-      editor_updates: {
-        last: null,
-        last_save_time: null
-      },
-
-      // save errors
-      save_error: null,
     }
   },
 
@@ -77,14 +68,17 @@ export default {
 
       this.doc = null;
       this.error = null;
-      this.snackbar = null;
-      this.snackbar_error = null;
       this.destroyEditor();
+      this.resetSaveStatus();
 
+      // no doc id, create a new doc
       if (this.doc_id === null) {
         
+        // title provided in url
         if (this.$route.query.newDoc) {
           this.createNewDoc(this.$route.query.newDoc);
+
+        // need to prompt for title
         } else {
           this.$dialog.prompt({
             text: 'Title',
@@ -98,6 +92,8 @@ export default {
           });
           utils.focusDialogTitle();
         }
+
+      // bind to doc_id from url
       } else {
         drive.loadFile(this.doc_id)
           .then(doc => {
@@ -105,8 +101,13 @@ export default {
             // set doc
             this.doc = doc;
 
+            // determine initial editor content (empty string or json)
+            let content = this.doc.content;
+            if (content.length > 0)
+              content = JSON.parse(content);
+
             // initialize editor
-            this.editor = this.createEditor();
+            this.editor = editor.create(content, this.onEditorUpdate);
 
             // mark file viewed
             return drive.setFileViewed(this.doc_id);
@@ -120,43 +121,10 @@ export default {
       }
     },
 
-    createEditor() {
-
-      // determine initial editor content (either an empty string for a
-      // new document or json for an existing document)
-      let content = this.doc.content;
-      if (content.length > 0)
-        content = JSON.parse(content);
-    
-      // create a throttled version of saveToDrive
-      let saveLastUpdateThrottled = _throttle(
-        this.saveLastUpdate,
-        3000, 
-        { leading: false, trailing: true }
-      );
-
-      // create and return the editor
-      return editor.create(
-
-        // initial content
-        content,
-
-        // on update
-        update => {
-          this.editor_updates.last = update;
-          saveLastUpdateThrottled();
-        }
-      );
-    },
-
     destroyEditor() {
       if (this.editor) {
         this.editor.destroy();
         this.editor = null;
-      }
-      this.editor_updates = {
-        last: null,
-        last_save_time: null
       }
     },
 
@@ -168,45 +136,6 @@ export default {
         })
         .catch(error => {
           this.error = error;
-        });
-    },
-
-    saveLastUpdate() {
-      let update = this.editor_updates.last;
-      this.save_error = null;
-      drive
-        .saveFile(
-          this.doc.metadata.id, 
-          JSON.stringify(update.getJSON()), 
-          update.getHTML()
-        )
-        .then(() => {
-          this.editor_updates.last_save_time = update.transaction.time;
-        })
-        .catch(error => {
-
-          // default error code and message
-          let code = null;
-          let message = error.message;
-
-          // handle GAPIError
-          if (error.name === "GAPIError") {
-
-            // record code
-            code = error.code;
-
-            // add code to message if we have one
-            if (code > 0)
-              message = error.code + " - " + message;
-
-            // TODO: exponential retry
-            console.log("Error code: " + error.code);
-          }
-
-          // set error status 
-          this.save_error = 
-            "Unable to save changes (" + message + "). " +
-            "Please ensure you are online so that you don't lose work.";
         });
     },
   }
@@ -222,7 +151,7 @@ export default {
       <ErrorDisplay :error="error" />
     </div>
     <div v-else-if="!doc_id">
-      <!-- show title dialog -->
+      <!-- code will resolve/prompt for title and create new doc -->
     </div>
     <div v-else-if="doc">
       <v-card class="edit-card card--flex-toolbar">
