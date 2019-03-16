@@ -2,11 +2,13 @@
 
 <script>
 
+
 import { VListGroup, VDivider, VList } from 'vuetify/lib'
 
 import NavigationTile from './NavigationTile.vue'
 
-import drive from '../../drive'
+import { newDocument, openDocument } from '../core/docs'
+
 
 import { mapGetters } from 'vuex'
 
@@ -31,11 +33,13 @@ export default {
   },
 
   methods: {
+
+    onNewDocumentClicked() {
+      newDocument();
+    },
+
     onOpenDocumentClicked() {
-      drive.selectFile()
-        .then(id => {
-          this.$router.push({ path: "/edit/" + id });
-        });
+      openDocument();
     }
   }
 
@@ -51,7 +55,7 @@ export default {
 
     <v-divider />
 
-    <NavigationTile path="/edit/" icon="add" caption="New Document" />
+    <NavigationTile icon="add" caption="New Document" @click="onNewDocumentClicked" />
     <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
 
     <v-list-group

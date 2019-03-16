@@ -15,7 +15,7 @@ export default new VueRouter({
 
   routes: [
     { path: '/', component: HomePage },
-    { path: '/edit/:doc_id?', component: EditorPage, props: true },
+    { path: '/edit/:doc_id', component: EditorPage, props: true },
     { path: '/settings/', component: SettingsPage },
     { path: '*', component: NotFoundPage }
   ]

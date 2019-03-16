@@ -147,14 +147,6 @@ export default {
       );
     },
 
-    resetSaveStatus() {
-      this.editor_updates = {
-        last: null,
-        last_save_time: null
-      };
-      this.save_error = null;
-    }
-
   }
 
 }

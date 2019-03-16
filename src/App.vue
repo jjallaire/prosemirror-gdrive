@@ -86,7 +86,7 @@ export default {
         <ErrorDisplay v-if="init_error" :error="init_error" />
         <ProgressSpinner v-else-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
-        <router-view v-else />
+        <router-view v-else :key="$route.fullPath" />
       </v-container>
     </v-content>
   </v-app>

@@ -8,7 +8,8 @@ import PopupMenu from '../core/PopupMenu'
 import MenuTile from '../core/MenuTile'
 
 import drive from '../../drive'
-import * as utils from '../core/utils'
+import dialog from '../core/dialog'
+import { newDocument, openDocument } from '../core/docs'
 
 export default {
   name: 'DocumentListing',
@@ -65,26 +66,18 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          this.$dialog.error({
-            text: error.message,
-            title: "Drive Error"
-          });
+          dialog.error("Drive Error", error.message);
         });
     },
 
     onNewDocument() {
-      this.$dialog.prompt({
-        text: 'Title',
-        title: 'New Document'
-      })
-      .then(title => {
-        if (title)
-          this.$router.push({ path: "/edit/" , query: { newDoc: title } });
-      });
-
-      // auto-focus title
-      utils.focusDialogTitle();
+      newDocument();
     },
+
+    onOpenDocument() {
+      openDocument()
+    },
+
 
     onSearchChanged: _debounce(function() { 
       if (this.search)
@@ -94,37 +87,27 @@ export default {
       this.updateItems(false);
     }, 500),
 
-    onOpenDocument() {
-      drive.selectFile()
-        .then(id => {
-          this.$router.push({ path: "/edit/" + id });
-        });
-    },
-
+    
     onDocumentClicked(doc) {
       this.$router.push({ path: "/edit/" + doc.id });
     },
 
     onRemoveDocument(doc) {
-      this.$dialog.confirm ({
-        text: 'Are you sure you want to remove this document?',
-        title: 'Remove Document',
-      }).then(confirmed => {
-        if (confirmed)
-          this.handleDriveRequest(drive.removeFile(doc.id));
-      });
+      dialog
+        .confirm ('Remove Document', 'Are you sure you want to remove this document?')
+        .then(confirmed => {
+          if (confirmed)
+            this.handleDriveRequest(drive.removeFile(doc.id));
+        });
     },
 
     onRenameDocument(doc) {
-      this.$dialog.prompt({
-        text: 'New name for document:',
-        title: 'Rename Document'
-      })
-      .then(title => {
-        if (title)
-          this.handleDriveRequest(drive.renameFile(doc.id, title));
-      });
-      utils.focusDialogTitle();
+      dialog
+        .prompt('Rename Document', 'New name for document:')
+        .then(title => {
+          if (title)
+            this.handleDriveRequest(drive.renameFile(doc.id, title));
+        });
     },
 
     onShareDocument(doc) {
@@ -142,10 +125,7 @@ export default {
           drive.updateRecentDocs();
         })
         .catch(error => {
-          this.$dialog.error({
-            text: error.message,
-            title: "Drive Error"
-          })
+          dialog.error("Drive Error", error.message);
         });
     }
 

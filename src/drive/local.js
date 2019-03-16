@@ -94,25 +94,24 @@ export default {
    
     return docStore.setItem(id, file)
       .then(() => {
-        return { 
-          id: id,
-          headRevisionId: id
-        }
+        return this._uploadResponse(id);
       });    
 
   },
 
-  getFile(fileId) {
-    return docStore.getItem(fileId)
+  // eslint-disable-next-line
+  saveFile(fileId, content, indexableText) {
+    return docStore
+      .getItem(fileId)
       .then(file => {
-        return file;
+        file.content = content;
+        return docStore.setItem(fileId, file);
+      })
+      .then(() => {
+        return this._uploadResponse(fileId);
       });
   },
 
-
-  removeFile(fileId) {
-    return docStore.removeItem(fileId);
-  },
 
   renameFile(fileId, name) {
     return docStore
@@ -122,8 +121,25 @@ export default {
         return docStore.setItem(fileId, file);
       })
       .then(() => {
-        return fileId;
+        return this._uploadResponse(fileId);
       });
+  },
+
+  getFile(fileId) {
+    return docStore.getItem(fileId);
+  },
+
+  getFileMetadata(fileId) {
+    return docStore
+      .getItem(fileId)
+      .then(file => {
+        return file.metadata;
+      })
+  },
+
+
+  removeFile(fileId) {
+    return docStore.removeItem(fileId);
   },
 
   // eslint-disable-next-line
@@ -183,5 +199,12 @@ export default {
   // eslint-disable-next-line
   shareFile(fileId) {
     // no-op
+  },
+
+  _uploadResponse(fileId) {
+    return {
+      id: fileId,
+      headRevisionId: fileId
+    }
   }
 };

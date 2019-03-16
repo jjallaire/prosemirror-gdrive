@@ -3,13 +3,19 @@
 <script>
 
 import DocumentListing from './navigation/DocumentListing.vue'
+import { newDocument } from './core/docs'
 
 export default {
   name: 'HomePage',
 
   components: {
     DocumentListing
-  } 
+  },
+
+  mounted() {
+    if (this.$route.query.hasOwnProperty('newDoc'))
+      newDocument();  
+  }
 }
 
 </script>

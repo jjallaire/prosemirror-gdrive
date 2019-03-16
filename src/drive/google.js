@@ -307,6 +307,14 @@ export default {
     share.showSettingsDialog();
   },
 
+  updateRecentDocs() {
+    return this
+      .listFiles('recency', true, null, store.getters.settings.recent_documents)
+      .then(files => {
+        store.commit(SET_RECENT_DOCS, files);
+      })
+  },
+
   _appDataFileId(name) {
     return gapi.client.drive.files
       .list({
@@ -325,15 +333,6 @@ export default {
       .catch(response => {
         return Promise.reject(new GAPIError(response.result.error));
       });
-  },
-
-
-  updateRecentDocs() {
-    return this
-      .listFiles('recency', true, null, store.getters.settings.recent_documents)
-      .then(files => {
-        store.commit(SET_RECENT_DOCS, files);
-      })
   },
 
   _clearRecentDocs() {
