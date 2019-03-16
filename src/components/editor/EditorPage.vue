@@ -16,7 +16,7 @@ import EditorSaveStatus from './save/EditorSaveStatus.vue'
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
 
-import ErrorDisplay from '../core/ErrorDisplay.vue'
+import ErrorPanel from '../core/ErrorPanel.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
 import PopupMenu from '../core/PopupMenu'
 import MenuTile from '../core/MenuTile'
@@ -27,7 +27,7 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorDisplay, EditorContent, 
+    ProgressSpinner, ErrorPanel, EditorContent, 
     EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError, EditorSaveStatus,
     PopupMenu, MenuTile
   },
@@ -186,7 +186,7 @@ export default {
       </v-card>
     </div>
     <div v-else-if="error">
-      <ErrorDisplay :error="error" />
+      <ErrorPanel :error="error" />
     </div>
     <div v-else>
       <ProgressSpinner />

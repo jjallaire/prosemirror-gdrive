@@ -7,7 +7,7 @@ import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer,
 import { mapGetters } from 'vuex'
 
 import AuthPage from './components/auth/AuthPage.vue'
-import ErrorDisplay from './components/core/ErrorDisplay.vue'
+import ErrorPanel from './components/core/ErrorPanel.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
 import NavigationList from './components/navigation/NavigationList.vue'
 
@@ -19,7 +19,7 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, VSpacer, VBtn, VIcon, 
-    ProgressSpinner, NavigationList, AuthPage, ErrorDisplay
+    ProgressSpinner, NavigationList, AuthPage, ErrorPanel
   },
 
   data () {
@@ -83,7 +83,7 @@ export default {
     </v-toolbar>
     <v-content>
       <v-container class="app-container" fluid fill-height>
-        <ErrorDisplay v-if="init_error" :error="init_error" />
+        <ErrorPanel v-if="init_error" :error="init_error" />
         <ProgressSpinner v-else-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
         <router-view v-else :key="$route.fullPath" />

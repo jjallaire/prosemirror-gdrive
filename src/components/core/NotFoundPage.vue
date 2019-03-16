@@ -1,12 +1,12 @@
 <script>
 
-import ErrorDisplay from './ErrorDisplay.vue'
+import ErrorPanel from './ErrorPanel.vue'
 
 export default {
   name: 'NotFoundPage',
 
   components: {
-    ErrorDisplay
+    ErrorPanel
   },
 
   computed: {
@@ -20,7 +20,7 @@ export default {
 
 <template>
 
-  <ErrorDisplay title="404: Page Not Found" :message="page_url" />
+  <ErrorPanel title="404: Page Not Found" :message="page_url" />
 
 </template>
 
