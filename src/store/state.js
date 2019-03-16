@@ -16,6 +16,9 @@ export function initialState() {
     },
 
     // document history
-    recent_docs: []
+    recent_docs: [],
+
+    // snackbar error
+    snackbar_error: null
   };
 }

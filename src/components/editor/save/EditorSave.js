@@ -3,6 +3,8 @@ import _retry from 'async/retry'
 
 import drive from '../../../drive'
 
+import store from '../../../store'
+import { SET_SNACKBAR_ERROR } from '../../../store/mutations'
 
 export default {
 
@@ -18,9 +20,6 @@ export default {
 
       // track wheter we have a save last update pending
       save_last_update_pending: false,
-
-      // save errors
-      save_error: null,
 
       // throttled version of saveLastUpdate
       saveLastUpdateThrottled: _throttle(
@@ -138,11 +137,12 @@ export default {
                 message = error.code + " - " + message;
             }
 
-            // set save_error (will result in )
-            this.save_error = 
+            // show error snackbar
+            store.commit(SET_SNACKBAR_ERROR, 
               "Unable to save changes (" + message + "). " +
-              "Please ensure you are online so that you don't lose work.";
-            }
+              "Please ensure you are online so that you don't lose work."
+            );
+          }
         }
       );
     },

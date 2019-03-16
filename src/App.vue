@@ -8,6 +8,7 @@ import { mapGetters } from 'vuex'
 
 import AuthPage from './components/auth/AuthPage.vue'
 import ErrorPanel from './components/core/ErrorPanel.vue'
+import ErrorSnackbar from './components/core/ErrorSnackbar.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
 import NavigationList from './components/navigation/NavigationList.vue'
 
@@ -19,7 +20,7 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, VSpacer, VBtn, VIcon, 
-    ProgressSpinner, NavigationList, AuthPage, ErrorPanel
+    ProgressSpinner, NavigationList, AuthPage, ErrorPanel, ErrorSnackbar
   },
 
   data () {
@@ -89,6 +90,9 @@ export default {
         <router-view v-else :key="$route.fullPath" />
       </v-container>
     </v-content>
+
+    <ErrorSnackbar />
+
   </v-app>
 </template>
 

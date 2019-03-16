@@ -10,7 +10,6 @@ import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
 
 import EditorSave from './save/EditorSave.js'
-import EditorSaveError from './save/EditorSaveError.vue'
 import EditorSaveStatus from './save/EditorSaveStatus.vue'
 
 import drive from '../../drive'
@@ -28,7 +27,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, EditorContent, 
-    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveError, EditorSaveStatus,
+    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveStatus,
     PopupMenu, MenuTile
   },
 
@@ -192,7 +191,6 @@ export default {
       <ProgressSpinner />
     </div>
 
-    <EditorSaveError :error="save_error" @close="save_error = null" />
   </div>
   
 </template>
