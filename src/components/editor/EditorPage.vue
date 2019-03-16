@@ -97,13 +97,13 @@ export default {
       // bind to doc_id from url
       } else {
         drive.getFile(this.doc_id)
-          .then(doc => {
+          .then(file => {
 
             // set doc info
-            this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
+            this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
            
             // determine initial editor content (empty string or json)
-            let content = doc.content;
+            let content = file.content;
             if (content.length > 0)
               content = JSON.parse(content);
 
@@ -169,9 +169,25 @@ export default {
       if (thisDocChange) {
         drive 
           .getFileMetadata(this.doc_id)
-          // eslint-disable-next-line
           .then(metadata => {
-           
+            // if the change has a different revisionId then update
+            if (metadata.headRevisionId !== this.doc.headRevisionId) {
+              return drive
+                .getFile(this.doc_id)
+                .then(file => {
+                  this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
+                  this.editor.setContent(JSON.parse(file.content));
+                });
+            } else if (metadata.name !== this.doc.title) {
+              this.doc.title = metadata.name;
+              return Promise.resolve();
+            } else {
+              return Promise.resolve();
+            }
+          })
+          .catch(() => {
+            // TODO: handle error
+
           });
       }
     },

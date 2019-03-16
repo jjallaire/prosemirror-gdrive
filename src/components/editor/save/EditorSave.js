@@ -101,6 +101,7 @@ export default {
             )
             // eslint-disable-next-line
             .then(result => {
+              this.doc.headRevisionId = result.headRevisionId;
               callback(null, update.transaction.time);
             })
             .catch(error => {

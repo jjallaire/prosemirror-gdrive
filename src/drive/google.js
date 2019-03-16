@@ -443,9 +443,9 @@ function fileListResponse(response) {
 
 function handleUploadResponse(response) {
   if (response.result.id)
-    return response.result.id;
+    return response.result;
   else
-    return response.result.result.id;
+    return response.result.result;
 }
 
 function catchHttpRequest(response) {
