@@ -1,6 +1,7 @@
 <script>
 
 import { EditorContent } from 'tiptap'
+import _debounce from 'lodash/debounce'
 
 import editor from './tiptap/editor'
 
@@ -43,6 +44,7 @@ export default {
     return {
 
       // document (or document load error)
+      title: null,
       doc: null,
       error: null,
       
@@ -97,6 +99,7 @@ export default {
           .then(doc => {
 
             // set doc
+            this.title = doc.metadata.name;
             this.doc = doc;
 
             // determine initial editor content (empty string or json)
@@ -144,6 +147,22 @@ export default {
         });
     },
 
+    onTitleChanged: _debounce(function(value) {
+      drive
+        .renameFile(this.doc_id, value)
+        // eslint-disable-next-line
+        .then(result => {
+          this.title = value;
+          drive.updateRecentDocs();
+        })
+        .catch(error => {
+          this.$dialog.error({
+            text: error.message,
+            title: "Drive Error"
+          })
+        });
+    }, 1000),
+
     // eslint-disable-next-line
     onDriveChanged(changes) {
       let thisDocChange = changes.find(change => change.fileId === this.doc_id);
@@ -186,7 +205,7 @@ export default {
             <EditorToolbar :editor="editor" :editor_updates="editor_updates" />
           </template>
 
-          <EditorDocTitle :doc_id="doc_id" :title="doc.metadata.name" />
+          <EditorDocTitle :value="doc.metadata.name" @input="onTitleChanged" />
                    
           <v-spacer />
   

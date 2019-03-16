@@ -2,10 +2,6 @@
 
 import { VTextField } from 'vuetify/lib'
 
-import _debounce from 'lodash/debounce'
-
-import drive from '../../drive'
-
 export default {
 
   name: 'EditorDocTitle',
@@ -15,40 +11,22 @@ export default {
   },
 
   props: {
-    doc_id: {
+    value: {
       type: String,
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
+      default: null
     }
-  },
-
-  methods: {
-     onTitleChanged: _debounce(function(value) {
-      drive
-        .renameFile(this.doc_id, value)
-        // eslint-disable-next-line
-        .then(result => {
-          drive.updateRecentDocs();
-        })
-        .catch(error => {
-          this.$dialog.error({
-            text: error.message,
-            title: "Drive Error"
-          })
-        });
-    }, 1000),
   }
-
 }
 
 </script>
 
 <template>
 
-  <v-text-field :value="title" class="editor-document-title" @input="onTitleChanged" />
+  <v-text-field 
+    :value="value" 
+    class="editor-document-title" 
+    v-on="$listeners"
+  />
 
 </template>
 
