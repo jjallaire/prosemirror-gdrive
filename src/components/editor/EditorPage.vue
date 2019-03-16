@@ -43,9 +43,13 @@ export default {
   data: function() {
     return {
 
-      // document (or document load error)
-      title: null,
-      doc: null,
+      // document
+      doc: {
+        title: null,
+        headRevisionId: null
+      },
+     
+      // load error
       error: null,
       
       // editor
@@ -98,12 +102,12 @@ export default {
         drive.getFile(this.doc_id)
           .then(doc => {
 
-            // set doc
-            this.title = doc.metadata.name;
-            this.doc = doc;
-
+            // set doc info
+            this.doc.title = doc.metadata.name;
+            this.doc.headRevisionId = doc.metadata.headRevisionId;
+           
             // determine initial editor content (empty string or json)
-            let content = this.doc.content;
+            let content = doc.content;
             if (content.length > 0)
               content = JSON.parse(content);
 
@@ -126,7 +130,10 @@ export default {
     },
 
     clearDoc() {
-      this.doc = null;
+      this.doc = {
+        title: null,
+        headRevisionId: null
+      };
       this.error = null;
       if (this.editor) {
         this.editor.destroy();
@@ -152,7 +159,8 @@ export default {
         .renameFile(this.doc_id, value)
         // eslint-disable-next-line
         .then(result => {
-          this.title = value;
+          this.doc.title = value;
+          this.doc.headRevisionId = result.headRevisionId;
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -205,7 +213,7 @@ export default {
             <EditorToolbar :editor="editor" :editor_updates="editor_updates" />
           </template>
 
-          <EditorDocTitle :value="doc.metadata.name" @input="onTitleChanged" />
+          <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
                    
           <v-spacer />
   
