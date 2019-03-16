@@ -44,10 +44,7 @@ export default {
     return {
 
       // document
-      doc: {
-        title: null,
-        headRevisionId: null
-      },
+      doc: this.docInfo(),
      
       // load error
       error: null,
@@ -103,8 +100,7 @@ export default {
           .then(doc => {
 
             // set doc info
-            this.doc.title = doc.metadata.name;
-            this.doc.headRevisionId = doc.metadata.headRevisionId;
+            this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
            
             // determine initial editor content (empty string or json)
             let content = doc.content;
@@ -130,10 +126,7 @@ export default {
     },
 
     clearDoc() {
-      this.doc = {
-        title: null,
-        headRevisionId: null
-      };
+      this.doc = this.docInfo();
       this.error = null;
       if (this.editor) {
         this.editor.destroy();
@@ -159,8 +152,7 @@ export default {
         .renameFile(this.doc_id, value)
         // eslint-disable-next-line
         .then(result => {
-          this.doc.title = value;
-          this.doc.headRevisionId = result.headRevisionId;
+          this.doc = this.docInfo(value, result.headRevisionId);
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -183,6 +175,13 @@ export default {
           });
       }
     },
+
+    docInfo(title = null, headRevisionId = null) {
+      return {
+        title: title,
+        headRevisionId: headRevisionId
+      }
+    }
 
   }
 }
