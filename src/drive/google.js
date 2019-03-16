@@ -26,7 +26,7 @@ import _orderBy from 'lodash/orderBy'
 
 import MultipartBuilder from './multipart'
 import { initSettings } from './settings'
-import changemonitor from './changemonitor'
+import driveChanges from './changes'
 
 import store from '../store'
 import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
@@ -76,19 +76,19 @@ export default {
               // listen for sign-out
               auth().isSignedIn.listen(() => {
                 if (!this._isSignedIn()) {
-                  changemonitor.stop();
+                  driveChanges.stop();
                   this._clearRecentDocs();
                   store.commit(SET_USER, null);
                 }
               });
 
               // subscribe to drive changes
-              changemonitor.subscribe(() => {
+              driveChanges.subscribe(() => {
                 this.updateRecentDocs();
               });
 
               // listen for changes 
-              return changemonitor.start();
+              return driveChanges.start();
             })
             .then(() => {
               return this.updateRecentDocs();

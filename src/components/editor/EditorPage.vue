@@ -14,7 +14,7 @@ import EditorSaveError from './save/EditorSaveError.vue'
 import EditorSaveStatus from './save/EditorSaveStatus.vue'
 
 import drive from '../../drive'
-import changemonitor from '../../drive/changemonitor'
+import driveChanges from '../../drive/changes'
 
 import ErrorDisplay from '../core/ErrorDisplay.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
@@ -69,7 +69,7 @@ export default {
         );
 
         // subscribe to file changes
-        return changemonitor.subscribe(this.onDriveChanged);
+        return driveChanges.subscribe(this.onDriveChanged);
       })
       .then(() => {
         return drive.setFileViewed(this.doc_id);
@@ -86,7 +86,7 @@ export default {
     if (this.editor) {
       this.editor.destroy();
       this.editor = null;
-      changemonitor.unsubscribe(this.onDriveChanged);
+      driveChanges.unsubscribe(this.onDriveChanged);
     }
   },
 
