@@ -29,7 +29,8 @@ export default {
      onTitleChanged: _debounce(function(value) {
       drive
         .renameFile(this.doc_id, value)
-        .then(() => {
+        // eslint-disable-next-line
+        .then(result => {
           drive.updateRecentDocs();
         })
         .catch(error => {

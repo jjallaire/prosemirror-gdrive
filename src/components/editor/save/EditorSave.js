@@ -99,7 +99,8 @@ export default {
               JSON.stringify(update.getJSON()), 
               update.getHTML()
             )
-            .then(() => {
+            // eslint-disable-next-line
+            .then(result => {
               callback(null, update.transaction.time);
             })
             .catch(error => {

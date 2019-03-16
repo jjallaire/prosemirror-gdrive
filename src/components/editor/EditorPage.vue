@@ -136,8 +136,8 @@ export default {
     createNewDoc(title) {
       drive
         .newFile(title)
-        .then(id => {
-          this.$router.push({ path: "/edit/" + id });
+        .then(result => {
+          this.$router.push({ path: "/edit/" + result.id });
         })
         .catch(error => {
           this.error = error;
@@ -146,7 +146,15 @@ export default {
 
     // eslint-disable-next-line
     onDriveChanged(changes) {
-
+      let thisDocChange = changes.find(change => change.fileId === this.doc_id);
+      if (thisDocChange) {
+        drive 
+          .getFileMetadata(this.doc_id)
+          // eslint-disable-next-line
+          .then(metadata => {
+           
+          });
+      }
     },
 
   }

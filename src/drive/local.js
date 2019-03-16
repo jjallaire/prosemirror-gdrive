@@ -94,7 +94,10 @@ export default {
    
     return docStore.setItem(id, file)
       .then(() => {
-        return id;
+        return { 
+          id: id,
+          headRevisionId: id
+        }
       });    
 
   },

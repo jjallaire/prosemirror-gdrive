@@ -15,7 +15,7 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
 ];
 
-const kFileFields = 'id, name, iconLink, viewedByMe, viewedByMeTime, ' +
+const kFileFields = 'id, name, headRevisionId, iconLink, viewedByMe, viewedByMeTime, ' +
                     'sharedWithMeTime, modifiedTime, shared, sharingUser, size, appProperties';
 
 const kFileListFields = 'nextPageToken, files(' + kFileFields + ')';
@@ -254,8 +254,8 @@ export default {
           return this.getFile(fileId);
         } else {
           return this.writeAppData(name, mimeType, defaultContent)
-            .then(fileId => {
-              return this.getFile(fileId);
+            .then(result => {
+              return this.getFile(result.id);
             });
         }
       });
@@ -366,13 +366,13 @@ export default {
       method: method,
       params: {
         supportsTeamDrives: true,
-        fields: 'id'
+        fields: 'id,headRevisionId'
       },
       headers: { 'Content-Type' : "application/json" },
       body: JSON.stringify(metadata)
     })
-    .then(id => {
-      return handleIdResponse(id);
+    .then(result => {
+      return handleUploadResponse(result);
     })
     .catch(catchHttpRequest);
   },
@@ -399,12 +399,12 @@ export default {
       params: {
         uploadType: 'multipart',
         supportsTeamDrives: true,
-        fields: 'id'
+        fields: 'id,headRevisionId'
       },
       headers: { 'Content-Type' : multipart.type },
       body: multipart.body
     })
-    .then(handleIdResponse)
+    .then(handleUploadResponse)
     .catch(catchHttpRequest);
   },
 };
@@ -441,7 +441,7 @@ function fileListResponse(response) {
   });  
 }
 
-function handleIdResponse(response) {
+function handleUploadResponse(response) {
   if (response.result.id)
     return response.result.id;
   else
