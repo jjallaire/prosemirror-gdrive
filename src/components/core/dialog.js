@@ -1,6 +1,9 @@
 
 import Vue from 'vue'
 
+import store from '../../store'
+import { SET_SNACKBAR_ERROR } from '../../store/mutations';
+
 const dialog = Vue.prototype['$dialog']
 
 export default {
@@ -26,8 +29,12 @@ export default {
       title: title,
       text: text
     });
-  }
+  },
   
+  errorSnackbar(text) {
+    store.commit(SET_SNACKBAR_ERROR, text);
+  }
+
 }
 
 function focusDialogTitle() {

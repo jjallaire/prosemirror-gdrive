@@ -2,9 +2,7 @@ import _throttle from 'lodash/throttle'
 import _retry from 'async/retry'
 
 import drive from '../../../drive'
-
-import store from '../../../store'
-import { SET_SNACKBAR_ERROR } from '../../../store/mutations'
+import dialog from '../../core/dialog'
 
 export default {
 
@@ -138,7 +136,7 @@ export default {
             }
 
             // show error snackbar
-            store.commit(SET_SNACKBAR_ERROR, 
+            dialog.errorSnackbar(
               "Unable to save changes (" + message + "). " +
               "Please ensure you are online so that you don't lose work."
             );
