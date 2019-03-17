@@ -117,6 +117,7 @@ export default {
                   this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
                   this.editor.setContent(this.asEditorContent(file.content));
                 });
+            // otherwise check for a title change
             } else if (metadata.name !== this.doc.title) {
               this.doc.title = metadata.name;
             } 
