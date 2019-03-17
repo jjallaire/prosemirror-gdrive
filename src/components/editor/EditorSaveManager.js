@@ -6,12 +6,12 @@ import drive from '../../drive'
 
 export default class EditorSaveManager  {
 
-  constructor(docId, onStatus, onSave, onSaveError) {
+  constructor(docId, onStatus, onSaved, onSaveError) {
 
     // doc id and callbacks
     this._docId = docId;
     this._onStatus = onStatus;
-    this._onSave = onSave;
+    this._onSaved = onSaved;
     this._onSaveError = onSaveError;
 
     // track updates
@@ -114,7 +114,7 @@ export default class EditorSaveManager  {
         // success! 
         if (result) {
 
-          this._onSave(result);
+          this._onSaved(result);
 
         // error (display to user)
         } else if (error) {

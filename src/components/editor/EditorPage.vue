@@ -2,7 +2,6 @@
 
 import { EditorContent } from 'tiptap'
 import _debounce from 'lodash/debounce'
-import _retry from 'async/retry'
 
 import editor from './tiptap/editor'
 
@@ -12,6 +11,7 @@ import EditorDocTitle from './EditorDocTitle.vue'
 
 import EditorSaveManager from './EditorSaveManager.js'
 import EditorSaveStatus from './EditorSaveStatus.vue'
+import EditorSyncManager from './EditorSyncManager.js'
 
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
@@ -44,14 +44,18 @@ export default {
       // document
       doc: this.docInfo(),
      
-      // load error
-      error: null,
-      
       // editor
       editor: null,
 
+      // save and sync managers
+      saveManager: null,
+      syncManager: null,
+
       // save status
-      save_status: "clean"
+      save_status: "clean",
+
+      // load error
+      error: null,
     }
   },
 
@@ -64,17 +68,26 @@ export default {
         this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
 
         // monitor and save editor changes
-        let saveManager = new EditorSaveManager(
+        this.saveManager = new EditorSaveManager(
           this.doc_id,
           this.onSaveStatus,
-          this.onSave,
+          this.onSaved,
           this.onSaveError
+        );
+
+        // synchronize to changes made in other browsers
+        this.syncManager = new EditorSyncManager(
+          this.doc_id,
+          () => this.doc,
+          this.onSyncTitle,
+          this.onSyncDoc,
+          this.onSyncError
         );
 
         // initialize editor
         this.editor = editor.create(
           this.asEditorContent(file.content), 
-          saveManager.onEditorUpdate.bind(saveManager)
+          this.onEditorUpdate
         );
 
         // subscribe to file changes
@@ -113,11 +126,16 @@ export default {
         });
     }, 1000),
 
+
+    onEditorUpdate(update) {
+      this.saveManager.onEditorUpdate(update);
+    },
+
     onSaveStatus(status) {
       this.save_status = status;
     },
 
-    onSave(result) {
+    onSaved(result) {
       this.doc.headRevisionId = result.headRevisionId;
     },
 
@@ -129,56 +147,23 @@ export default {
     },
 
     onDriveChanged(changes) {
-      let thisDocChange = changes.find(change => change.fileId === this.doc_id);
-      if (thisDocChange) {
-        _retry(
-          {
-            // retry up to 5 times
-            times: 5,
+      this.syncManager.onDriveChanged(changes);
+    },
 
-            // try every 5 seconds
-            interval: 5000
-          },
+    onSyncTitle(title) {
+      this.doc.title = title;
+    },
 
-          callback => {
-            drive
-              .getFileMetadata(this.doc_id)
-              .then(metadata => {
-                // if the change has a different revisionId then get the file
-                if (metadata.headRevisionId !== this.doc.headRevisionId) {
-                  return drive.getFile(this.doc_id)
-                // otherwise check for a title change
-                } else if (metadata.name !== this.doc.title) {
-                  this.doc.title = metadata.name;
-                } 
-              })
-              .then(file => {
-                if (file) {
-                  this.doc = this.docInfo(
-                    file.metadata.name, 
-                    file.metadata.headRevisionId
-                  );
-                  this.editor.setContent(
-                    this.asEditorContent(file.content)
-                  );
-                }
-                callback(null, null);
-              })
-              .catch(error => {
-                callback(error, null);
-              });
-          },
+    onSyncDoc(doc) {
+      this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
+      this.editor.setContent(this.asEditorContent(doc.content));
+    },
 
-          // result function
-          error => {
-            if (error)
-              dialog.errorSnackbar(
-                "Error attempting to synchronize changes from Drive: " +
-                error.message
-              );
-          }
-        );
-      }
+    onSyncError(error) {
+      dialog.errorSnackbar(
+        "Error attempting to synchronize changes from Drive: " +
+        error.message
+      );
     },
 
     docInfo(title = null, headRevisionId = null) {
@@ -200,20 +185,13 @@ export default {
 
 </script>
 
-
 <template>
 
   <div class="edit-container">
     <div v-if="editor">
       <v-card class="edit-card card--flex-toolbar">
-        <v-toolbar
-          card
-          dense
-          :height="34"
-          prominent
-          extended
-          :extension-height="32"
-        >
+        <v-toolbar card dense :height="34" prominent extended :extension-height="32">
+
           <template v-slot:extension>
             <EditorToolbar :editor="editor" />
           </template>
@@ -223,6 +201,7 @@ export default {
           <v-spacer />
   
           <EditorSaveStatus :status="save_status" />
+
           <EditorShareButton :doc_id="doc_id" />
           
           <PopupMenu>
@@ -232,14 +211,18 @@ export default {
         </v-toolbar>
 
         <v-divider />
+
         <v-card-text>
           <editor-content :editor="editor" />
         </v-card-text>
+
       </v-card>
     </div>
+
     <div v-else-if="error">
       <ErrorPanel :error="error" />
     </div>
+    
     <div v-else>
       <ProgressSpinner />
     </div>
