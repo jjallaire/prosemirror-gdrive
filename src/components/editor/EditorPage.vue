@@ -10,8 +10,8 @@ import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
 
-import EditorSave from './save/EditorSave.js'
-import EditorSaveStatus from './save/EditorSaveStatus.vue'
+import EditorSaveManager from './EditorSaveManager.js'
+import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
@@ -32,8 +32,6 @@ export default {
     PopupMenu, MenuTile
   },
 
-  mixins: [EditorSave],
-
   props: {
     doc_id: {
       type: String,
@@ -43,7 +41,6 @@ export default {
 
   data: function() {
     return {
-
       // document
       doc: this.docInfo(),
      
@@ -52,20 +49,32 @@ export default {
       
       // editor
       editor: null,
+
+      // save status
+      save_status: "clean"
     }
   },
 
   mounted() {
+
     drive.getFile(this.doc_id)
       .then(file => {
 
         // set doc info
         this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
 
+        // monitor and save editor changes
+        let saveManager = new EditorSaveManager(
+          this.doc_id,
+          this.onSaveStatus,
+          this.onSave,
+          this.onSaveError
+        );
+
         // initialize editor
         this.editor = editor.create(
           this.asEditorContent(file.content), 
-          this.onEditorUpdate
+          saveManager.onEditorUpdate.bind(saveManager)
         );
 
         // subscribe to file changes
@@ -103,6 +112,21 @@ export default {
           dialog.error("Drive Error", error.message);
         });
     }, 1000),
+
+    onSaveStatus(status) {
+      this.save_status = status;
+    },
+
+    onSave(result) {
+      this.doc.headRevisionId = result.headRevisionId;
+    },
+
+    onSaveError(error) {
+      dialog.errorSnackbar(
+        "Unable to save changes (" + error.message + "). " +
+        "Please ensure you are online so that you don't lose work."
+      );
+    },
 
     onDriveChanged(changes) {
       let thisDocChange = changes.find(change => change.fileId === this.doc_id);
@@ -169,7 +193,7 @@ export default {
         return JSON.parse(content);
       else
         return content;
-    }
+    },
 
   }
 }
@@ -191,14 +215,14 @@ export default {
           :extension-height="32"
         >
           <template v-slot:extension>
-            <EditorToolbar :editor="editor" :editor_updates="editor_updates" />
+            <EditorToolbar :editor="editor" />
           </template>
 
           <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
                    
           <v-spacer />
   
-          <EditorSaveStatus :editor_updates="editor_updates" />
+          <EditorSaveStatus :status="save_status" />
           <EditorShareButton :doc_id="doc_id" />
           
           <PopupMenu>

@@ -193,7 +193,8 @@ export default {
   getFile(fileId) {
     let metadataRequest = gapi.client.drive.files.get({
       fileId: fileId,
-      supportsTeamDrives: true
+      supportsTeamDrives: true,
+      fields: kFileFields
     });
     let contentRequest = gapi.client.drive.files.get({
       fileId: fileId,
