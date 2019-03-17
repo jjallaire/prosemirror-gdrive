@@ -2,6 +2,7 @@
 
 import { EditorContent } from 'tiptap'
 import _debounce from 'lodash/debounce'
+import _retry from 'async/retry'
 
 import editor from './tiptap/editor'
 
@@ -106,26 +107,53 @@ export default {
     onDriveChanged(changes) {
       let thisDocChange = changes.find(change => change.fileId === this.doc_id);
       if (thisDocChange) {
-        drive 
-          .getFileMetadata(this.doc_id)
-          .then(metadata => {
-            // if the change has a different revisionId then update
-            if (metadata.headRevisionId !== this.doc.headRevisionId) {
-              drive
-                .getFile(this.doc_id)
-                .then(file => {
-                  this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
-                  this.editor.setContent(this.asEditorContent(file.content));
-                });
-            // otherwise check for a title change
-            } else if (metadata.name !== this.doc.title) {
-              this.doc.title = metadata.name;
-            } 
-          })
-          .catch(() => {
-            // TODO: handle error
+        _retry(
+          {
+            // retry up to 5 times
+            times: 5,
 
-          });
+            // try every 5 seconds
+            interval: 5000
+          },
+
+          callback => {
+            drive
+              .getFileMetadata(this.doc_id)
+              .then(metadata => {
+                // if the change has a different revisionId then get the file
+                if (metadata.headRevisionId !== this.doc.headRevisionId) {
+                  return drive.getFile(this.doc_id)
+                // otherwise check for a title change
+                } else if (metadata.name !== this.doc.title) {
+                  this.doc.title = metadata.name;
+                } 
+              })
+              .then(file => {
+                if (file) {
+                  this.doc = this.docInfo(
+                    file.metadata.name, 
+                    file.metadata.headRevisionId
+                  );
+                  this.editor.setContent(
+                    this.asEditorContent(file.content)
+                  );
+                }
+                callback(null, null);
+              })
+              .catch(error => {
+                callback(error, null);
+              });
+          },
+
+          // result function
+          error => {
+            if (error)
+              dialog.errorSnackbar(
+                "Error attempting to synchronize changes from Drive: " +
+                error.message
+              );
+          }
+        );
       }
     },
 
