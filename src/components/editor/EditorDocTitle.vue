@@ -33,7 +33,7 @@ export default {
 <style>
 
 .editor-document-title {
-  margin-top: 20px !important;
+  margin-top: 18px !important;
   font-size: 1.2em;
   color: rgba(100,100,100,1);
   padding: 5px;
