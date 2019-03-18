@@ -6,6 +6,9 @@ const gapi = window.gapi;
 
 import { GAPIError } from './google'
 
+import _retry from 'async/retry'
+import drive from '../drive'
+
 class ChangeMonitor  {
 
   constructor() {
@@ -81,6 +84,59 @@ class ChangeMonitor  {
 
 
 export default new ChangeMonitor();
+
+
+export function docSyncHandler(
+  docId, docInfo, onSyncTitle, onSyncDoc, onSyncError) {
+    
+  function onDriveChanged(changes) {
+
+    let thisDocChange = changes.find(change => change.fileId === docId);
+    if (thisDocChange) {
+      _retry(
+        {
+          // retry up to 5 times
+          times: 5,
+
+          // try every 5 seconds
+          interval: 5000
+        },
+
+        callback => {
+          drive
+            .getFileMetadata(docId)
+            .then(metadata => {
+              let doc = docInfo();
+              // if the change has a different revisionId then get the file
+              if (metadata.headRevisionId !== doc.headRevisionId) {
+                return drive.getFile(docId)
+              // otherwise check for a title change
+              } else if (doc.title !== metadata.name) {
+                onSyncTitle(metadata.name);
+              } 
+            })
+            .then(doc => {
+              if (doc)
+                onSyncDoc(doc);
+              callback(null, null);
+            })
+            .catch(error => {
+              callback(error, null);
+            });
+        },
+
+        // result function
+        error => {
+          if (error)
+            onSyncError(error);
+        }
+      );
+    }
+  }
+
+  return onDriveChanged;
+}
+
 
 
 

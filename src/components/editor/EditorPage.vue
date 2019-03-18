@@ -11,10 +11,9 @@ import EditorDocTitle from './EditorDocTitle.vue'
 
 import EditorSaveManager from './EditorSaveManager.js'
 import EditorSaveStatus from './EditorSaveStatus.vue'
-import EditorSyncManager from './EditorSyncManager.js'
 
 import drive from '../../drive'
-import driveChanges from '../../drive/changes'
+import driveChanges, { docSyncHandler } from '../../drive/changes'
 
 import ErrorPanel from '../core/ErrorPanel.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
@@ -49,7 +48,7 @@ export default {
 
       // save and sync managers
       saveManager: null,
-      syncManager: null,
+      syncHandler: null,
 
       // save status
       save_status: "clean",
@@ -76,7 +75,7 @@ export default {
         );
 
         // synchronize to changes made in other browsers
-        this.syncManager = new EditorSyncManager(
+        this.syncHandler = docSyncHandler(
           this.doc_id,
           () => this.doc,
           this.onSyncTitle,
@@ -91,7 +90,7 @@ export default {
         );
 
         // subscribe to file changes
-        return driveChanges.subscribe(this.onDriveChanged);
+        return driveChanges.subscribe(this.syncHandler);
       })
       .then(() => {
         return drive.setFileViewed(this.doc_id);
@@ -108,7 +107,7 @@ export default {
     if (this.editor) {
       this.editor.destroy();
       this.editor = null;
-      driveChanges.unsubscribe(this.onDriveChanged);
+      driveChanges.unsubscribe(this.syncHandler);
     }
   },
 
