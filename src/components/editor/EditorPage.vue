@@ -206,10 +206,8 @@ export default {
 
         <v-divider />
 
-        <v-card-text>
-          <div ref="prosemirror" class="prosemirror-container" />
-        </v-card-text>
-
+        <v-card-text ref="prosemirror" />
+        
       </v-card>
     </div>
 
@@ -266,18 +264,14 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-}
-
-.edit-container .prosemirror-container {
-  width: 100%;
-  height: 100%;
+  overflow-y: scroll
 }
 
 .edit-container .editor-save-status {
   margin-right: 5px;
 }
 
-.edit-container .prosemirror-container .ProseMirror {
+.edit-container .ProseMirror {
   outline: none;
 }
 </style>
