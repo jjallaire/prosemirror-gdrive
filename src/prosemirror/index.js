@@ -6,6 +6,8 @@ import { DOMParser, DOMSerializer } from 'prosemirror-model'
 import { undo, redo, history } from "prosemirror-history"
 import { keymap } from "prosemirror-keymap"
 import { baseKeymap } from "prosemirror-commands"
+import { dropCursor } from 'prosemirror-dropcursor'
+import { gapCursor } from 'prosemirror-gapcursor'
 
 
 export default class ProsemirrorEditor {
@@ -30,7 +32,9 @@ export default class ProsemirrorEditor {
       plugins: [
         history(),
         keymap({'Mod-z': undo, 'Mod-y': redo}),
-        keymap(baseKeymap)
+        keymap(baseKeymap),
+        dropCursor(),
+        gapCursor()
       ]
     });
   
