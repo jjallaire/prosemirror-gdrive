@@ -83,8 +83,10 @@ export default {
 
         // initialize editor
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
+          autoFocus: true,
+          editable: true,
           content: this.asEditorContent(file.content),
-          onUpdate: this.onEditorUpdate
+          onUpdate: this.onEditorUpdate,
         });
 
         // subscribe to file changes

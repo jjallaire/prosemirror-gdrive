@@ -1,7 +1,7 @@
 
 import { schema } from "prosemirror-schema-basic"
 import { addListNodes } from "prosemirror-schema-list"
-import { EditorState } from "prosemirror-state"
+import { EditorState, Plugin, PluginKey } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
 import { history } from "prosemirror-history"
@@ -20,6 +20,7 @@ export default class ProsemirrorEditor {
 
     // save options
     this._options = {
+      editable: true,
       autoFocus: false,
       content: '',
       mapKeys: {},
@@ -43,7 +44,13 @@ export default class ProsemirrorEditor {
         keymap(buildKeymap(this._schema, this._options.mapKeys)),
         keymap(baseKeymap),
         dropCursor(),
-        gapCursor()
+        gapCursor(),
+        new Plugin({
+          key: new PluginKey('editable'),
+          props: {
+            editable: () => this._options.editable,
+          },
+        }),
       ]
     });
   
