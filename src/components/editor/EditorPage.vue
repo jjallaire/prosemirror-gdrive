@@ -192,7 +192,7 @@ export default {
         <v-toolbar card dense :height="34" prominent extended :extension-height="32">
 
           <template v-slot:extension>
-            <EditorToolbar />
+            <EditorToolbar :editor="editor" />
           </template>
 
           <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
