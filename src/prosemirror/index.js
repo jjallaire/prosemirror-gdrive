@@ -1,13 +1,17 @@
 
 import { schema } from "prosemirror-schema-basic"
+import { addListNodes } from "prosemirror-schema-list"
 import { EditorState } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
-import { DOMParser, DOMSerializer } from 'prosemirror-model'
-import { undo, redo, history } from "prosemirror-history"
+import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
+import { history } from "prosemirror-history"
 import { keymap } from "prosemirror-keymap"
 import { baseKeymap } from "prosemirror-commands"
 import { dropCursor } from 'prosemirror-dropcursor'
 import { gapCursor } from 'prosemirror-gapcursor'
+
+import { buildKeymap } from "./keymap"
+import { buildInputRules } from "./inputrules"
 
 
 export default class ProsemirrorEditor {
@@ -18,12 +22,16 @@ export default class ProsemirrorEditor {
     this._options = {
       autoFocus: false,
       content: '',
+      mapKeys: {},
       onUpdate: () => {},
       ...options
     };
 
-    // set editor schema
-    this._schema = schema;
+    // create schema
+    this._schema = new Schema({
+      nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
+      marks: schema.spec.marks
+    });
 
     // create the editor state
     this._state = EditorState.create({ 
@@ -31,7 +39,8 @@ export default class ProsemirrorEditor {
       doc: this._createDocument(this._options.content),
       plugins: [
         history(),
-        keymap({'Mod-z': undo, 'Mod-y': redo}),
+        buildInputRules(this._schema),
+        keymap(buildKeymap(this._schema, this._options.mapKeys)),
         keymap(baseKeymap),
         dropCursor(),
         gapCursor()
