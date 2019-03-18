@@ -2,7 +2,7 @@
 
 import _debounce from 'lodash/debounce'
 
-import { createEditor } from '../../prosemirror'
+import ProsemirrorEditor from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
@@ -82,7 +82,10 @@ export default {
         );
 
         // initialize editor
-        this.editor = createEditor(this.$refs.prosemirror);
+        this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
+          content: this.asEditorContent(file.content),
+          onUpdate: this.onEditorUpdate
+        });
 
         // subscribe to file changes
         return driveChanges.subscribe(this.syncHandler);
@@ -100,7 +103,7 @@ export default {
 
   beforeDestroy() {
     if (this.editor) {
-      // TODO this.editor.destroy();
+      this.editor.destroy();
       this.editor = null;
       driveChanges.unsubscribe(this.syncHandler);
     }
@@ -150,7 +153,7 @@ export default {
 
     onSyncDoc(doc) {
       this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
-      // TODO this.editor.setContent(this.asEditorContent(doc.content));
+      this.editor.setContent(this.asEditorContent(doc.content));
     },
 
     onSyncError(error) {
