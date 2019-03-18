@@ -2,9 +2,10 @@
 
 import _throttle from 'lodash/throttle'
 import _retry from 'async/retry'
-import drive from '../../drive'
 
-export default class EditorSaveManager  {
+import drive from '.'
+
+export default class DriveSave  {
 
   constructor(docId, onStatus, onSaved, onSaveError) {
 

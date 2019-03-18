@@ -8,11 +8,10 @@ import editor from './tiptap/editor'
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
-
-import EditorSaveManager from './EditorSaveManager.js'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import drive from '../../drive'
+import DriveSave from '../../drive/save'
 import driveChanges, { docSyncHandler } from '../../drive/changes'
 
 import ErrorPanel from '../core/ErrorPanel.vue'
@@ -47,7 +46,7 @@ export default {
       editor: null,
 
       // save and sync managers
-      saveManager: null,
+      driveSave: null,
       syncHandler: null,
 
       // save status
@@ -67,7 +66,7 @@ export default {
         this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
 
         // monitor and save editor changes
-        this.saveManager = new EditorSaveManager(
+        this.driveSave = new DriveSave(
           this.doc_id,
           this.onSaveStatus,
           this.onSaved,
@@ -127,7 +126,7 @@ export default {
 
 
     onEditorUpdate(update) {
-      this.saveManager.onEditorUpdate(update);
+      this.driveSave.onEditorUpdate(update);
     },
 
     onSaveStatus(status) {
