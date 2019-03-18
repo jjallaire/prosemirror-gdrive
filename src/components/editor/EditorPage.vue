@@ -1,9 +1,8 @@
 <script>
 
-import { EditorContent } from 'tiptap'
 import _debounce from 'lodash/debounce'
 
-import editor from './tiptap/editor'
+import { createEditor } from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
@@ -25,7 +24,7 @@ export default {
   name: 'EditorPage',
 
   components: {
-    ProgressSpinner, ErrorPanel, EditorContent, 
+    ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveStatus,
     PopupMenu, MenuTile
   },
@@ -83,10 +82,7 @@ export default {
         );
 
         // initialize editor
-        this.editor = editor.create(
-          this.asEditorContent(file.content), 
-          this.onEditorUpdate
-        );
+        this.editor = createEditor(this.$refs.prosemirror);
 
         // subscribe to file changes
         return driveChanges.subscribe(this.syncHandler);
@@ -104,7 +100,7 @@ export default {
 
   beforeDestroy() {
     if (this.editor) {
-      this.editor.destroy();
+      // TODO this.editor.destroy();
       this.editor = null;
       driveChanges.unsubscribe(this.syncHandler);
     }
@@ -154,7 +150,7 @@ export default {
 
     onSyncDoc(doc) {
       this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
-      this.editor.setContent(this.asEditorContent(doc.content));
+      // TODO this.editor.setContent(this.asEditorContent(doc.content));
     },
 
     onSyncError(error) {
@@ -186,12 +182,12 @@ export default {
 <template>
 
   <div class="edit-container">
-    <div v-if="editor">
+    <div v-show="editor">
       <v-card class="edit-card card--flex-toolbar">
         <v-toolbar card dense :height="34" prominent extended :extension-height="32">
 
           <template v-slot:extension>
-            <EditorToolbar :editor="editor" />
+            <EditorToolbar />
           </template>
 
           <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
@@ -211,17 +207,17 @@ export default {
         <v-divider />
 
         <v-card-text>
-          <editor-content :editor="editor" />
+          <div ref="prosemirror" class="prosemirror-container" />
         </v-card-text>
 
       </v-card>
     </div>
 
-    <div v-else-if="error">
+    <div v-if="error">
       <ErrorPanel :error="error" />
     </div>
     
-    <div v-else>
+    <div v-else-if="!editor">
       <ProgressSpinner />
     </div>
 
@@ -270,16 +266,18 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  overflow-y: scroll;
+}
+
+.edit-container .prosemirror-container {
+  width: 100%;
+  height: 100%;
 }
 
 .edit-container .editor-save-status {
   margin-right: 5px;
 }
 
-
-
-.edit-container .ProseMirror {
+.edit-container .prosemirror-container .ProseMirror {
   outline: none;
 }
 </style>
