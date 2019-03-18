@@ -8,6 +8,7 @@ import PopupMenu from '../core/PopupMenu'
 import MenuTile from '../core/MenuTile'
 
 import drive from '../../drive'
+import driveChanges from '../../drive/changes'
 import dialog from '../core/dialog'
 import { newDocument, openDocument } from '../core/docs'
 
@@ -45,16 +46,23 @@ export default {
       handler () {
         // re-query data for page 1
         if (this.pagination.page === 1)
-          this.updateItems();
+          this.updateItems(true);
       },
       deep: true
     }
   },
 
-  
+  mounted() {
+    driveChanges.subscribe(this.updateItems);
+  },
+
+  beforeDestroy() {
+    driveChanges.unsubscribe(this.updateItems)
+  },
+
   methods: {
 
-    updateItems(clear = true) {
+    updateItems(clear = false) {
       if (clear)
         this.items = [];
       this.loading = true;
@@ -84,7 +92,7 @@ export default {
         this.pagination.sortBy = '';
       else
         this.pagination.sortBy = 'lastViewed';
-      this.updateItems(false);
+      this.updateItems();
     }, 500),
 
     
@@ -121,7 +129,7 @@ export default {
     handleDriveRequest(request) {
       request
         .then(() => {
-          this.updateItems(false);
+          this.updateItems();
           drive.updateRecentDocs();
         })
         .catch(error => {
