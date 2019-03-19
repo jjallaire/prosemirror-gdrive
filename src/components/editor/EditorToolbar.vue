@@ -20,11 +20,11 @@ export default {
   },
 
   computed: {
-    isActive: function() {
-      return this.editor.isActive;
+    isLatched: function() {
+      return this.editor.isLatched;
     },
     commands: function() {
-      return this.editor.commands;
+      return this.editor.executeCommand;
     }
   }
 
@@ -47,29 +47,29 @@ export default {
     
     <v-divider inset vertical />
 
-    <v-btn flat title="Bold" :class="{ 'v-btn--active': isActive.strong() }" @click="commands.strong">
+    <v-btn flat title="Bold" :class="{ 'v-btn--active': isLatched.strong() }" @click="commands.strong">
       <v-icon>format_bold</v-icon>
     </v-btn>
 
-    <v-btn flat title="Italic" :class="{ 'v-btn--active': isActive.em() }" @click="commands.em">
+    <v-btn flat title="Italic" :class="{ 'v-btn--active': isLatched.em() }" @click="commands.em">
       <v-icon>format_italic</v-icon>
     </v-btn>
 
-    <v-btn flat title="Code" :class="{ 'v-btn--active': isActive.code() }">
+    <v-btn flat title="Code" :class="{ 'v-btn--active': isLatched.code() }" @click="commands.code">
       <v-icon>code</v-icon>
     </v-btn>
 
     <v-divider inset vertical />
 
-    <v-btn flat title="Bullet list" :class="{ 'v-btn--active': isActive.bullet_list() }">
+    <v-btn flat title="Bullet list" :class="{ 'v-btn--active': isLatched.bullet_list() }" @click="commands.bullet_list">
       <v-icon>list</v-icon>
     </v-btn>
 
-    <v-btn flat title="Numbered list" :class="{ 'v-btn--active': isActive.ordered_list() }">
+    <v-btn flat title="Numbered list" :class="{ 'v-btn--active': isLatched.ordered_list() }" @click="commands.ordered_list">
       <v-icon>format_list_numbered</v-icon>
     </v-btn>
 
-    <v-btn flat title="Blockquote" :class="{ 'v-btn--active': isActive.blockquote() }">
+    <v-btn flat title="Blockquote" :class="{ 'v-btn--active': isLatched.blockquote() }" @click="commands.blockquote">
       <v-icon>format_quote</v-icon>
     </v-btn>
 

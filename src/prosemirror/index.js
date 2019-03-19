@@ -4,16 +4,16 @@ import { addListNodes } from "prosemirror-schema-list"
 import { EditorState, Plugin, PluginKey } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
-import { history, undo, redo } from "prosemirror-history"
+import { history } from "prosemirror-history"
 import { keymap } from "prosemirror-keymap"
-import { baseKeymap, toggleMark } from "prosemirror-commands"
+import { baseKeymap } from "prosemirror-commands"
 import { dropCursor } from 'prosemirror-dropcursor'
 import { gapCursor } from 'prosemirror-gapcursor'
 
-import { markIsActive, nodeIsActive, getMarkAttrs } from 'tiptap-utils'
 
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
+import { buildCommands } from './commands' 
 
 
 export default class ProsemirrorEditor {
@@ -62,8 +62,8 @@ export default class ProsemirrorEditor {
       dispatchTransaction: this._dispatchTransaction.bind(this)
     });
 
-    // track active nodes and marks
-    this._setActiveNodesAndMarks();
+    // create editor commands
+    this._commands = buildCommands(this._schema);
 
     // auto-focus if requested
     if (this._options.autoFocus) {
@@ -117,48 +117,27 @@ export default class ProsemirrorEditor {
     this._view.dom.blur()
   }
 
-  get isActive() {
+  // functions to be called by UI templates to determine if commands are latched
+  get isLatched() {
     return Object
-      .entries({
-        ...this._activeMarks,
-        ...this._activeNodes,
-      })
-      .reduce((types, [name, value]) => ({
-        ...types,
-        [name]: (attrs = {}) => value(attrs),
-      }), {})
+      .entries(this._commands)
+      .reduce((latched, [name, command]) => ({
+        ...latched,
+        [name]: () => command.isLatched(this._state),
+      }), {});
   }
 
-  get commands() {
-
-    // yield a command function from a prosemirror command
-    const command = cmd => {
-      return () => {
-        cmd(this._state, this._view.dispatch);
-        this.focus();
-      };
-    }
-
-    // mark commands
-    const markCommand = mark => {
-      return command(toggleMark(mark));
-    }
-    let markCommands = Object
-      .entries(this._schema.marks)
-      .reduce((marks, [name, mark]) => ({
-        ...marks,
-        [name]: markCommand(mark),
-      }), {})
-
-    // block commands
-    
-
-    // return all commands
-    return {
-      undo: command(undo),
-      redo: command(redo),
-      ...markCommands
-    }
+  // functions to be called by UI templates to execute commands
+  get executeCommand() {
+    return Object
+      .entries(this._commands)
+      .reduce((execute, [name, command]) => ({
+        ...execute,
+        [name]: () => { 
+          command.execute(this._state, this._view.dispatch, this._view);
+          this.focus();
+        }
+      }), {});
   }
 
   _createDocument(content) {
@@ -184,29 +163,6 @@ export default class ProsemirrorEditor {
     } else {
       return null;
     }
-  }
-
-  _setActiveNodesAndMarks() {
-    this._activeMarks = Object
-      .entries(this._schema.marks)
-      .reduce((marks, [name, mark]) => ({
-        ...marks,
-        [name]: (attrs = {}) => markIsActive(this._state, mark, attrs),
-      }), {})
-
-    this._activeMarkAttrs = Object
-      .entries(this._schema.marks)
-      .reduce((marks, [name, mark]) => ({
-        ...marks,
-        [name]: getMarkAttrs(this._state, mark),
-      }), {})
-
-    this._activeNodes = Object
-      .entries(this._schema.nodes)
-      .reduce((nodes, [name, node]) => ({
-        ...nodes,
-        [name]: (attrs = {}) => nodeIsActive(this._state, node, attrs),
-      }), {})
   }
 
   _dispatchTransaction(transaction) {
