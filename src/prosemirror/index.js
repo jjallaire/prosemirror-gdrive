@@ -117,6 +117,10 @@ export default class ProsemirrorEditor {
     this._view.dom.blur()
   }
 
+  // I think that rather than this we will want to create command shims
+  // for the editor commands, then actually construct the buttons from the
+  // command instances (e.g. CommandToolbarButton :command="cmd")
+
   // functions to be called by UI templates to determine if commands are latched
   get isLatched() {
     return Object

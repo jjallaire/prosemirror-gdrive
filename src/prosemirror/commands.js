@@ -5,7 +5,7 @@ import { undo, redo } from "prosemirror-history"
 import { markIsActive, nodeIsActive } from 'tiptap-utils'
 
 import { toggleMark } from "prosemirror-commands"
-import { toggleList, toggleBlockType } from 'tiptap-commands'
+import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
 
 
@@ -86,6 +86,12 @@ class BlockCommand extends NodeCommand {
 
 }
 
+class WrapCommand extends NodeCommand {
+  constructor(wrapType, toggleType, attrs = {}) {
+    super(wrapType, toggleWrap(wrapType, toggleType, attrs));
+  }
+}
+
 
 export function buildCommands(schema) {
   return {
@@ -98,10 +104,10 @@ export function buildCommands(schema) {
                                  schema.nodes.list_item),
     ordered_list: new ListCommand(schema.nodes.ordered_list,
                                   schema.nodes.list_item),
-    blockquote: new BlockCommand(schema.nodes.blockquote),
-    heading1: new BlockCommand(schema.nodes.heading, { level: 1 }),
-    heading2: new BlockCommand(schema.nodes.heading, { level: 2 }),
-    heading3: new BlockCommand(schema.nodes.heading, { level: 3 })
+    blockquote: new WrapCommand(schema.nodes.blockquote, schema.nodes.paragraph),
+    heading1: new BlockCommand(schema.nodes.heading, schema.nodes.paragraph, { level: 1 }),
+    heading2: new BlockCommand(schema.nodes.heading, schema.nodes.paragraph, { level: 2 }),
+    heading3: new BlockCommand(schema.nodes.heading, schema.nodes.paragraph, { level: 3 })
   }
 }
 
