@@ -2,7 +2,9 @@
 
 export class Command {
 
-  constructor(title) {
+  constructor(name, icon, title) {
+    this.name = name;
+    this.icon = icon;
     this.title = title;
   }
 

@@ -13,7 +13,7 @@ import { gapCursor } from 'prosemirror-gapcursor'
 
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
-import { buildEditorCommands } from './commands' 
+import { buildEditorCommands, EditorCommandAdaptor } from './commands' 
 
 
 export default class ProsemirrorEditor {
@@ -117,31 +117,15 @@ export default class ProsemirrorEditor {
     this._view.dom.blur()
   }
 
-  // I think that rather than this we will want to create command shims
-  // for the editor commands, then actually construct the buttons from the
-  // command instances (e.g. CommandToolbarButton :command="cmd")
+  // adapt editor commands to the generic (no arg) command interface, then
+  // return an object keyed by command name
+  get commands() {
 
-  // functions to be called by UI templates to determine if commands are latched
-  get isLatched() {
-    return Object
-      .entries(this._commands)
-      .reduce((latched, [name, command]) => ({
-        ...latched,
-        [name]: () => command.isLatched(this._state),
-      }), {});
-  }
+    return this._commands.reduce((commands, command) => ({
+      ...commands,
+      [command.name]: new EditorCommandAdaptor(command, this._state, this._view)
+    }), {});
 
-  // functions to be called by UI templates to execute commands
-  get executeCommand() {
-    return Object
-      .entries(this._commands)
-      .reduce((execute, [name, command]) => ({
-        ...execute,
-        [name]: () => { 
-          command.execute(this._state, this._view.dispatch, this._view);
-          this.focus();
-        }
-      }), {});
   }
 
   _createDocument(content) {

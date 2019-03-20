@@ -12,8 +12,8 @@ import { Command } from '../core/command'
 
 class EditorCommand extends Command {
 
-  constructor(title, command) {
-    super(title);
+  constructor(name, icon, title, command) {
+    super(name, icon, title);
     this._command = command;
   }
 
@@ -28,8 +28,8 @@ class EditorCommand extends Command {
 
 class MarkCommand extends EditorCommand {
   
-  constructor(title, markType, attrs = {}) {
-    super(title, toggleMark(markType, attrs));
+  constructor(name, icon, title, markType, attrs = {}) {
+    super(name, icon, title, toggleMark(markType, attrs));
     this._markType = markType;
     this._attrs = attrs;
   }
@@ -42,8 +42,8 @@ class MarkCommand extends EditorCommand {
 
 class NodeCommand extends EditorCommand {
 
-  constructor(title, nodeType, command) {
-    super(title, command);
+  constructor(name, icon, title, nodeType, command) {
+    super(name, icon, title, command);
     this._nodeType = nodeType;
   }
 
@@ -55,23 +55,25 @@ class NodeCommand extends EditorCommand {
 
 class ListCommand extends NodeCommand {
 
-  constructor(title, listType, itemType) {
-    super(title, listType, toggleList(listType, itemType));
+  constructor(name, icon, title, schema, listType) {
+    super(name, icon, title, listType, toggleList(listType, schema.nodes.list_item));
   }
 
 }
 
 class BlockCommand extends NodeCommand {
 
-  constructor(title, blockType, toggleType, attrs = {}) {
-    super(title, blockType, toggleBlockType(blockType, toggleType, attrs));
+  constructor(name, icon, title, blockType, toggleType, attrs = {}) {
+    super(name, icon, title, blockType, toggleBlockType(blockType, toggleType, attrs));
   }
 
 }
 
 class HeadingCommand extends BlockCommand {
-  constructor(schema, level) {
+  constructor(name, icon, schema, level) {
     super(
+      name,
+      icon,
       "Level " + level + "Heading", 
       schema.nodes.heading, 
       schema.nodes.paragraph,
@@ -81,29 +83,48 @@ class HeadingCommand extends BlockCommand {
 }
 
 class WrapCommand extends NodeCommand {
-  constructor(title, wrapType, toggleType, attrs = {}) {
-    super(title, wrapType, toggleWrap(wrapType, toggleType, attrs));
+  constructor(name, icon, title, wrapType, toggleType, attrs = {}) {
+    super(name, icon, title, wrapType, toggleWrap(wrapType, toggleType, attrs));
+  }
+}
+
+export class EditorCommandAdaptor extends Command {
+      
+  constructor(command, state, view) {
+    super(command.name, command.icon, command.title)
+    this._command = command;
+    this._state = state;
+    this._view = view;
+  }
+
+  isEnabled() {
+    return this._command.isEnabled(this._state);
+  }
+
+  isLatched() {
+    return this._command.isLatched(this._state);
+  }
+
+  execute() {
+    this._view.focus();
+    return this._command.execute(this._state, this._view.dispatch, this._view);
   }
 }
 
 
+
 export function buildEditorCommands(schema) {
-  return {
-    undo: new EditorCommand("Undo", undo),
-    redo: new EditorCommand("Redo", redo),
-    strong: new MarkCommand("Bold", schema.marks.strong),
-    em: new MarkCommand("Italics", schema.marks.em),
-    code: new MarkCommand("Code", schema.marks.code),
-    bullet_list: new ListCommand("Bullet List", 
-                                 schema.nodes.bullet_list,
-                                 schema.nodes.list_item),
-    ordered_list: new ListCommand("Numbered List",
-                                  schema.nodes.ordered_list,
-                                  schema.nodes.list_item),
-    blockquote: new WrapCommand("Blockquote", schema.nodes.blockquote, schema.nodes.paragraph),
-    heading1: new HeadingCommand(schema, 1),
-    heading2: new HeadingCommand(schema, 2),
-    heading3: new HeadingCommand(schema, 3)
-  }
+  return [
+    new EditorCommand("undo", "undo", "Undo", undo),
+    new EditorCommand("redo", "redo", "Redo", redo),
+    new MarkCommand("strong", "format_bold", "Bold", schema.marks.strong),
+    new MarkCommand("em", "format_italic", "Italics", schema.marks.em),
+    new MarkCommand("code", "code", "Code", schema.marks.code),
+    new ListCommand("bullet_list", "list", "Bullet List", schema, schema.nodes.bullet_list),
+    new ListCommand("ordered_list", "format_list_numbered", "Numbered List", schema, schema.nodes.ordered_list),
+    new WrapCommand("blockquote", "format_quote", "Blockquote", schema.nodes.blockquote, schema.nodes.paragraph),
+    new HeadingCommand("heading1", "exposure_plus_1", schema, 1),
+    new HeadingCommand("heading2", "exposure_plus_2", schema, 2),
+  ]
 }
 
