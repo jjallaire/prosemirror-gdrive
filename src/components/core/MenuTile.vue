@@ -16,7 +16,7 @@ export default {
   props: {
     icon: {
       type: String,
-      required: true
+      default: null
     },
     text: {
       type: String,
@@ -38,7 +38,7 @@ export default {
 <template>
 
   <v-list-tile avatar @click="clicked">
-    <v-list-tile-avatar> <v-icon>{{ icon }}</v-icon></v-list-tile-avatar>
+    <v-list-tile-avatar :size="30"> <v-icon>{{ icon }}</v-icon></v-list-tile-avatar>
     <v-list-tile-title>{{ text }}</v-list-tile-title>
   </v-list-tile>
 

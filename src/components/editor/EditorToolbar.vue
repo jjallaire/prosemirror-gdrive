@@ -3,6 +3,7 @@
 <script>
 
 import EditorToolbarButton from './EditorToolbarButton.vue'
+import EditorToolbarMenuBlock from './EditorToolbarMenuBlock.vue'
 
 import { VDivider } from 'vuetify/lib'
 
@@ -11,7 +12,7 @@ export default {
   name: 'EditorToolbar',
 
   components: {
-    EditorToolbarButton, VDivider
+    EditorToolbarButton, EditorToolbarMenuBlock, VDivider
   },
 
   props: {
@@ -24,6 +25,16 @@ export default {
   computed: {
     commands: function() {
       return this.editor.commands;
+    },
+    block_commands: function() {
+      return [
+        this.commands.paragraph,
+        this.commands.heading1,
+        this.commands.heading2,
+        this.commands.heading3,
+        this.commands.heading4,
+        this.commands.code_block,
+      ]
     }
   }
 
@@ -54,12 +65,8 @@ export default {
 
     <v-divider inset vertical />
 
-    <EditorToolbarButton :command="commands.paragraph" />
-    <EditorToolbarButton :command="commands.code_block" />
-    <EditorToolbarButton :command="commands.heading1" />
-    <EditorToolbarButton :command="commands.heading2" />
-
-
+    <EditorToolbarMenuBlock :commands="block_commands" /> 
+    
   </span>
 
 </template>

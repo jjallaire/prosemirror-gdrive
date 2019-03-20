@@ -71,11 +71,11 @@ class BlockCommand extends NodeCommand {
 }
 
 class HeadingCommand extends BlockCommand {
-  constructor(name, icon, schema, level) {
+  constructor(schema, level) {
     super(
-      name,
-      icon,
-      "Level " + level + "Heading", 
+      "heading" + level,
+      null,
+      "Heading " + level, 
       schema.nodes.heading, 
       schema.nodes.paragraph,
       { level }
@@ -126,10 +126,12 @@ export function buildCommands(schema) {
     new ListCommand("bullet_list", "list", "Bullet List", schema, schema.nodes.bullet_list),
     new ListCommand("ordered_list", "format_list_numbered", "Numbered List", schema, schema.nodes.ordered_list),
     new WrapCommand("blockquote", "format_quote", "Blockquote", schema.nodes.blockquote, schema.nodes.paragraph),
-    new BlockCommand("paragraph", "subject", "Paragraph", schema.nodes.paragraph, schema.nodes.paragraph, {}),
-    new BlockCommand("code_block", "code", "Code Block", schema.nodes.code_block, schema.nodes.paragraph, {}),
-    new HeadingCommand("heading1", "exposure_plus_1", schema, 1),
-    new HeadingCommand("heading2", "exposure_plus_2", schema, 2),
+    new BlockCommand("paragraph", "subject", "Normal", schema.nodes.paragraph, schema.nodes.paragraph, {}),
+    new BlockCommand("code_block", "code", "Code", schema.nodes.code_block, schema.nodes.paragraph, {}),
+    new HeadingCommand(schema, 1),
+    new HeadingCommand(schema, 2),
+    new HeadingCommand(schema, 3),
+    new HeadingCommand(schema, 4),
   ]
 }
 
