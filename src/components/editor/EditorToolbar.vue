@@ -42,7 +42,7 @@ export default {
 
     <EditorToolbarButton :command="commands.strong" />
     <EditorToolbarButton :command="commands.em" />
-
+    <EditorToolbarButton :command="commands.code" />
     <EditorToolbarButton :command="commands.underline" />
     <EditorToolbarButton :command="commands.strikethrough" />
 
