@@ -64,7 +64,7 @@ export default {
         // set doc info
         this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
 
-        // monitor and save editor changes
+        // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
           this.doc_id,
           this.onSaveStatus,
