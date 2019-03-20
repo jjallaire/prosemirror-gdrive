@@ -113,7 +113,7 @@ export class EditorCommandAdaptor extends Command {
 
 
 
-export function buildEditorCommands(schema) {
+export function buildCommands(schema) {
   return [
     new EditorCommand("undo", "undo", "Undo", undo),
     new EditorCommand("redo", "redo", "Redo", redo),
