@@ -13,7 +13,7 @@ import { gapCursor } from 'prosemirror-gapcursor'
 
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
-import { buildCommands } from './commands' 
+import { buildEditorCommands } from './commands' 
 
 
 export default class ProsemirrorEditor {
@@ -63,7 +63,7 @@ export default class ProsemirrorEditor {
     });
 
     // create editor commands
-    this._commands = buildCommands(this._schema);
+    this._commands = buildEditorCommands(this._schema);
 
     // auto-focus if requested
     if (this._options.autoFocus) {

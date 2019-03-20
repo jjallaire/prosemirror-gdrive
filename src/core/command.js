@@ -1,0 +1,24 @@
+
+
+export class Command {
+
+  constructor(title) {
+    this.title = title;
+  }
+
+  // eslint-disable-next-line
+  isEnabled(state) {
+    throw new Error('Commands must implement isEnabled');
+  }
+
+  // eslint-disable-next-line
+  isLatched(state) {
+    return false;
+  }
+
+  // eslint-disable-next-line
+  execute(state, dispatch, view) {
+    throw new Error('Commands must implement execute');
+  }
+}
+
