@@ -47,8 +47,13 @@ export default {
 
     <EditorToolbarButton :command="commands.bullet_list" />
     <EditorToolbarButton :command="commands.ordered_list" />
-
     <EditorToolbarButton :command="commands.blockquote" />
+
+    <v-divider inset vertical />
+
+    <EditorToolbarButton :command="commands.heading1" />
+    <EditorToolbarButton :command="commands.heading2" />
+
 
   </span>
 

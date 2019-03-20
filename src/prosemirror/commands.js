@@ -42,13 +42,14 @@ class MarkCommand extends EditorCommand {
 
 class NodeCommand extends EditorCommand {
 
-  constructor(name, icon, title, nodeType, command) {
+  constructor(name, icon, title, nodeType, attrs, command) {
     super(name, icon, title, command);
     this._nodeType = nodeType;
+    this._attrs = attrs;
   }
 
   isLatched(state) {
-    return nodeIsActive(state, this._nodeType);
+    return nodeIsActive(state, this._nodeType, this._attrs);
   }
 
 }
@@ -56,7 +57,7 @@ class NodeCommand extends EditorCommand {
 class ListCommand extends NodeCommand {
 
   constructor(name, icon, title, schema, listType) {
-    super(name, icon, title, listType, toggleList(listType, schema.nodes.list_item));
+    super(name, icon, title, listType, {}, toggleList(listType, schema.nodes.list_item));
   }
 
 }
@@ -64,7 +65,7 @@ class ListCommand extends NodeCommand {
 class BlockCommand extends NodeCommand {
 
   constructor(name, icon, title, blockType, toggleType, attrs = {}) {
-    super(name, icon, title, blockType, toggleBlockType(blockType, toggleType, attrs));
+    super(name, icon, title, blockType, attrs, toggleBlockType(blockType, toggleType, attrs));
   }
 
 }
@@ -84,7 +85,7 @@ class HeadingCommand extends BlockCommand {
 
 class WrapCommand extends NodeCommand {
   constructor(name, icon, title, wrapType, toggleType, attrs = {}) {
-    super(name, icon, title, wrapType, toggleWrap(wrapType, toggleType, attrs));
+    super(name, icon, title, wrapType, {}, toggleWrap(wrapType, toggleType, attrs));
   }
 }
 
