@@ -54,6 +54,8 @@ export default {
 
     <v-divider inset vertical />
 
+    <EditorToolbarButton :command="commands.paragraph" />
+    <EditorToolbarButton :command="commands.code_block" />
     <EditorToolbarButton :command="commands.heading1" />
     <EditorToolbarButton :command="commands.heading2" />
 
