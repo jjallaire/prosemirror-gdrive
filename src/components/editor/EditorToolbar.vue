@@ -43,6 +43,9 @@ export default {
     <EditorToolbarButton :command="commands.strong" />
     <EditorToolbarButton :command="commands.em" />
 
+    <EditorToolbarButton :command="commands.underline" />
+    <EditorToolbarButton :command="commands.strikethrough" />
+
     <v-divider inset vertical />
 
     <EditorToolbarButton :command="commands.bullet_list" />

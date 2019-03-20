@@ -10,7 +10,7 @@ import { baseKeymap } from "prosemirror-commands"
 import { dropCursor } from 'prosemirror-dropcursor'
 import { gapCursor } from 'prosemirror-gapcursor'
 
-
+import { buildMarks } from './marks'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { buildCommands, EditorCommandAdaptor } from './commands' 
@@ -33,7 +33,7 @@ export default class ProsemirrorEditor {
     // create schema
     this._schema = new Schema({
       nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-      marks: schema.spec.marks
+      marks: buildMarks()
     });
 
     // create the editor state

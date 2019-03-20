@@ -121,6 +121,8 @@ export function buildCommands(schema) {
     new MarkCommand("strong", "format_bold", "Bold", schema.marks.strong),
     new MarkCommand("em", "format_italic", "Italics", schema.marks.em),
     new MarkCommand("code", "code", "Code", schema.marks.code),
+    new MarkCommand("underline", "format_underlined", "Underline", schema.marks.underline),
+    new MarkCommand("strikethrough", "format_strikethrough", "Strikethrough", schema.marks.strikethrough),
     new ListCommand("bullet_list", "list", "Bullet List", schema, schema.nodes.bullet_list),
     new ListCommand("ordered_list", "format_list_numbered", "Numbered List", schema, schema.nodes.ordered_list),
     new WrapCommand("blockquote", "format_quote", "Blockquote", schema.nodes.blockquote, schema.nodes.paragraph),
