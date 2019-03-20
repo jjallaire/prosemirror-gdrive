@@ -48,7 +48,10 @@ export default {
   min-width: inherit;
   margin: 0 1px;
   padding: 0 3px;
-  color: rgba(100,100,100,1);
+}
+
+.editor-toolbar-button .v-btn__content {
+   color: rgba(100,100,100,1);
 }
 
 .editor-toolbar-button.v-btn--active {
