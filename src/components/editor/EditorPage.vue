@@ -279,4 +279,31 @@ export default {
 .edit-container .ProseMirror {
   outline: none;
 }
+
+.edit-container .ProseMirror code {
+  color: inherit;
+  background-color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  border-radius: initial;
+  box-shadow: none;
+}
+
+.edit-container .ProseMirror code:before,
+.edit-container .ProseMirror code:after {
+  content: ''
+}
+
+.edit-container .ProseMirror pre code {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.edit-container .ProseMirror blockquote {
+  padding-left: 1em;
+  border-left: 3px solid #eee;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 </style>
