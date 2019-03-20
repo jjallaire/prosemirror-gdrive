@@ -28,6 +28,7 @@ export default {
 
   <v-btn 
     flat 
+    :disabled="!command.isEnabled()"
     :title="command.title" 
     :class="{ 'editor-toolbar-button': true, 'v-btn--active': command.isLatched()}" 
     @click="command.execute()"
