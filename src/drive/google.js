@@ -1,8 +1,7 @@
 
 
-const kAppId = "880472811488"
-const kClientId = "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com"
-const kApiKey =  process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ"
+import config from '../config'
+
 const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
 
 // see: https://developers.google.com/drive/api/v2/about-auth#OAuth2Authorizing
@@ -57,8 +56,8 @@ export default {
     return new Promise((resolve) => {
       return gapi.load('client:auth2:picker:drive-share', () => {
         gapi.client.init({
-          apiKey: kApiKey,
-          clientId: kClientId,
+          apiKey: config.gdrive.apiKey,
+          clientId: config.gdrive.clientId,
           discoveryDocs: kDiscoveryDocs,
           scope: kScopes.join(' '),
           ux_mode: 'redirect',
@@ -287,7 +286,7 @@ export default {
         .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
     
       let picker = new api.PickerBuilder()
-        .setAppId(kAppId)
+        .setAppId(config.gdrive.appId)
         .setOAuthToken(user.getAuthResponse().access_token)
         .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
         .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
