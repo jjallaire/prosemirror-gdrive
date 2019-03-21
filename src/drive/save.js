@@ -5,6 +5,8 @@ import _retry from 'async/retry'
 
 import drive from '.'
 
+import { jsonStringifyEscaped } from '../core/json'
+
 export default class DriveSave  {
 
   constructor(docId, onStatus, onSaved, onSaveError) {
@@ -96,7 +98,7 @@ export default class DriveSave  {
         drive
           .saveFile(
             this._docId, 
-            JSON.stringify(update.getJSON()), 
+            jsonStringifyEscaped(update.getJSON()), 
             update.getHTML()
           )
           .then(result => {

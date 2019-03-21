@@ -28,6 +28,8 @@ import MultipartBuilder from './multipart'
 import { initSettings } from './settings'
 import driveChanges from './changes'
 
+import { jsonStringifyEscaped } from '../core/json'
+
 import store from '../store'
 import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
 
@@ -369,7 +371,7 @@ export default {
         fields: 'id,headRevisionId'
       },
       headers: { 'Content-Type' : "application/json" },
-      body: JSON.stringify(metadata)
+      body: jsonStringifyEscaped(metadata)
     })
     .then(result => {
       return handleUploadResponse(result);
@@ -390,7 +392,7 @@ export default {
       }
     };
     let multipart = new MultipartBuilder()
-      .append('application/json', JSON.stringify(uploadMetadata))
+      .append('application/json', jsonStringifyEscaped(uploadMetadata))
       .append(metadata.mimeType, content)
       .finish();
     return gapi.client.request({

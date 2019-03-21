@@ -6,6 +6,8 @@ import { UPDATE_SETTINGS } from '../store/mutations'
 
 import drive from '.'
 
+import { jsonStringifyEscaped } from '../core/json'
+
 const kSettingsFile = "settings.json";
 const kSettingsMimeType = "application/json";
 
@@ -20,7 +22,7 @@ export function initSettings() {
           drive.writeAppData(
             kSettingsFile, 
             kSettingsMimeType, 
-            JSON.stringify(settings)
+            jsonStringifyEscaped(settings)
           );
         },
         { deep: true } 
@@ -35,7 +37,7 @@ export function syncSettings() {
     .readAppData(
       kSettingsFile, 
       kSettingsMimeType, 
-      JSON.stringify(store.getters.settings)
+      jsonStringifyEscaped(store.getters.settings)
     )
     .then(file => {
       // write settings
