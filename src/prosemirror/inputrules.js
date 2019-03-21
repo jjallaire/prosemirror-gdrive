@@ -45,11 +45,18 @@ export function headingRule(nodeType, maxLevel) {
 // A set of input rules for creating the basic block quotes, lists,
 // code blocks, and heading.
 export function buildInputRules(schema) {
-  let rules = smartQuotes.concat(ellipsis, emDash), type
-  if (type = schema.nodes.blockquote) rules.push(blockQuoteRule(type))
-  if (type = schema.nodes.ordered_list) rules.push(orderedListRule(type))
-  if (type = schema.nodes.bullet_list) rules.push(bulletListRule(type))
-  if (type = schema.nodes.code_block) rules.push(codeBlockRule(type))
-  if (type = schema.nodes.heading) rules.push(headingRule(type, 6))
+  
+  let rules = smartQuotes.concat(ellipsis, emDash)
+  
+  function ifType(type, f) {
+    if (type)
+      f(type)
+  }
+
+  ifType(schema.nodes.blockquote, type => rules.push(blockQuoteRule(type)))
+  ifType(schema.nodes.ordered_list, type => rules.push(orderedListRule(type)))
+  ifType(schema.nodes.bullet_list, type => rules.push(bulletListRule(type)))
+  ifType(schema.nodes.code_block, type => rules.push(codeBlockRule(type)))
+  ifType(schema.nodes.heading, type => rules.push(headingRule(type, 6)))
   return inputRules({rules})
 }

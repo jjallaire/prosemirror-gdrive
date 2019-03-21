@@ -35,7 +35,7 @@ const mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : f
 // argument, which maps key names (say `"Mod-B"` to either `false`, to
 // remove the binding, or a new key name string.
 export function buildKeymap(schema, mapKeys) {
-  let keys = {}, type
+  let keys = {}
   function bind(key, cmd) {
     if (mapKeys) {
       let mapped = mapKeys[key]
@@ -56,24 +56,34 @@ export function buildKeymap(schema, mapKeys) {
   bind("Mod-BracketLeft", lift)
   bind("Escape", selectParentNode)
 
-  if (type = schema.marks.strong) {
+
+  function ifType(type, f) {
+    if (type)
+      f(type);
+  }
+
+  ifType(schema.marks.strong, type => {
     bind("Mod-b", toggleMark(type))
     bind("Mod-B", toggleMark(type))
-  }
-  if (type = schema.marks.em) {
+  })
+  ifType(schema.marks.em, type => {
     bind("Mod-i", toggleMark(type))
     bind("Mod-I", toggleMark(type))
-  }
-  if (type = schema.marks.code)
+  })
+  ifType(schema.marks.code, type => {
     bind("Mod-`", toggleMark(type))
+  })
 
-  if (type = schema.nodes.bullet_list)
+  ifType(schema.nodes.bullet_list, type => {
     bind("Shift-Ctrl-8", wrapInList(type))
-  if (type = schema.nodes.ordered_list)
+  })
+  ifType(schema.nodes.ordered_list, type => {
     bind("Shift-Ctrl-9", wrapInList(type))
-  if (type = schema.nodes.blockquote)
+  })
+  ifType(schema.nodes.blockquote, type => {
     bind("Ctrl->", wrapIn(type))
-  if (type = schema.nodes.hard_break) {
+  })
+  ifType(schema.nodes.hard_break, type => {
     let br = type, cmd = chainCommands(exitCode, (state, dispatch) => {
       dispatch(state.tr.replaceSelectionWith(br.create()).scrollIntoView())
       return true
@@ -81,25 +91,28 @@ export function buildKeymap(schema, mapKeys) {
     bind("Mod-Enter", cmd)
     bind("Shift-Enter", cmd)
     if (mac) bind("Ctrl-Enter", cmd)
-  }
-  if (type = schema.nodes.list_item) {
+  })
+  ifType(schema.nodes.list_item, type => {
     bind("Enter", splitListItem(type))
     bind("Mod-[", liftListItem(type))
     bind("Mod-]", sinkListItem(type))
-  }
-  if (type = schema.nodes.paragraph)
+  })
+  ifType(schema.nodes.paragraph, type => {
     bind("Shift-Ctrl-0", setBlockType(type))
-  if (type = schema.nodes.code_block)
+  })
+  ifType(schema.nodes.code_block, type => {
     bind("Shift-Ctrl-\\", setBlockType(type))
-  if (type = schema.nodes.heading)
+  })
+  ifType(schema.nodes.heading, type => {
     for (let i = 1; i <= 6; i++) bind("Shift-Ctrl-" + i, setBlockType(type, {level: i}))
-  if (type = schema.nodes.horizontal_rule) {
+  })
+  ifType(schema.nodes.horizontal_rule, type => {
     let hr = type
     bind("Mod-_", (state, dispatch) => {
       dispatch(state.tr.replaceSelectionWith(hr.create()).scrollIntoView())
       return true
     })
-  }
+  })
 
   return keys
 }
