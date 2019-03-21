@@ -13,7 +13,9 @@ import { gapCursor } from 'prosemirror-gapcursor'
 import { buildMarks } from './marks'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
-import { buildCommands, EditorCommandAdaptor } from './commands' 
+import { buildCommands } from './commands' 
+
+import { Command } from '../core/command'
 
 
 export default class ProsemirrorEditor {
@@ -120,10 +122,10 @@ export default class ProsemirrorEditor {
   // adapt editor commands to the generic (no arg) command interface, then
   // return an object keyed by command name
   get commands() {
-
+    
     return this._commands.reduce((commands, command) => ({
       ...commands,
-      [command.name]: new EditorCommandAdaptor(command, this._state, this._view)
+      [command.name]: new EditorCommandAdaptor(command, this)
     }), {});
 
   }
@@ -172,6 +174,31 @@ export default class ProsemirrorEditor {
     })
   }
 
+}
+
+
+
+class EditorCommandAdaptor extends Command {
+      
+  constructor(command, editor) {
+    super(command.name, command.icon, command.title)
+    this._command = command;
+    this._editor = editor;
+  }
+
+  isEnabled() {
+    return this._command.isEnabled(this._editor._state);
+  }
+
+  isLatched() {
+    return this._command.isLatched(this._editor._state);
+  }
+
+  execute() {
+    let editor = this._editor;
+    editor._view.focus();
+    return this._command.execute(editor._state, editor._view.dispatch, editor._view);
+  }
 }
 
 

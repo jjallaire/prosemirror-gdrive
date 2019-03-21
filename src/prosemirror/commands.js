@@ -89,31 +89,6 @@ class WrapCommand extends NodeCommand {
   }
 }
 
-export class EditorCommandAdaptor extends Command {
-      
-  constructor(command, state, view) {
-    super(command.name, command.icon, command.title)
-    this._command = command;
-    this._state = state;
-    this._view = view;
-  }
-
-  isEnabled() {
-    return this._command.isEnabled(this._state);
-  }
-
-  isLatched() {
-    return this._command.isLatched(this._state);
-  }
-
-  execute() {
-    this._view.focus();
-    return this._command.execute(this._state, this._view.dispatch, this._view);
-  }
-}
-
-
-
 export function buildCommands(schema) {
   return [
     new EditorCommand("undo", "undo", "Undo", undo),
