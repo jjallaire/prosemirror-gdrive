@@ -4,7 +4,8 @@ import Vue from 'vue'
 // vuetify
 import './core/vuetify'
 
-// google analysics
+// logging and google analytics
+import * as log from './core/log'
 import './core/analytics'
 
 // application
@@ -15,6 +16,9 @@ import store from './store/'
 
 // config
 Vue.config.productionTip = false
+
+// initialize log
+log.initialize();
 
 // connect to drive
 drive.connect()

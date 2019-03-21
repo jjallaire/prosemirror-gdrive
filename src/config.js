@@ -8,12 +8,9 @@ export default {
   ga: {
     id: "UA-77306155-4"
   },
-
-  /*
   sentry: {
-    dsn: "https://49f3775ddef847b6a96c84d63bdeb02b@sentry.io/1331583"
+    dsn: "https://e4ef4a78cc9247b28b3d8e93bc9ddd87@sentry.io/1420968"
   },
-  */
 
   gdrive: {
     appId: "880472811488",
