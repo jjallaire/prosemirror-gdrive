@@ -7,11 +7,13 @@ import router from './router'
 
 let production = process.env.NODE_ENV === 'production';
 
-Vue.use(VueAnalytics, {
-  id: config.ga.id,
-  router: router,
-  debug: {
-    sendHitTask: production
-  }
-})
+if (config.ga.id) {
+  Vue.use(VueAnalytics, {
+    id: config.ga.id,
+    router: router,
+    debug: {
+      sendHitTask: production
+    }
+  })
+}
 
