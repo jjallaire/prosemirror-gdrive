@@ -2,11 +2,11 @@
 import Vue from 'vue'
 
 // vuetify
-import './vuetify'
+import './core/vuetify'
 
 // application
 import App from './App.vue'
-import drive from './drive'
+import drive from './drive/'
 import router from './router'
 import store from './store/'
 
