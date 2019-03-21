@@ -1,6 +1,10 @@
 
 export default {
 
+  app: {
+    title: "Prosemirror GDrive"
+  },
+
   /*
   ga: {
     id: "UA-134148899-1"

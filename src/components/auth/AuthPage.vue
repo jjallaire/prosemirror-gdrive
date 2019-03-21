@@ -1,10 +1,18 @@
 <script>
 
 
+import config from '../../config'
+
 import drive from '../../drive'
 
 export default {
   name: 'AuthPage',
+
+  computed: {
+    app_title: function() {
+      return config.app.title;
+    }
+  },
 
   methods: {
 
@@ -22,7 +30,7 @@ export default {
 
   <div class="auth-container text-xs-center">
 
-    <p class="display-2">Welcome to ProseMirror GDrive</p>
+    <p class="display-2">Welcome to {{ app_title }}</p>
 
     <p class="body-2">
       To continue, please sign in using your Google Account.
@@ -40,7 +48,7 @@ export default {
 
 .auth-container { 
   width: 100%;
-  padding-top: 200px;
+  padding-bottom: 200px;
 }
 
 .auth-container .display-2 {

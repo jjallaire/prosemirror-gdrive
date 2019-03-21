@@ -14,6 +14,8 @@ import NavigationList from './components/navigation/NavigationList.vue'
 
 import drive from './drive'
 
+import config from './config'
+
 export default {
 
   name: 'App',
@@ -30,13 +32,15 @@ export default {
   },
 
   computed: {
+    title: function() {
+      return config.app.title;
+    },
     ...mapGetters([
       'initialized',
       'init_error',
       'authorized',
       'user'
     ]),
-
   },
 
   methods: {
@@ -65,7 +69,7 @@ export default {
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <router-link to="/" class="toolbar-title">
-        <v-toolbar-title>ProseMirror GDrive</v-toolbar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
       </router-link>
       <v-spacer />
       <template v-if="authorized">
