@@ -1,7 +1,7 @@
 
 import dialog from './dialog'
 import drive from '../../drive'
-import router from '../../router'
+import router from '../../core/router'
 
 export function newDocument() {
   dialog

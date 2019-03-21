@@ -7,7 +7,7 @@ import './core/vuetify'
 // application
 import App from './App.vue'
 import drive from './drive/'
-import router from './router'
+import router from './core/router'
 import store from './store/'
 
 // config
