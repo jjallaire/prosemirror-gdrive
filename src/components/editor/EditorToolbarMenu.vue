@@ -55,6 +55,7 @@ export default {
   padding: 0 8px;
   padding-right: 3px;
   margin: 0 0;
+  color: rgba(100,100,100,1);
 }
 
 .editor-toolbar-menu-items .v-list__tile {
