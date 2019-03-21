@@ -5,11 +5,11 @@ export default {
     title: "Prosemirror GDrive"
   },
 
-  /*
   ga: {
-    id: "UA-134148899-1"
+    id: "UA-77306155-4"
   },
 
+  /*
   sentry: {
     dsn: "https://49f3775ddef847b6a96c84d63bdeb02b@sentry.io/1331583"
   },

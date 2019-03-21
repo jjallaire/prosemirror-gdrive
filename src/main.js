@@ -4,6 +4,9 @@ import Vue from 'vue'
 // vuetify
 import './core/vuetify'
 
+// google analysics
+import './core/analytics'
+
 // application
 import App from './App.vue'
 import drive from './drive/'
