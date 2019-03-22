@@ -51,6 +51,10 @@ export default {
  
     <v-divider inset vertical />
 
+    <EditorToolbarMenuBlock :commands="block_commands" /> 
+     
+    <v-divider inset vertical />
+
     <EditorToolbarButton :command="commands.strong" />
     <EditorToolbarButton :command="commands.em" />
     <EditorToolbarButton :command="commands.code" />
@@ -65,7 +69,7 @@ export default {
 
     <v-divider inset vertical />
 
-    <EditorToolbarMenuBlock :commands="block_commands" /> 
+    <EditorToolbarButton :command="commands.horizontal_rule" />
     
   </span>
 

@@ -10,6 +10,7 @@ import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 import { Command } from '../core/command'
 
 
+
 class EditorCommand extends Command {
 
   constructor(name, icon, title, command) {
@@ -89,6 +90,31 @@ class WrapCommand extends NodeCommand {
   }
 }
 
+
+function insertCommand(nodeType) {
+
+  return (state, dispatch) => {
+
+    // verify that we can insert
+    let from = state.selection.$from
+    for (let d = from.depth; d >= 0; d--) {
+      let index = from.index(d)
+      if (from.node(d).canReplaceWith(index, index, nodeType)) {
+        if (dispatch)
+          dispatch(state.tr.replaceSelectionWith(nodeType.create()))
+        return true;
+      }
+    }
+
+    // couldn't insert
+    return false;
+  }
+}
+
+
+
+
+
 export function buildCommands(schema) {
   return [
     new EditorCommand("undo", "undo", "Undo", undo),
@@ -107,6 +133,7 @@ export function buildCommands(schema) {
     new HeadingCommand(schema, 2),
     new HeadingCommand(schema, 3),
     new HeadingCommand(schema, 4),
+    new EditorCommand("horizontal_rule", "remove", "Horizontal Rule", insertCommand(schema.nodes.horizontal_rule))
   ]
 }
 

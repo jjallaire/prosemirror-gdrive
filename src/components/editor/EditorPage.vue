@@ -299,6 +299,15 @@ export default {
   margin-bottom: 16px;
 }
 
+.edit-container .ProseMirror hr {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 .edit-container .ProseMirror blockquote {
   padding-left: 1em;
   border-left: 3px solid #eee;
