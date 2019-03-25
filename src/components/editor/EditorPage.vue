@@ -9,6 +9,8 @@ import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
+import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
+
 import drive from '../../drive'
 import DriveSave from '../../drive/save'
 import driveChanges, { docSyncHandler } from '../../drive/changes'
@@ -26,7 +28,8 @@ export default {
   components: {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveStatus,
-    PopupMenu, MenuTile
+    PopupMenu, MenuTile,
+    EditorLinkDialog
   },
 
   props: {
@@ -52,7 +55,7 @@ export default {
       save_status: "clean",
 
       // load error
-      error: null,
+      error: null
     }
   },
 
@@ -133,16 +136,8 @@ export default {
       this.driveSave.onEditorUpdate(update);
     },
 
-    onEditLink() {
-      let attr = null;
-      let href = prompt("Enter URL:");
-      if (href) {
-        attr = {
-          href,
-          title: "A link"
-        }
-      } 
-      return Promise.resolve(attr);
+    onEditLink(link) {
+      return this.$refs.linkDialog.show(link);
     },
 
     onSaveStatus(status) {
@@ -238,6 +233,8 @@ export default {
     <div v-else-if="!editor">
       <ProgressSpinner />
     </div>
+
+    <EditorLinkDialog ref="linkDialog" />
 
   </div>
   

@@ -13,7 +13,7 @@ export default {
       title: title,
       text: text
     });
-    focusDialogTitle();
+    dialogAutoFocus();
     return prompt;
   },
 
@@ -37,10 +37,13 @@ export default {
 
 }
 
-function focusDialogTitle() {
+export function dialogAutoFocus(select) {
   setTimeout(() => {
-   let titleInput = document.querySelector('.v-dialog input[autofocus]');
-   if (titleInput)
-     titleInput.focus();
-   }, 200);
+    let input = document.querySelector('.v-dialog input[autofocus]');
+    if (input) {
+      input.focus();
+      if (select && input.select)
+        input.select();
+   }
+  }, 200);
 }
