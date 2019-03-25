@@ -27,8 +27,12 @@ export default class ProsemirrorEditor {
       editable: true,
       autoFocus: false,
       content: '',
+      hooks: {
+        onUpdate: () => {},
+        onEditLink: Promise.resolve(null)
+      },
       mapKeys: {},
-      onUpdate: () => {},
+     
       ...options
     };
 
@@ -65,7 +69,7 @@ export default class ProsemirrorEditor {
     });
 
     // create editor commands
-    this._commands = buildCommands(this._schema);
+    this._commands = buildCommands(this._schema, this._options.hooks);
 
     // auto-focus if requested
     if (this._options.autoFocus) {
@@ -166,7 +170,7 @@ export default class ProsemirrorEditor {
   }
 
   _emitUpdate(transaction) {
-    this._options.onUpdate({
+    this._options.hooks.onUpdate({
       getHTML: this.getHTML.bind(this),
       getJSON: this.getJSON.bind(this),
       state: this._state,

@@ -111,11 +111,40 @@ function insertCommand(nodeType) {
   }
 }
 
+function linkCommand(markType, onEditLink) {
+
+  return (state, dispatch, view) => {
+
+    // requires a selection
+    if (state.selection.empty)
+      return false;
+
+    if (dispatch) {
+
+      // turn it off if it's active
+      if (markIsActive(state, markType)) {
+        toggleMark(markType)(state, dispatch);
+      } else {
+        onEditLink()
+          .then(attr => {
+            if (attr) {
+              toggleMark(markType, attr)(state, dispatch);  
+              view.focus();
+            }
+          });
+      }
+    }
+
+    return true;
+  }
+
+}
 
 
 
 
-export function buildCommands(schema) {
+
+export function buildCommands(schema, hooks) {
   return [
     new EditorCommand("undo", "undo", "Undo", undo),
     new EditorCommand("redo", "redo", "Redo", redo),
@@ -133,6 +162,7 @@ export function buildCommands(schema) {
     new HeadingCommand(schema, 2),
     new HeadingCommand(schema, 3),
     new HeadingCommand(schema, 4),
+    new EditorCommand("link", "link", "Hyperlink", linkCommand(schema.marks.link, hooks.onEditLink)),
     new EditorCommand("horizontal_rule", "remove", "Horizontal Rule", insertCommand(schema.nodes.horizontal_rule))
   ]
 }

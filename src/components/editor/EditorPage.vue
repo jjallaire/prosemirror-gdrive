@@ -86,7 +86,10 @@ export default {
           autoFocus: true,
           editable: true,
           content: this.asEditorContent(file.content),
-          onUpdate: this.onEditorUpdate,
+          hooks: {
+            onUpdate: this.onEditorUpdate,
+            onEditLink: this.onEditLink
+          }
         });
 
         // subscribe to file changes
@@ -128,6 +131,18 @@ export default {
 
     onEditorUpdate(update) {
       this.driveSave.onEditorUpdate(update);
+    },
+
+    onEditLink() {
+      let attr = null;
+      let href = prompt("Enter URL:");
+      if (href) {
+        attr = {
+          href,
+          title: "A link"
+        }
+      } 
+      return Promise.resolve(attr);
     },
 
     onSaveStatus(status) {
