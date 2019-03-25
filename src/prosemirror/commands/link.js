@@ -4,22 +4,19 @@
 
 import { markIsActive, getMarkAttrs, getMarkRange } from 'tiptap-utils'
 
-import { toggleMark } from "prosemirror-commands"
-
-
 export function linkCommand(markType, onEditLink) {
 
   return (state, dispatch, view) => {
 
-    // creating a new link requires a selection. so the command is only 
-    // available if the mark is active OR we have a full selection
+    // if there is no contiguous selection and no existing link mark active
+    // then the command should be disabled (unknown what the link target is)
     if (!markIsActive(state, markType) && state.selection.empty)
       return false;
 
     if (dispatch) {
 
-      // get mark attributes if we have them
-      let link = { href: null, title: null};
+      // get link attributes if we have them
+      let link = { href: null, title: null };
       if (markIsActive(state, markType))
         link = getMarkAttrs(state, markType);
 
@@ -30,27 +27,26 @@ export function linkCommand(markType, onEditLink) {
 
           if (result) {
 
-            // determine the range we will edit (either the current selection or
-            // the range encompassed by the mark)
+            // determine the range we will edit (if the selection is empty 
+            // then expand from the cursor to discover the mark range, 
+            // otherwise just use the selection itself)
             let range = state.selection.empty ?
               getMarkRange(state.selection.$head, markType) :
               { from: state.selection.from, to: state.selection.to };
 
             // action: edit the link
-            if (result.action === 'edit' && result.link.href) {
-              let link = result.link;
-              if (markIsActive(state, markType)) {
-                let tr = state.tr;
-                tr.removeMark(range.from, range.to, markType);
-                tr.addMark(range.from, range.to, markType.create(link));
-                dispatch(tr);
-              } else {
-                toggleMark(markType, link)(state, dispatch); 
-              }
+            if (result.action === 'edit') {
+              
+              let tr = state.tr;
+              tr.removeMark(range.from, range.to, markType);
+              tr.addMark(range.from, range.to, markType.create(result.link));
+              dispatch(tr);
 
             // action: remove the link
             } else if (result.action === 'remove') {
+
               dispatch(state.tr.removeMark(range.from, range.to, markType));
+
             }
           }
               

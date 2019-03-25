@@ -41,14 +41,18 @@ export default {
     },
 
     onClickOK() {
-      this.active = false;
-      this.resolve({ 
-        action: 'edit',
-        link: {
-          href: this.href, 
-          title: this.title 
-        }
-      });
+      if (this.href) {
+        this.active = false; 
+        this.resolve({ 
+          action: 'edit',
+          link: {
+            href: this.href, 
+            title: this.title 
+          }
+        });
+      } else {
+        this.onClickRemoveLink();
+      }
     },
 
     onClickCancel() {
