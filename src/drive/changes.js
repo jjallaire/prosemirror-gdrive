@@ -7,7 +7,7 @@ const gapi = window.gapi;
 import { GAPIError } from './google'
 
 import _retry from 'async/retry'
-import drive from '../drive'
+import drive from '.'
 
 class ChangeMonitor  {
 
