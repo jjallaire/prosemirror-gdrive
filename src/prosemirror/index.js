@@ -13,9 +13,7 @@ import { gapCursor } from 'prosemirror-gapcursor'
 import { buildMarks } from './marks'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
-import { buildCommands } from './commands' 
-
-import { Command } from '../core/command'
+import { EditorCommand, buildCommands } from './commands' 
 
 
 export default class ProsemirrorEditor {
@@ -180,9 +178,7 @@ export default class ProsemirrorEditor {
 
 }
 
-
-
-class EditorCommandAdaptor extends Command {
+class EditorCommandAdaptor extends EditorCommand {
       
   constructor(command, editor) {
     super(command.name, command.icon, command.title)

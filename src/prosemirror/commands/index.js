@@ -7,11 +7,35 @@ import { markIsActive, nodeIsActive } from 'tiptap-utils'
 import { toggleMark } from "prosemirror-commands"
 import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
-import { Command } from '../../core/command'
-
 import { linkCommand } from './link.js'
+import { insertCommand } from './insert.js'
 
-class EditorCommand extends Command {
+
+export class EditorCommand {
+
+  constructor(name, icon, title) {
+    this.name = name;
+    this.icon = icon;
+    this.title = title;
+  }
+
+  // eslint-disable-next-line
+  isEnabled(state) {
+    throw new Error('Commands must implement isEnabled');
+  }
+
+  // eslint-disable-next-line
+  isLatched(state) {
+    return false;
+  }
+
+  // eslint-disable-next-line
+  execute(state, dispatch, view) {
+    throw new Error('Commands must implement execute');
+  }
+}
+
+class ProsemirrorCommand extends EditorCommand {
 
   constructor(name, icon, title, command) {
     super(name, icon, title);
@@ -27,7 +51,7 @@ class EditorCommand extends Command {
   }
 }
 
-class MarkCommand extends EditorCommand {
+class MarkCommand extends ProsemirrorCommand {
   
   constructor(name, icon, title, markType, attrs = {}) {
     super(name, icon, title, toggleMark(markType, attrs));
@@ -41,7 +65,7 @@ class MarkCommand extends EditorCommand {
 
 }
 
-class NodeCommand extends EditorCommand {
+class NodeCommand extends ProsemirrorCommand {
 
   constructor(name, icon, title, nodeType, attrs, command) {
     super(name, icon, title, command);
@@ -90,31 +114,10 @@ class WrapCommand extends NodeCommand {
   }
 }
 
-
-function insertCommand(nodeType) {
-
-  return (state, dispatch) => {
-
-    // verify that we can insert
-    let from = state.selection.$from
-    for (let d = from.depth; d >= 0; d--) {
-      let index = from.index(d)
-      if (from.node(d).canReplaceWith(index, index, nodeType)) {
-        if (dispatch)
-          dispatch(state.tr.replaceSelectionWith(nodeType.create()))
-        return true;
-      }
-    }
-
-    // couldn't insert
-    return false;
-  }
-}
-
 export function buildCommands(schema, hooks) {
   return [
-    new EditorCommand("undo", "undo", "Undo", undo),
-    new EditorCommand("redo", "redo", "Redo", redo),
+    new ProsemirrorCommand("undo", "undo", "Undo", undo),
+    new ProsemirrorCommand("redo", "redo", "Redo", redo),
     new MarkCommand("strong", "format_bold", "Bold", schema.marks.strong),
     new MarkCommand("em", "format_italic", "Italics", schema.marks.em),
     new MarkCommand("code", "code", "Code", schema.marks.code),
@@ -129,8 +132,8 @@ export function buildCommands(schema, hooks) {
     new HeadingCommand(schema, 2),
     new HeadingCommand(schema, 3),
     new HeadingCommand(schema, 4),
-    new EditorCommand("link", "link", "Hyperlink", linkCommand(schema.marks.link, hooks.onEditLink)),
-    new EditorCommand("horizontal_rule", "remove", "Horizontal Rule", insertCommand(schema.nodes.horizontal_rule))
+    new ProsemirrorCommand("link", "link", "Hyperlink", linkCommand(schema.marks.link, hooks.onEditLink)),
+    new ProsemirrorCommand("horizontal_rule", "remove", "Horizontal Rule", insertCommand(schema.nodes.horizontal_rule))
   ]
 }
 

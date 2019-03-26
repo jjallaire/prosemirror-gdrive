@@ -1,7 +1,5 @@
 
 
-
-
 import { markIsActive, getMarkAttrs, getMarkRange } from 'tiptap-utils'
 
 export function linkCommand(markType, onEditLink) {
