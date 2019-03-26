@@ -11,7 +11,8 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.appfolder',         // application data folder 
   'https://www.googleapis.com/auth/drive.file',              // files created by this app
   'https://www.googleapis.com/auth/drive.metadata.readonly', // read-only metadata
-  'https://www.googleapis.com/auth/drive.install'            // installation of the app onto drive
+  'https://www.googleapis.com/auth/drive.install',           // installation of the app onto drive
+  'https://picasaweb.google.com/data/'                       // picasa photo albums
 ];
 
 const kFileFields = 'id, name, headRevisionId, iconLink, viewedByMe, viewedByMeTime, ' +
@@ -299,6 +300,30 @@ export default {
         }).build();
       picker.setVisible(true);
     });
+  },
+
+  selectImage() {
+    return new Promise((resolve) => {
+      let api = gapi.picker.api;
+      let user = auth().currentUser.get();
+      let searchView = new api.ImageSearchView();
+      let picker = new api.PickerBuilder()
+        .setAppId(config.gdrive.appId)
+        .setOAuthToken(user.getAuthResponse().access_token)
+        .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
+        .addView(api.ViewId.PHOTO_UPLOAD)
+        .addView(api.ViewId.PHOTOS)
+        .addView(searchView)
+        .setCallback(data => {
+          if (data[api.Response.ACTION] === api.Action.PICKED) {
+            let thumbnails = data[api.Response.DOCUMENTS][0][api.Document.THUMBNAILS];
+            let thumbnail = thumbnails[thumbnails.length - 1];
+            resolve(thumbnail[api.Thumbnail.URL]);
+          }
+        }).build();
+      picker.setVisible(true);
+    });
+
   },
 
   shareFile(fileId) {
