@@ -66,7 +66,7 @@ export default {
             autofocus
           >
             <template v-slot:append>
-              <v-icon @click="onBrowse" title="Image upload/search">photo_library</v-icon>
+              <v-icon title="Image upload/search" @click="onBrowse">photo_library</v-icon>
             </template>
           </v-text-field>
         </v-flex>
