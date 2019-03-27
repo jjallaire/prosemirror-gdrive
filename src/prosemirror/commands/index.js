@@ -8,8 +8,9 @@ import { toggleMark } from "prosemirror-commands"
 import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
 import { linkCommand } from './link.js'
-import { imageCommand } from './image.js'
 import { insertCommand } from './insert.js'
+
+import { imageCommand } from '../plugins/image.js'
 
 
 export class EditorCommand {

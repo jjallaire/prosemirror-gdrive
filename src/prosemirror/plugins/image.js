@@ -1,9 +1,30 @@
 
-
-
-import { NodeSelection } from "prosemirror-state"
+import { NodeSelection, Plugin, PluginKey } from "prosemirror-state"
 
 import { canInsert } from '../utils.js'
+
+
+export function imagePlugin(nodeType, onEditImage) {
+  return new Plugin({
+    key: new PluginKey('image'),
+    props: {
+      handleDoubleClickOn: (view, pos, node) => {
+        if (node.type === nodeType) {
+          editImageDialog(
+            node, 
+            nodeType, 
+            view.state, 
+            view.dispatch, 
+            onEditImage
+          );
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+  })
+}
 
 export function imageCommand(nodeType, onEditImage) {
 
@@ -28,7 +49,7 @@ export function imageCommand(nodeType, onEditImage) {
 
 }
 
-export function editImageDialog(node, nodeType, state, dispatch, onEditImage) {
+function editImageDialog(node, nodeType, state, dispatch, onEditImage) {
 
   // if we are being called with an existing node then read it's attributes 
   let image = { src: null, title: null };
