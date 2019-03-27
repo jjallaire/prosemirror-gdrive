@@ -14,6 +14,7 @@ import { buildMarks } from './marks'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
+import { editImageDialog } from "./commands/image";
 
 
 export default class ProsemirrorEditor {
@@ -65,7 +66,7 @@ export default class ProsemirrorEditor {
     // create the editor
     this._view = new EditorView(place, { 
       state: this._state,
-      handleDoubleClickOn: this._onDoubleClickOn,
+      handleDoubleClickOn: (view, pos, node) => this._onDoubleClickOn(node),
       dispatchTransaction: this._dispatchTransaction.bind(this)
     });
 
@@ -160,10 +161,20 @@ export default class ProsemirrorEditor {
     }
   }
 
-  // eslint-disable-next-line
-  _onDoubleClickOn(view, pos, node, nodePos, event, direct) {
-    console.log("DoubleClick");
-    return false;
+  _onDoubleClickOn(node) {
+
+    if (node.type === this._schema.nodes.image) {
+      editImageDialog(
+        node, 
+        this._schema.nodes.image, 
+        this._state, 
+        this._view.dispatch, 
+        this._options.hooks.onEditImage
+      );
+      return true;
+    } else {
+      return false;
+    }
   }
 
   _dispatchTransaction(transaction) {
