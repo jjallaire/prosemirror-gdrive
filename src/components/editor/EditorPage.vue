@@ -300,7 +300,7 @@ export default {
 }
 
 .edit-container .v-card__text {
-  padding: 8px;
+  padding: 12px;
   position: absolute;
   top: 65px;
   left: 0;
