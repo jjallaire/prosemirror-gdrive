@@ -107,6 +107,14 @@ export default {
   padding: 8px;
 }
 
+.application--wrap {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
 .toolbar-title {
   color: inherit;
   text-decoration: inherit;
