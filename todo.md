@@ -1,8 +1,10 @@
 
 
+- Print, Publish to Google Docs, Download As
 
 
-- Can we just save the docs as HTML? (and query/filter using attributes)
+
+
 
 
 

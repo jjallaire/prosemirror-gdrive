@@ -61,7 +61,7 @@ export default {
     onClickCancel() {
       this.onClick('cancel');
     },
-    
+
     onClick(action) {
       let handler = this.handlers[action];
       let result = (typeof handler === "function") ? handler() : handler; 
@@ -82,7 +82,7 @@ export default {
   >
     <v-card>
       <v-card-title>
-        <span class="headline">{{ caption }}</span>
+        <h3 class="headline">{{ caption }}</h3>
       </v-card-title>
       <v-card-text>
         <slot name="content" />
@@ -98,6 +98,10 @@ export default {
 </template>
 
 <style>
+
+.v-dialog .v-card__title .headline {
+  font-size: 18px !important;
+}
 
 
 </style>
