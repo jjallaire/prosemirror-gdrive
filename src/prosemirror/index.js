@@ -1,7 +1,7 @@
 
 import { schema } from "prosemirror-schema-basic"
 import { addListNodes } from "prosemirror-schema-list"
-import { EditorState, Plugin, PluginKey } from "prosemirror-state"
+import { EditorState, Plugin, PluginKey, NodeSelection } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
 import { history } from "prosemirror-history"
@@ -27,7 +27,7 @@ export default class ProsemirrorEditor {
       content: '',
       hooks: {
         onUpdate: () => {},
-        onTransaction: () => {},
+        onSelectionChanged: () => {},
         onEditLink: Promise.resolve(null),
         onEditImage: Promise.resolve(null)
       },
@@ -165,8 +165,8 @@ export default class ProsemirrorEditor {
     this._state = this._state.apply(transaction)
     this._view.updateState(this._state)
     
-    // notify listeners
-    this._emitTransaction(transaction);
+    // notify listeners of selection change
+    this._emitSelectionChanged();
    
     // notify listeners of updates
     if (transaction.docChanged) {
@@ -174,19 +174,17 @@ export default class ProsemirrorEditor {
     }
   }
 
-  _emitTransaction(transaction) {
-    this._options.hooks.onTransaction({
-      state: this._state,
-      transaction
+  _emitSelectionChanged() {
+    this._options.hooks.onSelectionChanged({
+      type: (this._state.selection instanceof NodeSelection) ? 'node' : 'text'
     })
   }
 
   _emitUpdate(transaction) {
     this._options.hooks.onUpdate({
+      time: transaction.time,
       getHTML: this.getHTML.bind(this),
       getJSON: this.getJSON.bind(this),
-      state: this._state,
-      transaction
     })
   }
 

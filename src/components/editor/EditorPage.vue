@@ -94,7 +94,7 @@ export default {
           content: this.asEditorContent(file.content),
           hooks: {
             onUpdate: this.onEditorUpdate,
-            onTransaction: this.onEditorTransaction,
+            onSelectionChanged: this.onEditorSelectionChanged,
             onEditLink: this.onEditLink,
             onEditImage: this.onEditImage
           }
@@ -136,16 +136,16 @@ export default {
         });
     }, 1000),
 
-    onEditorTransaction(event) {
-      if (event.state.selection instanceof NodeSelection) {
+    onEditorSelectionChanged(selection) {
+      if (selection.type === 'node') {
         this.$refs.prosemirror.classList.add("has-node-selection");
       } else {
         this.$refs.prosemirror.classList.remove("has-node-selection");
       }
     },
 
-    onEditorUpdate(event) {
-      this.driveSave.onEditorUpdate(event);
+    onEditorUpdate(update) {
+      this.driveSave.onEditorUpdate(update);
     },
 
     onEditLink(link) {

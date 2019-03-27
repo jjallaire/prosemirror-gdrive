@@ -102,7 +102,7 @@ export default class DriveSave  {
             update.getHTML()
           )
           .then(result => {
-            this._editorUpdates.lastSaveTime = update.transaction.time;
+            this._editorUpdates.lastSaveTime = update.time;
             this._emitStatus();
             callback(null, result);
           })
