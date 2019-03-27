@@ -138,7 +138,7 @@ export default class DriveSave  {
     if (this._editorUpdates.last === null) {
       status = "clean";
     } else if (this._editorUpdates.lastSaveTime === null ||
-               this._editorUpdates.last.transaction.time > this._editorUpdates.lastSaveTime) {
+               this._editorUpdates.last.time > this._editorUpdates.lastSaveTime) {
       status = "dirty";      
     } else {
       status = "saved";
