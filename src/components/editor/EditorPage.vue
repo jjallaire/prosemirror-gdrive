@@ -4,8 +4,6 @@ import _debounce from 'lodash/debounce'
 
 import ProsemirrorEditor from '../../prosemirror'
 
-import { NodeSelection } from "prosemirror-state"
-
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
