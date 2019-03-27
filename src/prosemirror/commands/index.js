@@ -8,6 +8,7 @@ import { toggleMark } from "prosemirror-commands"
 import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
 import { linkCommand } from './link.js'
+import { imageCommand } from './image.js'
 import { insertCommand } from './insert.js'
 
 
@@ -132,8 +133,12 @@ export function buildCommands(schema, hooks) {
     new HeadingCommand(schema, 2),
     new HeadingCommand(schema, 3),
     new HeadingCommand(schema, 4),
-    new ProsemirrorCommand("link", "link", "Hyperlink", linkCommand(schema.marks.link, hooks.onEditLink)),
-    new ProsemirrorCommand("horizontal_rule", "remove", "Horizontal Rule", insertCommand(schema.nodes.horizontal_rule))
+    new ProsemirrorCommand("link", "link", "Hyperlink", 
+                           linkCommand(schema.marks.link, hooks.onEditLink)),
+    new ProsemirrorCommand("horizontal_rule", "remove", "Horizontal Rule", 
+                           insertCommand(schema.nodes.horizontal_rule)),
+    new ProsemirrorCommand("image", "image", "Image", 
+                           imageCommand(schema.nodes.image, hooks.onEditImage))
   ]
 }
 

@@ -1,21 +1,20 @@
 
-export function insertCommand(nodeType) {
+
+
+import { canInsert } from '../utils'
+
+export function insertCommand(nodeType, attrs = {}) {
 
   return (state, dispatch) => {
 
-    // verify that we can insert
-    let from = state.selection.$from
-    for (let d = from.depth; d >= 0; d--) {
-      let index = from.index(d)
-      if (from.node(d).canReplaceWith(index, index, nodeType)) {
-        if (dispatch)
-          dispatch(state.tr.replaceSelectionWith(nodeType.create()))
-        return true;
-      }
-    }
+    if (!canInsert(state, nodeType))
+      return false;
 
-    // couldn't insert
-    return false;
+    if (dispatch) 
+      dispatch(state.tr.replaceSelectionWith(nodeType.create(attrs)))
+
+    return true;
   }
 }
+
 

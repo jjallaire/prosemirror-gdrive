@@ -27,7 +27,8 @@ export default class ProsemirrorEditor {
       content: '',
       hooks: {
         onUpdate: () => {},
-        onEditLink: Promise.resolve(null)
+        onEditLink: Promise.resolve(null),
+        onEditImage: Promise.resolve(null)
       },
       mapKeys: {},
      

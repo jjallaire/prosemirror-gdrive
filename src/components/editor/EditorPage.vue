@@ -10,6 +10,7 @@ import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
+import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
 import drive from '../../drive'
 import DriveSave from '../../drive/save'
@@ -29,7 +30,7 @@ export default {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveStatus,
     PopupMenu, MenuTile,
-    EditorLinkDialog
+    EditorLinkDialog, EditorImageDialog
   },
 
   props: {
@@ -91,7 +92,8 @@ export default {
           content: this.asEditorContent(file.content),
           hooks: {
             onUpdate: this.onEditorUpdate,
-            onEditLink: this.onEditLink
+            onEditLink: this.onEditLink,
+            onEditImage: this.onEditImage
           }
         });
 
@@ -138,6 +140,10 @@ export default {
 
     onEditLink(link) {
       return this.$refs.linkDialog.show(link);
+    },
+
+    onEditImage(image) {
+      return this.$refs.imageDialog.show(image);
     },
 
     onSaveStatus(status) {
@@ -235,6 +241,7 @@ export default {
     </div>
 
     <EditorLinkDialog ref="linkDialog" />
+    <EditorImageDialog ref="imageDialog" />
 
   </div>
   
@@ -325,6 +332,15 @@ export default {
   border-left: 3px solid #eee;
   margin-left: 0;
   margin-right: 0;
+}
+
+.edit-container .ProseMirror img {
+  max-width: 90%;
+  height: auto;
+}
+
+.edit-container .ProseMirror .ProseMirror-selectednode {
+  outline: 3px solid #42A5F5;
 }
 
 </style>
