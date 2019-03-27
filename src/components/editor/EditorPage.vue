@@ -195,6 +195,8 @@ export default {
       printJS({
         printable: 'prosemirror',
         type: 'html',
+        header: this.doc.title,
+        headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
         css: '/styles/print.css'
       });
     },
@@ -238,7 +240,7 @@ export default {
           <EditorShareButton :doc_id="doc_id" />
           
           <PopupMenu>
-            <MenuTile icon="print" text="Print..." @clicked="onPrintDocument" />
+            <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>
           
         </v-toolbar>
