@@ -1,8 +1,6 @@
 
 
 
-- Should we remove the Picasa capability? (unreliable)
-
 - Double-click to edit image properties?
 
 - Width properties on image?

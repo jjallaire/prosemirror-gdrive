@@ -65,6 +65,7 @@ export default class ProsemirrorEditor {
     // create the editor
     this._view = new EditorView(place, { 
       state: this._state,
+      handleDoubleClickOn: this._onDoubleClickOn,
       dispatchTransaction: this._dispatchTransaction.bind(this)
     });
 
@@ -157,6 +158,12 @@ export default class ProsemirrorEditor {
     } else {
       return null;
     }
+  }
+
+  // eslint-disable-next-line
+  _onDoubleClickOn(view, pos, node, nodePos, event, direct) {
+    console.log("DoubleClick");
+    return false;
   }
 
   _dispatchTransaction(transaction) {
