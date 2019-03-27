@@ -2,7 +2,7 @@
 
 <script>
 
-import { VLayout, VFlex, VTextField } from 'vuetify/lib'
+import { VLayout, VFlex, VTextField, VIcon } from 'vuetify/lib'
 
 import ModalDialog from '../../core/ModalDialog.vue'
 
@@ -14,7 +14,7 @@ export default {
   name: 'EditorImageDialog',
 
   components: {
-    ModalDialog, VLayout, VFlex, VTextField
+    ModalDialog, VLayout, VFlex, VTextField, VIcon
   },
 
   data: function() {
@@ -64,9 +64,11 @@ export default {
             label="Image URL" 
             placeholder="https://example.com/image.png"
             autofocus
-            append-icon="photo_library"
-            @click:append="onBrowse"
-          />
+          >
+            <template v-slot:append>
+              <v-icon @click="onBrowse" title="Image upload/search">photo_library</v-icon>
+            </template>
+          </v-text-field>
         </v-flex>
       </v-layout>
       <v-layout row>
