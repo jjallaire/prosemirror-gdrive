@@ -16,6 +16,7 @@
     "localforage": "^1.7.3",
     "lodash": "^4.17.11",
     "material-icons": "^0.3.0",
+    "print-js": "^1.0.54",
     "prosemirror-commands": "^1.0.7",
     "prosemirror-dropcursor": "^1.1.1",
     "prosemirror-gapcursor": "^1.0.3",

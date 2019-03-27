@@ -23,6 +23,8 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
+import printJS from 'print-js'
+
 export default {
   name: 'EditorPage',
 
@@ -189,6 +191,14 @@ export default {
       );
     },
 
+    onPrintDocument() {
+      printJS({
+        printable: 'prosemirror',
+        type: 'html',
+        css: '/styles/print.css'
+      });
+    },
+
     docInfo(title = null, headRevisionId = null) {
       return {
         title: title,
@@ -228,14 +238,14 @@ export default {
           <EditorShareButton :doc_id="doc_id" />
           
           <PopupMenu>
-            <MenuTile icon="text_fields" text="Rename..." />
+            <MenuTile icon="print" text="Print..." @clicked="onPrintDocument" />
           </PopupMenu>
           
         </v-toolbar>
 
         <v-divider />
 
-        <v-card-text ref="prosemirror" />
+        <v-card-text id="prosemirror" ref="prosemirror" />
         
       </v-card>
     </div>
@@ -350,5 +360,6 @@ export default {
 .edit-container .has-node-selection .ProseMirror .ProseMirror-selectednode {
   outline: 2px solid #b3d4fc;
 }
+
 
 </style>
