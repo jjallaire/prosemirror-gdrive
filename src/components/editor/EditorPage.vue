@@ -4,6 +4,8 @@ import _debounce from 'lodash/debounce'
 
 import ProsemirrorEditor from '../../prosemirror'
 
+import { NodeSelection } from "prosemirror-state"
+
 import EditorToolbar from './EditorToolbar.vue'
 import EditorShareButton from './EditorShareButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
@@ -92,6 +94,7 @@ export default {
           content: this.asEditorContent(file.content),
           hooks: {
             onUpdate: this.onEditorUpdate,
+            onTransaction: this.onEditorTransaction,
             onEditLink: this.onEditLink,
             onEditImage: this.onEditImage
           }
@@ -133,9 +136,16 @@ export default {
         });
     }, 1000),
 
+    onEditorTransaction(event) {
+      if (event.state.selection instanceof NodeSelection) {
+        this.$refs.prosemirror.classList.add("has-node-selection");
+      } else {
+        this.$refs.prosemirror.classList.remove("has-node-selection");
+      }
+    },
 
-    onEditorUpdate(update) {
-      this.driveSave.onEditorUpdate(update);
+    onEditorUpdate(event) {
+      this.driveSave.onEditorUpdate(event);
     },
 
     onEditLink(link) {
@@ -339,8 +349,8 @@ export default {
   height: auto;
 }
 
-.edit-container .ProseMirror .ProseMirror-selectednode {
-  outline: 3px solid #42A5F5;
+.edit-container .has-node-selection .ProseMirror .ProseMirror-selectednode {
+  outline: 2px solid #b3d4fc;
 }
 
 </style>

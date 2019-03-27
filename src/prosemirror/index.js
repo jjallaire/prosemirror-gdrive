@@ -27,6 +27,7 @@ export default class ProsemirrorEditor {
       content: '',
       hooks: {
         onUpdate: () => {},
+        onTransaction: () => {},
         onEditLink: Promise.resolve(null),
         onEditImage: Promise.resolve(null)
       },
@@ -160,12 +161,24 @@ export default class ProsemirrorEditor {
 
   _dispatchTransaction(transaction) {
     
+    // apply the transaction
     this._state = this._state.apply(transaction)
     this._view.updateState(this._state)
     
+    // notify listeners
+    this._emitTransaction(transaction);
+   
+    // notify listeners of updates
     if (transaction.docChanged) {
       this._emitUpdate(transaction);
     }
+  }
+
+  _emitTransaction(transaction) {
+    this._options.hooks.onTransaction({
+      state: this._state,
+      transaction
+    })
   }
 
   _emitUpdate(transaction) {

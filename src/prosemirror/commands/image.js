@@ -26,10 +26,17 @@ export function imageCommand(nodeType, onEditImage) {
       // edit the image
       onEditImage(image)
         .then(result => {
-          if (result)
-            dispatch(
-              state.tr.replaceSelectionWith(nodeType.createAndFill(result))
-            )
+          if (result) {
+            // https://discuss.prosemirror.net/t/how-to-select-a-node-immediately-after-inserting-it/1566
+            const image = nodeType.createAndFill(result);
+            const tr = state.tr;
+            tr.replaceSelectionWith(image);
+            const resolvedPos = tr.doc.resolve(
+              tr.selection.anchor - tr.selection.$anchor.nodeBefore.nodeSize
+            );
+            tr.setSelection(new NodeSelection(resolvedPos));
+            dispatch(tr);
+          }
         });
     }
     
