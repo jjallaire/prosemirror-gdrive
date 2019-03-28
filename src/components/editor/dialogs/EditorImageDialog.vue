@@ -61,7 +61,7 @@ export default {
 </script>
 
 <template>
-  <ModalDialog ref="dialog" class="image-dialog" caption="Insert Image">
+  <ModalDialog ref="dialog" class="image-dialog" caption="Image">
     <template slot="content">
       <v-layout row wrap>
         <v-flex xs12>
@@ -75,6 +75,12 @@ export default {
               <v-icon title="Image upload/search" @click="onBrowse">photo_library</v-icon>
             </template>
           </v-text-field>
+        </v-flex>
+        <v-flex xs6>
+          <v-text-field
+            v-model="width"
+            label="Width"
+          />
         </v-flex>
         <v-flex xs12>
           <v-text-field 

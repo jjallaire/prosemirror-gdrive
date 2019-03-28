@@ -55,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <ModalDialog ref="dialog" caption="Edit Hyperlink">
+  <ModalDialog ref="dialog" caption="Hyperlink">
     <template slot="content">
       <v-layout row>
         <v-flex md12>
