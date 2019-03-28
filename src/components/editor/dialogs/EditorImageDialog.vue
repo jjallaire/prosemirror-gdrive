@@ -21,6 +21,8 @@ export default {
     return {
       src: null,
       title: null,
+      alt: null,
+      width: null,
       can_remove: false
     }
   },
@@ -32,12 +34,16 @@ export default {
       // initialize data
       this.src = image.src;
       this.title = image.title;
+      this.alt = image.alt;
+      this.width = image.width;
      
       // show the dialog 
       return this.$refs.dialog.show({
         ok: () => ({
           src: this.src,
-          title: this.title
+          title: this.title,
+          alt: this.alt,
+          width: this.width
         }),
         cancel: null
       });
@@ -57,8 +63,8 @@ export default {
 <template>
   <ModalDialog ref="dialog" class="image-dialog" caption="Insert Image">
     <template slot="content">
-      <v-layout row>
-        <v-flex md12>
+      <v-layout row wrap>
+        <v-flex xs12>
           <v-text-field 
             v-model="src" 
             label="Image URL" 
@@ -70,17 +76,19 @@ export default {
             </template>
           </v-text-field>
         </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex md12>
+        <v-flex xs12>
           <v-text-field 
             v-model="title" 
-            label="Image Title" 
-            hint="Tooltip displayed when hovering over image" 
+            label="Image title" 
+          />
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field 
+            v-model="alt" 
+            label="Alternative text" 
           />
         </v-flex>
       </v-layout>
-
     </template>
   </ModalDialog>
 

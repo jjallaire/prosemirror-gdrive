@@ -10,7 +10,9 @@ export function imageDialog(node, nodeType, state, dispatch, onEditImage) {
   if (node && node.type === nodeType) {
     image = { 
       src: node.attrs.src,
-      title: node.attrs.title
+      title: node.attrs.title,
+      alt: node.attrs.alt,
+      width: node.attrs.width
     }
   }
 
