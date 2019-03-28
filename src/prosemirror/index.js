@@ -14,7 +14,7 @@ import { buildMarks } from './marks'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
-import { imagePlugin } from "./plugins/image";
+import { imagePlugin } from "./image/plugin.js";
 
 
 export default class ProsemirrorEditor {
