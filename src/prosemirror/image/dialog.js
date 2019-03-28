@@ -1,7 +1,7 @@
 
 
 
-import { NodeSelection } from "prosemirror-state"
+import { insertAndSelectNode } from '../utils'
 
 export function imageDialog(node, nodeType, state, dispatch, onEditImage) {
 
@@ -18,15 +18,8 @@ export function imageDialog(node, nodeType, state, dispatch, onEditImage) {
    onEditImage(image)
     .then(result => {
       if (result) {
-        // https://discuss.prosemirror.net/t/how-to-select-a-node-immediately-after-inserting-it/1566
         const image = nodeType.createAndFill(result);
-        const tr = state.tr;
-        tr.replaceSelectionWith(image);
-        const resolvedPos = tr.doc.resolve(
-          tr.selection.anchor - tr.selection.$anchor.nodeBefore.nodeSize
-        );
-        tr.setSelection(new NodeSelection(resolvedPos));
-        dispatch(tr);
+        insertAndSelectNode(image, state, dispatch);
       }
     });
 
