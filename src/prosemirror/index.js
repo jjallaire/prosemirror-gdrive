@@ -1,6 +1,4 @@
 
-import { schema } from "prosemirror-schema-basic"
-import { addListNodes } from "prosemirror-schema-list"
 import { EditorState, Plugin, PluginKey, NodeSelection } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
@@ -11,6 +9,7 @@ import { dropCursor } from 'prosemirror-dropcursor'
 import { gapCursor } from 'prosemirror-gapcursor'
 
 import { buildMarks } from './marks'
+import { buildNodes } from './nodes'
 import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
@@ -33,14 +32,13 @@ export default class ProsemirrorEditor {
         onEditImage: Promise.resolve(null)
       },
       mapKeys: {},
-     
       ...options
     };
 
     // create schema
     this._schema = new Schema({
-      nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-      marks: buildMarks()
+      marks: buildMarks(),
+      nodes: buildNodes()
     });
 
     // create the editor state

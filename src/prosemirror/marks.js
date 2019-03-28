@@ -2,10 +2,9 @@
 
 import { schema } from "prosemirror-schema-basic"
 
-export function buildMarks() {
+export function buildMarks(extra = {}) {
 
-  // schema.spec.marks is an OrderedMap (https://github.com/marijnh/orderedmap)
-  return schema.spec.marks.append({
+  let marks = {
     underline: {
       parseDOM: [
         {
@@ -35,6 +34,13 @@ export function buildMarks() {
         },
       ],
       toDOM: () => ['s', 0],
-    }
-  });
+    },
+    ...extra,
+  }
+
+  // schema.spec.marks is an OrderedMap (https://github.com/marijnh/orderedmap)
+
+  return Object.keys(marks).reduce((schemaMarks, mark) => {
+    return schemaMarks.update(mark, marks[mark]);
+  }, schema.spec.marks);
 }
