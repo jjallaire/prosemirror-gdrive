@@ -43,7 +43,7 @@ export default {
           src: this.src,
           title: this.title,
           alt: this.alt,
-          width: this.width
+          width: this.width + "%"
         }),
         cancel: null
       });
@@ -80,6 +80,8 @@ export default {
           <v-text-field
             v-model="width"
             label="Width"
+            mask="###"
+            suffix="%"
           />
         </v-flex>
         <v-flex xs12>
