@@ -87,7 +87,7 @@ export default {
       
     </v-toolbar>
     <v-content>
-      <v-container class="app-container" fluid fill-height>
+      <v-container class="app-container">
         <ErrorPanel v-if="init_error" :error="init_error" />
         <ProgressSpinner v-else-if="!initialized" />
         <AuthPage v-else-if="!authorized" />
@@ -104,7 +104,15 @@ export default {
 <style>
 
 .app-container {
-  padding: 8px;
+  position: fixed;
+  top: 52px;
+  bottom: 8px;
+  right: 8px;
+  left: 8px;
+  padding: 0;
+  margin: 0;
+  max-width: initial;
+  width: initial;
 }
 
 .toolbar-title {

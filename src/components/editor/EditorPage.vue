@@ -269,7 +269,7 @@ export default {
 
 <style>
 
-.edit-container { 
+.edit-container {
   width: 100%;
   height: 100%;
 }
