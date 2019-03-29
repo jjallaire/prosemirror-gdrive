@@ -6,6 +6,10 @@
 
 - Warn on navigation away during save
 
+- Can we serialize using just HTML
+
+
+
 
 
 
