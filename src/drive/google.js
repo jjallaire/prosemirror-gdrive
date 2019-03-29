@@ -135,9 +135,9 @@ export default {
       orderByQuery = 'viewedByMeTime';
     else if (orderByQuery === 'size')
       orderByQuery = 'quotaBytesUsed';
-
+      
     // build query
-    let query = 'mimeType="application/vnd.google.drive.ext-type.pmdoc" and trashed = false';
+    let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and trashed = false`
     if (search) {
       query = query + " and fullText contains '" + search.replace("'", "\\'") + "'";  
     }
@@ -171,7 +171,10 @@ export default {
   newFile(title) {
     let metadata = {
       name: title,
-      mimeType: 'application/vnd.google.drive.ext-type.pmdoc'
+      mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
+      appProperties: {
+        appId: config.gdrive.appId
+      }
     };
     let fileContent = ''; 
     return this._uploadFile(metadata, fileContent);
@@ -181,6 +184,9 @@ export default {
     let metadata = {
       id: fileId,
       mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
+      appProperties: {
+        appId: config.gdrive.appId
+      },
       viewedByMeTime: new Date().toISOString()
     }
     return this._uploadFile(metadata, content, indexableText);
