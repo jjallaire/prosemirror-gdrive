@@ -8,7 +8,7 @@
 
 - Ensure we are doing browser compatibility
 
-
+- Is the nav menu clickable (glass)
 
 
 
