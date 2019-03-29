@@ -171,7 +171,7 @@ export default {
   newFile(title) {
     let metadata = {
       name: title,
-      mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
+      mimeType: 'text/html; charset=UTF-8',
       appProperties: {
         appId: config.gdrive.appId
       }
@@ -183,7 +183,7 @@ export default {
   saveFile(fileId, content, indexableText) {
     let metadata = {
       id: fileId,
-      mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
+      mimeType: 'text/html; charset=UTF-8',
       appProperties: {
         appId: config.gdrive.appId
       },

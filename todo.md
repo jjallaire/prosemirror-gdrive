@@ -1,6 +1,5 @@
 
 
-- Can we serialize using just HTML?
 
 - Publish to Google Docs
 
