@@ -33,6 +33,21 @@ export default class DriveSave  {
       3000, 
       { leading: false, trailing: true }
     )
+
+    // listen for beforeunload
+    window.addEventListener('beforeunload', (event) => {
+      if (this._status() === 'dirty') {
+        
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+
+        // Chrome requires returnValue to be set.
+        event.returnValue = 'Changes you made may not be saved.';
+
+        // Other browsers require a string to be returned
+        return event.returnValue;
+      }
+    });
   }
 
   // callback for editor updates
@@ -131,22 +146,21 @@ export default class DriveSave  {
     );
   }
 
+  // get the current save status
+  _status() {
+    if (this._editorUpdates.last === null) {
+      return "clean";
+    } else if (this._editorUpdates.lastSaveTime === null ||
+              this._editorUpdates.last.time > this._editorUpdates.lastSaveTime) {
+      return "dirty";      
+    } else {
+      return "saved";
+    }
+  }
+
   // emit the current save status
   _emitStatus() {
-      
-    let status = null
-    if (this._editorUpdates.last === null) {
-      status = "clean";
-    } else if (this._editorUpdates.lastSaveTime === null ||
-               this._editorUpdates.last.time > this._editorUpdates.lastSaveTime) {
-      status = "dirty";      
-    } else {
-      status = "saved";
-    }
-
-    this._onStatus(status);
-
-
+    this._onStatus(this._status());
   }
   
 

@@ -4,9 +4,11 @@
 
 - Download as Word, PDF, etc.d
 
-- Warn on navigation away during save
+- Can we serialize using just HTML?
 
-- Can we serialize using just HTML
+- Ensure we are doing browser compatibility
+
+
 
 
 
