@@ -14,6 +14,8 @@ export function imageDialog(node, nodeType, state, dispatch, onEditImage) {
       alt: node.attrs.alt,
       width: node.attrs.width
     }
+  } else {
+    image = nodeType.create(image).attrs;
   }
 
    // edit the image

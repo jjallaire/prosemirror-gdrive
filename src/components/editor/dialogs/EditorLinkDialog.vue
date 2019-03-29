@@ -55,10 +55,10 @@ export default {
 </script>
 
 <template>
-  <ModalDialog ref="dialog" caption="Hyperlink">
+  <ModalDialog ref="dialog" caption="Edit Hyperlink">
     <template slot="content">
-      <v-layout row>
-        <v-flex md12>
+      <v-layout row wrap>
+        <v-flex xs12>
           <v-text-field 
             v-model="href" 
             label="URL" 
