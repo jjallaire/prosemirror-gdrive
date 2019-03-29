@@ -400,7 +400,7 @@ export default {
         supportsTeamDrives: true,
         fields: 'id,headRevisionId'
       },
-      headers: { 'Content-Type' : "application/json" },
+      headers: { 'Content-Type' : "application/json; charset=UTF-8" },
       body: jsonStringifyEscaped(metadata)
     })
     .then(result => {
@@ -422,7 +422,7 @@ export default {
       }
     };
     let multipart = new MultipartBuilder()
-      .append('application/json', jsonStringifyEscaped(uploadMetadata))
+      .append('application/json; charset=UTF-8', jsonStringifyEscaped(uploadMetadata))
       .append(metadata.mimeType, content)
       .finish();
     return gapi.client.request({

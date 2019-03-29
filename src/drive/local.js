@@ -9,7 +9,7 @@ import { SET_INITIALIZED, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
 import { initSettings } from './settings'
 
 const kUserAppData = "user.json"
-const kUserMimeType = "application/json"
+const kUserMimeType = "application/json; charset=UTF-8"
 
 var appDataStore = localforage.createInstance({
   name: "promisemirror-gdrive",

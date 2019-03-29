@@ -9,7 +9,7 @@ import drive from '.'
 import { jsonStringifyEscaped } from '../core/json'
 
 const kSettingsFile = "settings.json";
-const kSettingsMimeType = "application/json";
+const kSettingsMimeType = "application/json; charset=UTF-8";
 
 export function initSettings() {
 
