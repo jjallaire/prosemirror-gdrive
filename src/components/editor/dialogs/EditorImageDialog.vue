@@ -23,7 +23,6 @@ export default {
       title: null,
       alt: null,
       width: null,
-      can_remove: false
     }
   },
 
@@ -35,7 +34,7 @@ export default {
       this.src = image.src;
       this.title = image.title;
       this.alt = image.alt;
-      this.width = image.width;
+      this.width = image.width.replace(/%/g, '');
      
       // show the dialog 
       return this.$refs.dialog.show({

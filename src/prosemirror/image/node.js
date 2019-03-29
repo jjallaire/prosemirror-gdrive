@@ -7,7 +7,7 @@ export const imageNode = {
   
   attrs: {
     src: {},
-    width: {default: "70%"},
+    width: {default: "80%"},
     alt: {default: null},
     title: {default: null}
   },
