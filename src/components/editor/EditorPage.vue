@@ -346,8 +346,11 @@ export default {
   margin-right: 0;
 }
 
+.edit-container .ProseMirror li > p {
+  margin-bottom: 5px;
+}
+
 .edit-container .ProseMirror img {
-  max-width: 90%;
   height: auto;
 }
 
