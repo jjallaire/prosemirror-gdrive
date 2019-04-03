@@ -8,6 +8,9 @@ import './core/vuetify'
 import * as log from './core/log'
 import './core/analytics'
 
+// browser update
+import '@/components/core/browser-update.js'
+
 // application
 import App from './App.vue'
 import drive from './drive/'
