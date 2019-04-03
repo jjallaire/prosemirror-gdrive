@@ -350,6 +350,10 @@ export default {
   margin-bottom: 5px;
 }
 
+.edit-container .ProseMirror li:last-of-type > p {
+  margin-bottom: 16px;
+}
+
 .edit-container .ProseMirror img {
   height: auto;
 }
