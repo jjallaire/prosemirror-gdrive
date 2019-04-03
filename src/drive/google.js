@@ -180,7 +180,7 @@ export default {
     return this._uploadFile(metadata, fileContent);
   },
   
-  saveFile(fileId, content, indexableText) {
+  saveFile(fileId, content) {
     let metadata = {
       id: fileId,
       mimeType: 'text/html; charset=UTF-8',
@@ -189,7 +189,15 @@ export default {
       },
       viewedByMeTime: new Date().toISOString()
     }
-    return this._uploadFile(metadata, content, indexableText);
+    return this._uploadFile(metadata, content);
+  },
+
+  convertToGoogleDoc(title, content) {
+    let metadata = {
+      name: title,
+      mimeType: 'application/vnd.google-apps.document'
+    };
+    return this._uploadFile(metadata, content);
   },
 
   renameFile(fileId, name) {
@@ -409,7 +417,7 @@ export default {
     .catch(catchHttpRequest);
   },
 
-  _uploadFile(metadata, content, indexableText) {
+  _uploadFile(metadata, content) {
     let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
     let method = metadata.id ? 'PATCH' : 'POST';
     let uploadMetadata = metadata.id ? 
@@ -417,13 +425,10 @@ export default {
       metadata;
     uploadMetadata = { 
       ...uploadMetadata,
-      contentHints: {
-        indexableText: indexableText || content
-      }
     };
     let multipart = new MultipartBuilder()
       .append('application/json; charset=UTF-8', jsonStringifyEscaped(uploadMetadata))
-      .append(metadata.mimeType, content)
+      .append('text/html; charset=UTF-8', content)
       .finish();
     return gapi.client.request({
       path: path,

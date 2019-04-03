@@ -100,7 +100,7 @@ export default {
   },
 
   // eslint-disable-next-line
-  saveFile(fileId, content, indexableText) {
+  saveFile(fileId, content) {
     return docStore
       .getItem(fileId)
       .then(file => {
@@ -123,6 +123,10 @@ export default {
       .then(() => {
         return this._uploadResponse(fileId);
       });
+  },
+
+  // eslint-disable-next-line
+  convertToGoogleDoc(title, content) {
   },
 
   getFile(fileId) {

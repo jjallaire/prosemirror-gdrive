@@ -201,6 +201,17 @@ export default {
       });
     },
 
+    onPublishAsGoogleDoc() {
+      drive.convertToGoogleDoc(this.doc.title, this.editor.getHTML())
+        .then(response => {
+          let id = response.id
+          window.open(`https://docs.google.com/document/d/${id}/edit`, "_blank");
+        })
+        .catch(error => {
+          dialog.errorSnackbar("Unable to Publish as Google Doc: " + error.message);
+        });
+    },
+
     docInfo(title = null, headRevisionId = null) {
       return {
         title: title,
@@ -233,6 +244,8 @@ export default {
           
           <PopupMenu>
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
+            <v-divider />
+            <MenuTile icon="insert_drive_file" text="Publish as Google Doc" @clicked="onPublishAsGoogleDoc" />
           </PopupMenu>
           
         </v-toolbar>
