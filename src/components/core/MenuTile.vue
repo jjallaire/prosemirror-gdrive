@@ -37,7 +37,7 @@ export default {
 
 <template>
 
-  <v-list-tile avatar @click="clicked">
+  <v-list-tile class="menu-tile" avatar @click="clicked">
     <v-list-tile-avatar class="menu-avatar" :size="30"> <v-icon>{{ icon }}</v-icon></v-list-tile-avatar>
     <v-list-tile-title>{{ text }}</v-list-tile-title>
   </v-list-tile>
@@ -49,6 +49,11 @@ export default {
 .menu-avatar {
   min-width: 35px;
 }
+
+.menu-tile .v-list__tile__title {
+  padding-right: 20px;
+}
+
 
 
 </style>
