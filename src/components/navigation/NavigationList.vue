@@ -51,7 +51,7 @@ export default {
 
   <v-list dense>
 
-    <NavigationTile path="/" icon="home" caption="Home" />
+    <NavigationTile path="/" icon="home" caption="Homer" />
 
     <v-divider />
 
