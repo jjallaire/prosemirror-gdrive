@@ -23,6 +23,14 @@ Vue.config.productionTip = false
 // initialize log
 log.initialize();
 
+// initialize addins
+// eslint-disable-next-line
+import{ registerAddin } from './addins'
+/*
+import example from './addins/example'
+registerAddin(example);
+*/
+
 // connect to drive
 drive.connect()
 
