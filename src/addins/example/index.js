@@ -1,5 +1,10 @@
 
 
+
+import BarPage from './BarPage'
+import FooPage from './FooPage'
+
+
 export default {
 
   // override config values
@@ -7,6 +12,33 @@ export default {
     app: {
       title: "ProseMirror with Addins"
     }
+  },
+
+  // provide routes
+  routes: [
+    { path: "/foo/", component: FooPage },
+    { path: "/bar/", component: BarPage },
+  ],
+
+  // provide additional navigation groups/routes
+  navigation: {
+    groups: [
+      {
+        caption: "Example Group",
+        icon: "alarm",
+        expanded: true,
+        items: [
+          {
+            caption: "Foo",
+            path: "/foo/"
+          },
+          {
+            caption: "Bar",
+            path: "/bar/"
+          }
+        ]
+      }
+    ]
   }
 
 }

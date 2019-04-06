@@ -3,6 +3,7 @@
 
 
 import config from '../config'
+import router from '../core/router'
 
 
 export function registerAddin(addin) {
@@ -17,6 +18,10 @@ export function registerAddin(addin) {
     });
   }
 
+  // add routes
+  if (addin.routes)
+    router.addRoutes(addin.routes);
 
-  
+
+
 }
