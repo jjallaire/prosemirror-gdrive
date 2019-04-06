@@ -24,7 +24,7 @@ Vue.config.productionTip = false
 log.initialize();
 
 // import addins
-// e.g. import './addins/example'
+import './addins/example'
 
 // connect to drive
 drive.connect()

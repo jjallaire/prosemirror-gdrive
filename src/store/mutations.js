@@ -6,6 +6,7 @@ export const SET_USER = 'SET_USER'
 export const SET_RECENT_DOCS = 'SET_RECENT_DOCS'
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
 export const SET_SNACKBAR_ERROR = 'SET_SNACKBAR_ERROR'
+export const ADD_NAVIGATION_GROUP = 'ADD_NAVIGATION_GROUP'
 
 export default {
 
@@ -34,5 +35,9 @@ export default {
   [SET_SNACKBAR_ERROR](state, error) {
     state.snackbar_error = error;
   },
+
+  [ADD_NAVIGATION_GROUP](state, group) {
+    state.navigation_groups.push(group);
+  }
 
 };

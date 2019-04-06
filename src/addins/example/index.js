@@ -27,7 +27,7 @@ registerAddin({
       {
         caption: "Example Group",
         icon: "alarm",
-        expanded: true,
+        expanded: false,
         items: [
           {
             caption: "Foo",

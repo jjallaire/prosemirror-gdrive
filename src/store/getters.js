@@ -14,6 +14,8 @@ export default {
 
   recent_docs: (state) => state.recent_docs,
 
+  navigation_groups: (state) => state.navigation_groups,
+
   snackbar_error: (state) => state.snackbar_error
 
 }

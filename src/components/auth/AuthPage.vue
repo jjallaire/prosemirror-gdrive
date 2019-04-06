@@ -48,7 +48,7 @@ export default {
 
 .auth-container { 
   width: 100%;
-  padding-bottom: 200px;
+  padding-top: 200px;
 }
 
 .auth-container .display-2 {
