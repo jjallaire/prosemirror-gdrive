@@ -4,8 +4,9 @@
 import BarPage from './BarPage'
 import FooPage from './FooPage'
 
+import { registerAddin } from '..'
 
-export default {
+registerAddin({
 
   // override config values
   config: {
@@ -40,5 +41,4 @@ export default {
       }
     ]
   }
-
-}
+})
