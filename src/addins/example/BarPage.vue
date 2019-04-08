@@ -14,6 +14,11 @@ export default {
   },
 
   mounted() {
+    // any initialization code goes here
+
+    // note that if the initialization code is async, see the FooPage
+    // example for how to handle that scenario
+
     this.$refs.page.initialize();
   }
 

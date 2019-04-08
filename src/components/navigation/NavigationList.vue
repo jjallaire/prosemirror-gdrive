@@ -91,7 +91,7 @@ export default {
       
       </v-list-group>
 
-      <v-divider :key="group.caption" />
+      <v-divider :key="group.caption + 'divider'" />
 
     </template>
 

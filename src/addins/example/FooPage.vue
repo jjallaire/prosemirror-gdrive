@@ -3,6 +3,8 @@
 
 <script>
 
+import drive from '../../drive'
+
 import AppPage from '../../components/core/AppPage.vue'
 
 export default {
@@ -13,11 +15,20 @@ export default {
     AppPage
   },
 
+  data: function() {
+    return {
+      files: []
+    }
+  },
+
   mounted() {
+    // if the page requires async code to run before displaying, you can pass
+    // a promise to page.intialize, e.g.
     this.$refs.page.initialize(
-      new Promise(resolve => {
-        setTimeout(() => resolve(), 5000);
-      })
+      drive.listFiles()
+        .then(files => {
+          this.files = files;
+        })
     );
   }
 
@@ -28,7 +39,9 @@ export default {
 <template>
 
   <AppPage ref="page">
-    Foo Page
+    <div v-for="file in files" :key="file.id">
+      {{ file.name }}
+    </div>
   </AppPage>
 
 </template>
