@@ -45,9 +45,6 @@ export default {
   },
 
   data: function() {
-
-    let actions = addinActions();
-
     return {
       // document
       doc: this.docInfo(),
@@ -66,9 +63,18 @@ export default {
       error: null,
 
       // addin actions
-      button_actions: actions.filter(action => action.type === 'button'),
-      menu_actions: actions.filter(action => action.type === 'menu')
+      addin_actions: addinActions()
     }
+  },
+
+  computed: {
+    
+    button_actions() {
+      return this.addin_actions.filter(action => action.type === 'button');
+    } ,
+    menu_actions() {
+      return this.addin_actions.filter(action => action.type === 'menu');
+    } 
   },
 
   mounted() {
@@ -198,10 +204,6 @@ export default {
         "Error attempting to synchronize changes from Drive: " +
         error.message
       );
-    },
-
-    onShareDocument(doc_id) {
-      drive.shareFile(doc_id);
     },
 
     onPrintDocument() {
