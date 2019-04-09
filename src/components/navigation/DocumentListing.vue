@@ -67,7 +67,11 @@ export default {
         this.items = [];
       this.loading = true;
       drive
-        .listFiles(this.pagination.sortBy, this.pagination.descending, this.search)
+        .listFiles({
+          orderBy: this.pagination.sortBy,
+          descending: this.pagination.descending, 
+          search: this.search
+        })
         .then(files => {
           this.items = files;
           this.loading = false;

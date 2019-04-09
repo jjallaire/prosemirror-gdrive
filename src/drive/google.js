@@ -127,10 +127,19 @@ export default {
     auth().signOut();
   },
 
-  listFiles(orderBy = 'lastViewed', descending = true, search = null, limit = 1000) {
+  listFiles(options) {
+
+    // provide defaults
+    options = {
+      orderBy: 'lastViewed',
+      descending: true,
+      search: null,
+      limit: 1000,
+      ...options
+    }
 
     // adjust order by to cannonical names
-    let orderByQuery = orderBy;
+    let orderByQuery = options.orderBy;
     if (orderByQuery === 'lastViewed')
       orderByQuery = 'viewedByMeTime';
     else if (orderByQuery === 'size')
@@ -138,28 +147,28 @@ export default {
       
     // build query
     let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and trashed = false`
-    if (search) {
-      query = query + " and fullText contains '" + search.replace("'", "\\'") + "'";  
+    if (options.search) {
+      query = query + " and fullText contains '" + options.search.replace("'", "\\'") + "'";  
     }
 
     // build params
     let params = {
       q: query,
-      pageSize: limit,
+      pageSize: options.limit,
       fields: kFileListFields
     };
 
     // add orderBy if this isn't a search
-    if (orderBy && !search)
-      params.orderBy = orderByQuery + (descending ? ' desc' : '');
+    if (options.orderBy && !options.search)
+      params.orderBy = orderByQuery + (options.descending ? ' desc' : '');
 
     // perform query
     return gapi.client.drive.files.list(params)
       .then(fileListResponse)
       .then(files => {
         // do client side sorting if this was a search
-        if (orderBy && search) 
-          return _orderBy(files, [orderBy], [descending ? 'desc' : 'asc']);
+        if (options.orderBy && options.search) 
+          return _orderBy(files, [options.orderBy], [options.descending ? 'desc' : 'asc']);
         else
           return files;
       })
@@ -350,7 +359,10 @@ export default {
 
   updateRecentDocs() {
     return this
-      .listFiles('recency', true, null, store.getters.settings.recent_documents)
+      .listFiles({
+        orderBy: 'recency', 
+        limit: store.getters.settings.recent_documents
+      })
       .then(files => {
         store.commit(SET_RECENT_DOCS, files);
       })
