@@ -127,6 +127,10 @@ export default {
     auth().signOut();
   },
 
+  // properties is a string that uses the syntax described here:
+  //  https://developers.google.com/drive/api/v3/search-parameters#properties
+  // for example:
+  //  properties has { key='foo' and value='bar' } 
   listFiles(options) {
 
     // provide defaults
@@ -134,6 +138,7 @@ export default {
       orderBy: 'lastViewed',
       descending: true,
       search: null,
+      properties: null,
       limit: 1000,
       ...options
     }
@@ -147,6 +152,9 @@ export default {
       
     // build query
     let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and trashed = false`
+    if (options.properties) {
+      query = query + " and (" + options.properties + ") "
+    }
     if (options.search) {
       query = query + " and fullText contains '" + options.search.replace("'", "\\'") + "'";  
     }
