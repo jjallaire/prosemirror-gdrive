@@ -177,12 +177,13 @@ export default {
       }); 
   },
 
-  newFile(title) {
+  newFile(title, properties) {
     let metadata = {
       name: title,
       mimeType: 'text/html; charset=UTF-8',
       appProperties: {
-        appId: config.gdrive.appId
+        appId: config.gdrive.appId,
+        ...properties
       }
     };
     let fileContent = ''; 
@@ -193,25 +194,26 @@ export default {
     let metadata = {
       id: fileId,
       mimeType: 'text/html; charset=UTF-8',
-      appProperties: {
-        appId: config.gdrive.appId
-      },
       viewedByMeTime: new Date().toISOString()
     }
-    return this._uploadFile(metadata, content);
-  },
-
-  convertToGoogleDoc(title, content) {
-    let metadata = {
-      name: title,
-      mimeType: 'application/vnd.google-apps.document'
-    };
     return this._uploadFile(metadata, content);
   },
 
   renameFile(fileId, name) {
     return this._uploadFileMetadata(fileId, { 
       name: name
+    });
+  },
+
+  setFileViewed(fileId) {
+    return this._uploadFileMetadata(fileId, { 
+      viewedByMeTime: new Date().toISOString()
+    })
+  },
+
+  setFileProperties(fileId, properties) {
+    return this._uploadFileMetadata(fileId, { 
+      properties: properties
     });
   },
 
@@ -267,10 +269,12 @@ export default {
     });
   },
 
-  setFileViewed(fileId) {
-    return this._uploadFileMetadata(fileId, { 
-      viewedByMeTime: new Date().toISOString()
-    })
+  convertToGoogleDoc(title, content) {
+    let metadata = {
+      name: title,
+      mimeType: 'application/vnd.google-apps.document'
+    };
+    return this._uploadFile(metadata, content);
   },
 
   readAppData(name, mimeType, defaultContent) {
