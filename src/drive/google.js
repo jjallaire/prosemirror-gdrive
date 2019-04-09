@@ -213,6 +213,9 @@ export default {
     })
   },
 
+  // NOTE: limited to 30 properties, and each property 
+  // can use 124 bytes combined for key and value
+  // see: https://developers.google.com/drive/api/v3/properties
   setFileProperties(fileId, properties) {
     return this._uploadFileMetadata(fileId, { 
       properties: properties
