@@ -7,8 +7,9 @@ import { VListGroup, VDivider, VList } from 'vuetify/lib'
 
 import NavigationTile from './NavigationTile.vue'
 
-import { newDocument, openDocument } from '../core/docs'
+import { addinNavigationGroups } from '../../addins'
 
+import { newDocument, openDocument } from '../core/docs'
 
 import { mapGetters } from 'vuex'
 
@@ -22,14 +23,14 @@ export default {
 
   data () {
     return {
-      show_recent: true
+      show_recent: true,
+      navigation_groups: addinNavigationGroups()
     }
   },
 
   computed: {
     ...mapGetters([
-      'recent_docs',
-      'navigation_groups'
+      'recent_docs'
     ])
   },
 

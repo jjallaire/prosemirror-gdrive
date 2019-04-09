@@ -3,9 +3,9 @@
 
 <script>
 
-import drive from '../../drive'
+import drive from '../../../drive'
 
-import AppPage from '../../components/core/AppPage.vue'
+import AppPage from '../../../components/core/AppPage.vue'
 
 export default {
 

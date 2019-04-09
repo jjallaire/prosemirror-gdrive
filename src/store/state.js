@@ -18,9 +18,6 @@ export function initialState() {
     // document history
     recent_docs: [],
 
-    // data-drive navigation groups
-    navigation_groups: [],
-
     // snackbar error
     snackbar_error: null
   };

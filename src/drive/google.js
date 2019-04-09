@@ -282,12 +282,15 @@ export default {
     });
   },
 
-  convertToGoogleDoc(title, content) {
-    let metadata = {
-      name: title,
-      mimeType: 'application/vnd.google-apps.document'
-    };
-    return this._uploadFile(metadata, content);
+  convertToGoogleDoc(fileId) {
+    return this.getFile(fileId)
+      .then(file => {
+        let metadata = {
+          name: file.metadata.name,
+          mimeType: 'application/vnd.google-apps.document'
+        };
+        return this._uploadFile(metadata, file.content);
+      });
   },
 
   readAppData(name, mimeType, defaultContent) {

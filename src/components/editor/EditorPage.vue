@@ -5,7 +5,7 @@ import _debounce from 'lodash/debounce'
 import ProsemirrorEditor from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
-import EditorShareButton from './EditorShareButton.vue'
+import EditorActionButton from './EditorActionButton.vue'
 import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
@@ -23,6 +23,8 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
+import { addinActions } from '../../addins'
+
 import printJS from 'print-js'
 
 export default {
@@ -30,7 +32,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorToolbar, EditorShareButton, EditorDocTitle, EditorSaveStatus,
+    EditorToolbar, EditorActionButton, EditorDocTitle, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -43,6 +45,9 @@ export default {
   },
 
   data: function() {
+
+    let actions = addinActions();
+
     return {
       // document
       doc: this.docInfo(),
@@ -58,7 +63,11 @@ export default {
       save_status: "clean",
 
       // load error
-      error: null
+      error: null,
+
+      // addin actions
+      button_actions: actions.filter(action => action.type === 'button'),
+      menu_actions: actions.filter(action => action.type === 'menu')
     }
   },
 
@@ -191,6 +200,10 @@ export default {
       );
     },
 
+    onShareDocument(doc_id) {
+      drive.shareFile(doc_id);
+    },
+
     onPrintDocument() {
       printJS({
         printable: 'prosemirror',
@@ -199,17 +212,6 @@ export default {
         headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
         css: '/styles/print.css'
       });
-    },
-
-    onPublishAsGoogleDoc() {
-      drive.convertToGoogleDoc(this.doc.title, this.editor.getHTML())
-        .then(response => {
-          let id = response.id
-          window.open(`https://docs.google.com/document/d/${id}/edit`, "_blank");
-        })
-        .catch(error => {
-          dialog.errorSnackbar("Unable to Publish as Google Doc: " + error.message);
-        });
     },
 
     docInfo(title = null, headRevisionId = null) {
@@ -240,12 +242,25 @@ export default {
   
           <EditorSaveStatus :status="save_status" />
 
-          <EditorShareButton :doc_id="doc_id" />
+          <EditorActionButton 
+            v-for="action in button_actions" 
+            :key="action.caption"
+            :icon="action.icon" 
+            :caption="action.caption" 
+            :doc_id="doc_id" 
+            @clicked="action.handler" 
+          />
           
           <PopupMenu>
-            <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
+            <MenuTile
+              v-for="action in menu_actions"
+              :key="action.caption" 
+              :icon="action.icon" 
+              :text="action.caption" 
+              @clicked="action.handler(doc_id)" 
+            />
             <v-divider />
-            <MenuTile icon="insert_drive_file" text="Publish as Google Doc" @clicked="onPublishAsGoogleDoc" />
+            <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>
           
         </v-toolbar>

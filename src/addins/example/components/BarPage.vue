@@ -3,9 +3,9 @@
 
 <script>
 
-import AppPage from '../../components/core/AppPage.vue'
+import AppPage from '../../../components/core/AppPage.vue'
 
-import store, { SET_NAME } from './store'
+import store, { SET_NAME } from '../store'
 
 import { VTextField } from 'vuetify/lib'
 

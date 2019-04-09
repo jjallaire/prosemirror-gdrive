@@ -1,12 +1,15 @@
 
 
 
-import BarPage from './BarPage'
-import FooPage from './FooPage'
+import BarPage from './components/BarPage'
+import FooPage from './components/FooPage'
 
-import { registerAddin } from '..'
+import { addinRegister } from '..'
 
-registerAddin({
+import actions from './actions.js'
+import navigation from './navigation.js'
+
+addinRegister({
 
   // override config values
   config: {
@@ -22,23 +25,8 @@ registerAddin({
   ],
 
   // provide additional navigation groups/routes
-  navigation: {
-    groups: [
-      {
-        caption: "Example Group",
-        icon: "alarm",
-        expanded: false,
-        items: [
-          {
-            caption: "Foo",
-            path: "/foo/"
-          },
-          {
-            caption: "Bar",
-            path: "/bar/"
-          }
-        ]
-      }
-    ]
-  }
+  navigation: navigation,
+
+  // provide custom actions
+  actions: actions
 })

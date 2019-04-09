@@ -1,14 +1,12 @@
 
 
-
-
 import config from '../config'
 import router from '../core/router'
-import store from '../store'
-import { ADD_NAVIGATION_GROUP } from '../store/mutations'
 
+const actions = [];
+const navigationGroups = [];
 
-export function registerAddin(addin) {
+export function addinRegister(addin) {
 
   // merge config
   if (addin.config) {
@@ -25,9 +23,18 @@ export function registerAddin(addin) {
     router.addRoutes(addin.routes);
 
   // add navigation groups
-  if (addin.navigation && addin.navigation.groups) {
-    addin.navigation.groups.forEach(group => {
-      store.commit(ADD_NAVIGATION_GROUP, group);
-    });
-  }
+  if (addin.navigation && addin.navigation.groups)
+    navigationGroups.push(...addin.navigation.groups)
+
+  // add actions
+  if (addin.actions)
+    actions.push(...addin.actions);
+}
+
+export function addinNavigationGroups() {
+  return navigationGroups;
+}
+
+export function addinActions() {
+  return actions;
 }
