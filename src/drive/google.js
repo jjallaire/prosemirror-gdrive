@@ -183,6 +183,8 @@ export default {
       mimeType: 'text/html; charset=UTF-8',
       appProperties: {
         appId: config.gdrive.appId,
+      },
+      properties: {
         ...properties
       }
     };
