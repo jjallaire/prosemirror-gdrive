@@ -24,9 +24,9 @@ addinRegister({
     { path: "/bar/", component: BarPage },
   ],
 
-  // additional navigation groups/routes
+  // navigation 
   navigation: navigation,
 
-  // custom actions
+  // actions
   actions: actions
 })
