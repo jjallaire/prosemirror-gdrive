@@ -97,7 +97,7 @@ export default {
         this.syncHandler = docSyncHandler(
           this.doc_id,
           () => this.doc,
-          this.onSyncTitle,
+          this.onSyncMetadata,
           this.onSyncDoc,
           this.onSyncError
         );
@@ -190,8 +190,8 @@ export default {
       this.syncManager.onDriveChanged(changes);
     },
 
-    onSyncTitle(title) {
-      this.doc.title = title;
+    onSyncMetadata(metadata) {
+      this.doc.title = metadata.name;
     },
 
     onSyncDoc(doc) {

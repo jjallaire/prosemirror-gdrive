@@ -87,7 +87,7 @@ export default new ChangeMonitor();
 
 
 export function docSyncHandler(
-  docId, docInfo, onSyncTitle, onSyncDoc, onSyncError) {
+  docId, docInfo, onSyncMetadata, onSyncDoc, onSyncError) {
     
   function onDriveChanged(changes) {
 
@@ -110,9 +110,9 @@ export function docSyncHandler(
               // if the change has a different revisionId then get the file
               if (metadata.headRevisionId !== doc.headRevisionId) {
                 return drive.getFile(docId)
-              // otherwise check for a title change
-              } else if (doc.title !== metadata.name) {
-                onSyncTitle(metadata.name);
+              // otherwise sync metadata
+              } else {
+                onSyncMetadata(metadata);
               } 
             })
             .then(doc => {
