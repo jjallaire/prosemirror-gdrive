@@ -22,10 +22,10 @@ export default class ProsemirrorEditor {
 
     // save options
     this._options = {
-      editable: true,
       autoFocus: false,
       content: '',
       hooks: {
+        isEditable: () => true,
         onUpdate: () => {},
         onSelectionChanged: () => {},
         onEditLink: Promise.resolve(null),
@@ -55,7 +55,7 @@ export default class ProsemirrorEditor {
         new Plugin({
           key: new PluginKey('editable'),
           props: {
-            editable: () => this._options.editable,
+            editable: this._options.hooks.isEditable
           },
         }),
         imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)

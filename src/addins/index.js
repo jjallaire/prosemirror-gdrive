@@ -5,6 +5,7 @@ import router from '../core/router'
 
 const actions = [];
 const navigationGroups = [];
+const behaviors = [];
 
 export function addinRegister(addin) {
 
@@ -29,6 +30,10 @@ export function addinRegister(addin) {
   // add actions
   if (addin.actions)
     actions.push(...addin.actions);
+
+  // add behaviors
+  if (addin.behaviors)
+    behaviors.push(addin.behaviors);
 }
 
 export function addinNavigationGroups() {
@@ -37,4 +42,8 @@ export function addinNavigationGroups() {
 
 export function addinActions() {
   return actions;
+}
+
+export function addinBehaviors() {
+  return behaviors;
 }

@@ -8,6 +8,7 @@ import { addinRegister } from '..'
 
 import actions from './actions.js'
 import navigation from './navigation.js'
+import behaviors from './behaviors.js'
 
 addinRegister({
 
@@ -28,5 +29,8 @@ addinRegister({
   navigation: navigation,
 
   // actions
-  actions: actions
+  actions: actions,
+
+  // behaviors
+  behaviors: behaviors
 })

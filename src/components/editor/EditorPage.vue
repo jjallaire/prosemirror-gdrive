@@ -23,7 +23,7 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
-import { addinActions } from '../../addins'
+import { addinActions, addinBehaviors } from '../../addins'
 
 import printJS from 'print-js'
 
@@ -63,7 +63,11 @@ export default {
       error: null,
 
       // addin actions
-      addin_actions: addinActions()
+      addin_actions: addinActions(),
+
+      // addin behaviors
+      addin_behaviors: addinBehaviors()
+
     }
   },
 
@@ -71,10 +75,20 @@ export default {
     
     button_actions() {
       return this.filterActions('button');
-    } ,
+    },
+
     menu_actions() {
       return this.filterActions('menu');
-    } 
+    },
+
+    is_editable() {
+      for (let i=0; i<this.addin_behaviors.length; i++) {
+        let behavior = this.addin_behaviors[i];
+        if (behavior.editable && !behavior.editable(this.doc.properties))
+          return false;
+      }
+      return true;
+    }
   },
 
   mounted() {
@@ -105,9 +119,9 @@ export default {
         // initialize editor
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
           autoFocus: true,
-          editable: true,
           content: file.content,
           hooks: {
+            isEditable: () => this.is_editable,
             onUpdate: this.onEditorUpdate,
             onSelectionChanged: this.onEditorSelectionChanged,
             onEditLink: this.onEditLink,
@@ -220,7 +234,7 @@ export default {
       return {
         title,
         headRevisionId,
-        properties
+        properties: properties || {}
       }
     },
 

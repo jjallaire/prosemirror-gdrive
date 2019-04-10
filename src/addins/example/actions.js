@@ -28,7 +28,7 @@ export default [
     caption: 'Publish as Google Doc',
     handler: doc => {
      
-      /* actions can set properties
+      /* actions can set document properties
       doc.setProperties({ foo: "foo" })
       */
 
