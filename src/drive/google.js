@@ -16,7 +16,7 @@ const kScopes = [
 ];
 
 const kFileFields = 'id, name, headRevisionId, iconLink, viewedByMe, viewedByMeTime, ' +
-                    'sharedWithMeTime, modifiedTime, shared, sharingUser, size, appProperties';
+                    'sharedWithMeTime, modifiedTime, shared, sharingUser, size, properties, appProperties';
 
 const kFileListFields = 'nextPageToken, files(' + kFileFields + ')';
 
@@ -438,7 +438,7 @@ export default {
       method: method,
       params: {
         supportsTeamDrives: true,
-        fields: 'id,headRevisionId'
+        fields: 'id,properties,headRevisionId'
       },
       headers: { 'Content-Type' : "application/json; charset=UTF-8" },
       body: jsonStringifyEscaped(metadata)
@@ -468,7 +468,7 @@ export default {
       params: {
         uploadType: 'multipart',
         supportsTeamDrives: true,
-        fields: 'id,headRevisionId'
+        fields: 'id,properties,headRevisionId'
       },
       headers: { 'Content-Type' : multipart.type },
       body: multipart.body

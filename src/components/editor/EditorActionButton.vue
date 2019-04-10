@@ -21,10 +21,6 @@ export default {
     color: {
       type: String,
       default: 'info'
-    },
-    doc_id: {
-      type: String,
-      required: true
     }
   },
 }
@@ -33,7 +29,7 @@ export default {
 
 <template>
 
-  <v-btn depressed small :color="color" @click="$emit('clicked', doc_id)">
+  <v-btn depressed small :color="color" @click="$emit('clicked')">
     <v-icon small light>{{ icon }}</v-icon>
     &nbsp;
     {{ caption }}

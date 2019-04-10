@@ -70,10 +70,10 @@ export default {
   computed: {
     
     button_actions() {
-      return this.addin_actions.filter(action => action.type === 'button');
+      return this.filterActions('button');
     } ,
     menu_actions() {
-      return this.addin_actions.filter(action => action.type === 'menu');
+      return this.filterActions('menu');
     } 
   },
 
@@ -191,7 +191,7 @@ export default {
     },
 
     onSyncMetadata(metadata) {
-      this.doc.title = metadata.name;
+      this.doc = this.docInfo(metadata.name, metadata.headRevisionId, metadata.properties);
     },
 
     onSyncDoc(doc) {
@@ -223,6 +223,36 @@ export default {
         properties
       }
     },
+
+    onEditorAction(handler) {
+      handler({
+        id: this.doc_id,
+        properties: this.doc.properties,
+        setProperties: (properties) => {
+          drive
+            .setFileProperties(this.doc_id, properties)
+            .then(() => {
+              this.doc.properties = {
+                ...this.doc.properties,
+                ...properties
+              }
+            })
+            .catch(error => {
+              dialog.errorSnackbar("Error setting file properties: " + 
+                                    error.message);
+            })
+        }
+      });
+    },
+
+    filterActions(type) { 
+      // get all of the actions of this type
+      let actions = this.addin_actions.filter(action => action.type === type);
+      
+      // apply the property filter
+      let properties = this.doc.properties || {};
+      return actions.filter(action => !action.filter || action.filter(properties));
+    }
   }
 }
 
@@ -245,14 +275,15 @@ export default {
   
           <EditorSaveStatus :status="save_status" />
 
-          <EditorActionButton 
-            v-for="action in button_actions" 
-            :key="action.caption"
-            :icon="action.icon" 
-            :caption="action.caption" 
-            :doc_id="doc_id" 
-            @clicked="action.handler" 
-          />
+          <span>
+            <EditorActionButton 
+              v-for="action in button_actions" 
+              :key="action.caption"
+              :icon="action.icon" 
+              :caption="action.caption" 
+              @clicked="onEditorAction(action.handler)" 
+            />
+          </span>
           
           <PopupMenu>
             <MenuTile
@@ -260,7 +291,7 @@ export default {
               :key="action.caption" 
               :icon="action.icon" 
               :text="action.caption" 
-              @clicked="action.handler(doc_id)" 
+              @clicked="onEditorAction(action.handler)" 
             />
             <v-divider />
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />

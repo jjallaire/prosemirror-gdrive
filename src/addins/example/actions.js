@@ -11,9 +11,14 @@ export default [
     icon: 'people',
     color: 'info',
     caption: "Share",
-    handler: doc_id => {
-      drive.shareFile(doc_id);
+    handler: doc => {
+      drive.shareFile(doc.id);
+    },
+    /* action availability can be conditional on properties
+    filter: properties => {
+      return properties.foo === 'foo';
     }
+    */
   },
 
   // convert to google doc
@@ -21,9 +26,14 @@ export default [
     type: 'menu',
     icon: 'insert_drive_file',
     caption: 'Publish as Google Doc',
-    handler: doc_id => {
+    handler: doc => {
+     
+      /* actions can set properties
+      doc.setProperties({ foo: "foo" })
+      */
+
       drive
-        .convertToGoogleDoc(doc_id)
+        .convertToGoogleDoc(doc.id)
         .then(response => {
           window.open(`https://docs.google.com/document/d/${response.id}/edit`, "_blank");
         })
