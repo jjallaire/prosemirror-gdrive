@@ -315,7 +315,7 @@ export default {
 
         <v-divider />
 
-        <v-card-text id="prosemirror" ref="prosemirror" />
+        <div id="prosemirror" ref="prosemirror" />
         
       </v-card>
     </div>
@@ -369,7 +369,11 @@ export default {
   text-transform: none;
 }
 
-.edit-container .v-card__text {
+.edit-container .editor-save-status {
+  margin-right: 5px;
+}
+
+.edit-container #prosemirror {
   padding: 12px;
   position: absolute;
   top: 65px;
@@ -380,9 +384,6 @@ export default {
   width: inherit;
 }
 
-.edit-container .editor-save-status {
-  margin-right: 5px;
-}
 
 .edit-container .ProseMirror {
   outline: none;
