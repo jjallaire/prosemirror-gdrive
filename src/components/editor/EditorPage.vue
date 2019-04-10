@@ -83,7 +83,7 @@ export default {
       .then(file => {
 
         // set doc info
-        this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId);
+        this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId, file.metadata.properties);
 
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
@@ -143,7 +143,7 @@ export default {
       drive
         .renameFile(this.doc_id, value)
         .then(result => {
-          this.doc = this.docInfo(value, result.headRevisionId);
+          this.doc = this.docInfo(value, result.headRevisionId, this.doc.properties);
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -195,7 +195,7 @@ export default {
     },
 
     onSyncDoc(doc) {
-      this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId);
+      this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties);
       this.editor.setContent(doc.content);
     },
 
@@ -216,10 +216,11 @@ export default {
       });
     },
 
-    docInfo(title = null, headRevisionId = null) {
+    docInfo(title = null, headRevisionId = null, properties = null) {
       return {
-        title: title,
-        headRevisionId: headRevisionId
+        title,
+        headRevisionId,
+        properties
       }
     },
   }
