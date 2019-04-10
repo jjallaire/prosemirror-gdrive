@@ -18,15 +18,15 @@ addinRegister({
     }
   },
 
-  // provide routes
+  // routes
   routes: [
     { path: "/foo/", component: FooPage },
     { path: "/bar/", component: BarPage },
   ],
 
-  // provide additional navigation groups/routes
+  // additional navigation groups/routes
   navigation: navigation,
 
-  // provide custom actions
+  // custom actions
   actions: actions
 })
