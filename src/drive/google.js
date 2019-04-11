@@ -369,7 +369,9 @@ export default {
 
   },
 
-  shareFile(fileId) {
+  // https://developers.google.com/drive/api/v3/reference/permissions/create 
+
+  shareFileDialog(fileId) {
     let user = auth().currentUser.get();
     let share = new gapi.drive.share.ShareClient();
     share.setOAuthToken(user.getAuthResponse().access_token);

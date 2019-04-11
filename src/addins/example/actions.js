@@ -12,7 +12,7 @@ export default [
     color: 'info',
     caption: "Share",
     handler: doc => {
-      drive.shareFile(doc.id);
+      drive.shareFileDialog(doc.id);
     },
     /* action availability can be conditional on properties
     filter: properties => {
