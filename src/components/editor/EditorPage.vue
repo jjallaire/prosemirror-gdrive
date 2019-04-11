@@ -316,6 +316,7 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
+        <div id="prosemirror-sidebar" />
         
       </v-card>
     </div>
@@ -376,12 +377,23 @@ export default {
 .edit-container #prosemirror {
   padding: 12px;
   position: absolute;
-  top: 65px;
+  top: 66px;
   left: 0;
+  bottom: 0;
+  right: 250px;
+  overflow-y: scroll;
+}
+
+.edit-container #prosemirror-sidebar {
+  padding: 12px;
+  position: absolute;
+  top: 67px;
   bottom: 0;
   right: 0;
   overflow-y: scroll;
-  width: inherit;
+  width: 250px;
+  background-color:#f5f5f5;
+  border-left: 1px solid rgba(0,0,0,0.12);
 }
 
 
