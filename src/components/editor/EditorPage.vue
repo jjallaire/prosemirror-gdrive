@@ -243,7 +243,7 @@ export default {
         id: this.doc_id,
         properties: this.doc.properties,
         setProperties: (properties) => {
-          drive
+          return drive
             .setFileProperties(this.doc_id, properties)
             .then(() => {
               this.doc.properties = {
