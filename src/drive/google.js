@@ -369,7 +369,50 @@ export default {
 
   },
 
-  shareFile(fileId) {
+
+  // https://developers.google.com/drive/api/v3/reference/permissions/create
+  //
+  // fileId: id of file to share
+  // role: owner, organizer, fileOrganizer, writer, commenter, reader
+  // type: user, group, domain, anyone
+  // emailAddress: email address of user or group to share with
+  // emailMessage: optional plain text message to send to those shared with
+  shareFile(fileId, role, type, emailAddress, emailMessage) {
+
+    // build params
+    let params = {
+      supportsTeamDrives: true
+    };
+    if (emailMessage) {
+      params.sendNotificationEmail = true;
+      params.emailMessage = emailMessage;
+    } else {
+      params.sendNotificationEmail = false;
+    }
+
+    // build permissions resource
+    let permissions = {
+      role,
+      type,
+      emailAddress
+    };
+
+    // send request
+    return gapi.client.request({
+      path: `/drive/v3/files/${fileId}/permissions`,
+      method: 'POST',
+      params: params,
+      headers: { 'Content-Type' : "application/json; charset=UTF-8" },
+      body: jsonStringifyEscaped(permissions)
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(catchHttpRequest);
+  },
+
+
+  shareFileDialog(fileId) {
     let user = auth().currentUser.get();
     let share = new gapi.drive.share.ShareClient();
     share.setOAuthToken(user.getAuthResponse().access_token);

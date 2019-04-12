@@ -123,7 +123,7 @@ export default {
     },
 
     onShareDocument(doc) {
-      drive.shareFile(doc.id);
+      drive.shareFileDialog(doc.id);
     },
 
     onOpenInNewTab(doc) {

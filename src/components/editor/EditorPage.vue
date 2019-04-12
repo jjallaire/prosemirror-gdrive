@@ -243,7 +243,7 @@ export default {
         id: this.doc_id,
         properties: this.doc.properties,
         setProperties: (properties) => {
-          drive
+          return drive
             .setFileProperties(this.doc_id, properties)
             .then(() => {
               this.doc.properties = {
@@ -316,6 +316,10 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
+
+        <!--
+        <div id="prosemirror-sidebar" />
+        -->
         
       </v-card>
     </div>
@@ -329,6 +333,7 @@ export default {
     </div>
 
     <EditorLinkDialog ref="linkDialog" />
+    
     <EditorImageDialog ref="imageDialog" />
 
   </div>
@@ -376,12 +381,23 @@ export default {
 .edit-container #prosemirror {
   padding: 12px;
   position: absolute;
-  top: 65px;
+  top: 66px;
   left: 0;
   bottom: 0;
   right: 0;
   overflow-y: scroll;
-  width: inherit;
+}
+
+.edit-container #prosemirror-sidebar {
+  padding: 12px;
+  position: absolute;
+  top: 67px;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+  width: 250px;
+  background-color:#f5f5f5;
+  border-left: 1px solid rgba(0,0,0,0.12);
 }
 
 

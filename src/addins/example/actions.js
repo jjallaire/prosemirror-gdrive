@@ -2,6 +2,7 @@
 
 import drive from '../../drive'
 import dialog from '../../components/core/dialog'
+dialog.prompt
 
 export default [
   
@@ -12,8 +13,24 @@ export default [
     color: 'info',
     caption: "Share",
     handler: doc => {
-      drive.shareFile(doc.id);
+      doc
+        .setProperties({ status: "shared" })
+        .then(() => {
+          return dialog.prompt("Share Document", "User email:")
+        })
+        .then(emailAddress => {
+          if (emailAddress) {
+            return drive.shareFile(
+              doc.id,  "writer", "user", emailAddress, 
+              `You can edit this document at ${window.location.href}`
+            )
+          }
+        })
+        .catch(error => {
+          dialog.errorSnackbar("Unable to share document: " + error.message);
+        });
     },
+
     /* action availability can be conditional on properties
     filter: properties => {
       return properties.foo === 'foo';

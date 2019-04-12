@@ -201,7 +201,7 @@ export default {
   },
 
   // eslint-disable-next-line
-  shareFile(fileId) {
+  shareFileDialog(fileId) {
     // no-op
   },
 
