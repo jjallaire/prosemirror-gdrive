@@ -25,6 +25,7 @@ log.initialize();
 
 // import addins
 // import './addins/example'
+import './addins/assignments'
 
 // connect to drive
 drive.connect()
