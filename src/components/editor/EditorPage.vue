@@ -2,6 +2,10 @@
 
 import _debounce from 'lodash/debounce'
 
+import { docInfo } from '../../store/state'
+import { SET_DOC } from '../../store/mutations'
+import { mapGetters } from 'vuex'
+
 import ProsemirrorEditor from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
@@ -46,9 +50,7 @@ export default {
 
   data: function() {
     return {
-      // document
-      doc: this.docInfo(),
-     
+    
       // editor
       editor: null,
 
@@ -72,6 +74,10 @@ export default {
   },
 
   computed: {
+
+    ...mapGetters([
+      'doc'
+    ]),
     
     button_actions() {
       return this.filterActions('button');
@@ -97,8 +103,11 @@ export default {
       .then(file => {
 
         // set doc info
-        this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId, file.metadata.properties);
-
+        this.$store.commit(
+          SET_DOC, 
+          docInfo(file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+        );
+       
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
           this.doc_id,
@@ -144,6 +153,9 @@ export default {
   },
 
   beforeDestroy() {
+
+    this.$store.commit(SET_DOC, docInfo());
+
     if (this.editor) {
       this.editor.destroy();
       this.editor = null;
@@ -157,7 +169,10 @@ export default {
       drive
         .renameFile(this.doc_id, value)
         .then(result => {
-          this.doc = this.docInfo(value, result.headRevisionId, this.doc.properties);
+          this.$store.commit(
+            SET_DOC,
+            docInfo(value, result.headRevisionId, this.doc.properties)
+          );
           drive.updateRecentDocs();
         })
         .catch(error => {
@@ -205,11 +220,18 @@ export default {
     },
 
     onSyncMetadata(metadata) {
-      this.doc = this.docInfo(metadata.name, metadata.headRevisionId, metadata.properties);
+      this.$store.commit(
+        SET_DOC,
+        docInfo(metadata.name, metadata.headRevisionId, metadata.properties)
+      );
     },
 
     onSyncDoc(doc) {
-      this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties);
+      this.$store.commmit(
+        SET_DOC,
+        docInfo(doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties)
+      );
+      
       this.editor.setContent(doc.content);
     },
 
@@ -228,14 +250,6 @@ export default {
         headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
         css: '/styles/print.css'
       });
-    },
-
-    docInfo(title = null, headRevisionId = null, properties = null) {
-      return {
-        title,
-        headRevisionId,
-        properties: properties || {}
-      }
     },
 
     onEditorAction(handler) {
