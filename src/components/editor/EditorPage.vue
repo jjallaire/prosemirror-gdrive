@@ -316,10 +316,7 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
-
-        <!--
         <div id="prosemirror-sidebar" />
-        -->
         
       </v-card>
     </div>
@@ -333,7 +330,6 @@ export default {
     </div>
 
     <EditorLinkDialog ref="linkDialog" />
-    
     <EditorImageDialog ref="imageDialog" />
 
   </div>
@@ -384,7 +380,7 @@ export default {
   top: 66px;
   left: 0;
   bottom: 0;
-  right: 0;
+  right: 250px;
   overflow-y: scroll;
 }
 
