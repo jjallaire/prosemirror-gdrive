@@ -1,7 +1,5 @@
 <script>
 
-import _debounce from 'lodash/debounce'
-
 import { docInfo } from '../../store/state'
 import { SET_DOC } from '../../store/mutations'
 import { mapGetters } from 'vuex'
@@ -10,7 +8,6 @@ import ProsemirrorEditor from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorActionButton from './EditorActionButton.vue'
-import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
@@ -36,7 +33,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorToolbar, EditorActionButton, EditorDocTitle, EditorSaveStatus,
+    EditorToolbar, EditorActionButton, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -105,7 +102,7 @@ export default {
         // set doc info
         this.$store.commit(
           SET_DOC, 
-          docInfo(file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+          docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
         );
        
         // monitor and save editor changes (triggered by onUpdate hook installed below)
@@ -165,21 +162,6 @@ export default {
 
   methods: {
 
-    onTitleChanged: _debounce(function(value) {
-      drive
-        .renameFile(this.doc_id, value)
-        .then(result => {
-          this.$store.commit(
-            SET_DOC,
-            docInfo(value, result.headRevisionId, this.doc.properties)
-          );
-          drive.updateRecentDocs();
-        })
-        .catch(error => {
-          dialog.error("Drive Error", error.message);
-        });
-    }, 1000),
-
     onEditorSelectionChanged(selection) {
       if (selection.type === 'node') {
         this.$refs.prosemirror.classList.add("has-node-selection");
@@ -222,14 +204,14 @@ export default {
     onSyncMetadata(metadata) {
       this.$store.commit(
         SET_DOC,
-        docInfo(metadata.name, metadata.headRevisionId, metadata.properties)
+        docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties)
       );
     },
 
     onSyncDoc(doc) {
       this.$store.commmit(
         SET_DOC,
-        docInfo(doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties)
+        docInfo(this.doc_id, doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties)
       );
       
       this.editor.setContent(doc.content);
@@ -291,14 +273,11 @@ export default {
   <div class="edit-container">
     <div v-show="editor">
       <v-card class="edit-card card--flex-toolbar">
-        <v-toolbar card dense :height="34" prominent extended :extension-height="32">
+        <v-toolbar card dense :height="40" prominent>
 
-          <template v-slot:extension>
-            <EditorToolbar :editor="editor" />
-          </template>
-
-          <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
-                   
+       
+          <EditorToolbar :editor="editor" />
+                 
           <v-spacer />
   
           <EditorSaveStatus :status="save_status" />
@@ -401,7 +380,7 @@ export default {
 .edit-container #prosemirror-sidebar {
   padding: 12px;
   position: absolute;
-  top: 67px;
+  top: 39px;
   bottom: 0;
   right: 0;
   overflow-y: scroll;

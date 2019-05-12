@@ -26,8 +26,9 @@ export function initialState() {
   };
 }
 
-export function docInfo(title = null, headRevisionId = null, properties = null) {
+export function docInfo(id = null, title = null, headRevisionId = null, properties = null) {
   return {
+    id,
     title,
     headRevisionId,
     properties: properties || {}

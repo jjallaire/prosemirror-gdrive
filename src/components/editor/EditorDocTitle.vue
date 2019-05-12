@@ -34,7 +34,7 @@ export default {
 
 .editor-document-title {
   margin-top: 18px !important;
-  font-size: 1.2em;
+  /*font-size: 1.2em;*/
   color: rgba(100,100,100,1);
   padding: 5px;
 }
@@ -44,9 +44,16 @@ export default {
 }
 
 .editor-document-title input {
-  margin-top: 5px;
+  margin-top: 3px;
   padding-left: 3px;
   margin-left: -3px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  width: 500px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .editor-document-title input:hover {
