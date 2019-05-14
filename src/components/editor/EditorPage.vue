@@ -6,6 +6,7 @@ import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
 
+import EditorSidebar from './EditorSidebar.vue'
 import EditorToolbar from './EditorToolbar.vue'
 import EditorActionButton from './EditorActionButton.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
@@ -33,7 +34,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorToolbar, EditorActionButton, EditorSaveStatus,
+    EditorSidebar, EditorToolbar, EditorActionButton, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -309,7 +310,7 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
-        <div id="prosemirror-sidebar" />
+        <EditorSidebar />
         
       </v-card>
     </div>
@@ -373,18 +374,19 @@ export default {
   top: 39px;
   left: 0;
   bottom: 0;
-  right: 250px;
+  right: 300px;
   overflow-y: scroll;
 }
 
 .edit-container #prosemirror-sidebar {
-  padding: 12px;
+ 
   position: absolute;
-  top: 39px;
+  top: 41px;
+  
   bottom: 0;
   right: 0;
   overflow-y: scroll;
-  width: 250px;
+  width: 300px;
   background-color:#f5f5f5;
   border-left: 1px solid rgba(0,0,0,0.12);
 }
