@@ -370,7 +370,7 @@ export default {
 .edit-container #prosemirror {
   padding: 12px;
   position: absolute;
-  top: 66px;
+  top: 39px;
   left: 0;
   bottom: 0;
   right: 250px;
