@@ -1,12 +1,13 @@
 <script>
 
-import _debounce from 'lodash/debounce'
+import { docInfo } from '../../store/state'
+import { SET_DOC } from '../../store/mutations'
+import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
 
 import EditorToolbar from './EditorToolbar.vue'
 import EditorActionButton from './EditorActionButton.vue'
-import EditorDocTitle from './EditorDocTitle.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
@@ -32,7 +33,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorToolbar, EditorActionButton, EditorDocTitle, EditorSaveStatus,
+    EditorToolbar, EditorActionButton, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -46,9 +47,7 @@ export default {
 
   data: function() {
     return {
-      // document
-      doc: this.docInfo(),
-     
+    
       // editor
       editor: null,
 
@@ -72,6 +71,10 @@ export default {
   },
 
   computed: {
+
+    ...mapGetters([
+      'doc'
+    ]),
     
     button_actions() {
       return this.filterActions('button');
@@ -97,8 +100,11 @@ export default {
       .then(file => {
 
         // set doc info
-        this.doc = this.docInfo(file.metadata.name, file.metadata.headRevisionId, file.metadata.properties);
-
+        this.$store.commit(
+          SET_DOC, 
+          docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+        );
+       
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
           this.doc_id,
@@ -144,6 +150,9 @@ export default {
   },
 
   beforeDestroy() {
+
+    this.$store.commit(SET_DOC, docInfo());
+
     if (this.editor) {
       this.editor.destroy();
       this.editor = null;
@@ -152,18 +161,6 @@ export default {
   },
 
   methods: {
-
-    onTitleChanged: _debounce(function(value) {
-      drive
-        .renameFile(this.doc_id, value)
-        .then(result => {
-          this.doc = this.docInfo(value, result.headRevisionId, this.doc.properties);
-          drive.updateRecentDocs();
-        })
-        .catch(error => {
-          dialog.error("Drive Error", error.message);
-        });
-    }, 1000),
 
     onEditorSelectionChanged(selection) {
       if (selection.type === 'node') {
@@ -205,11 +202,18 @@ export default {
     },
 
     onSyncMetadata(metadata) {
-      this.doc = this.docInfo(metadata.name, metadata.headRevisionId, metadata.properties);
+      this.$store.commit(
+        SET_DOC,
+        docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties)
+      );
     },
 
     onSyncDoc(doc) {
-      this.doc = this.docInfo(doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties);
+      this.$store.commmit(
+        SET_DOC,
+        docInfo(this.doc_id, doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties)
+      );
+      
       this.editor.setContent(doc.content);
     },
 
@@ -228,14 +232,6 @@ export default {
         headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
         css: '/styles/print.css'
       });
-    },
-
-    docInfo(title = null, headRevisionId = null, properties = null) {
-      return {
-        title,
-        headRevisionId,
-        properties: properties || {}
-      }
     },
 
     onEditorAction(handler) {
@@ -277,14 +273,11 @@ export default {
   <div class="edit-container">
     <div v-show="editor">
       <v-card class="edit-card card--flex-toolbar">
-        <v-toolbar card dense :height="34" prominent extended :extension-height="32">
+        <v-toolbar card dense :height="40" prominent>
 
-          <template v-slot:extension>
-            <EditorToolbar :editor="editor" />
-          </template>
-
-          <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
-                   
+       
+          <EditorToolbar :editor="editor" />
+                 
           <v-spacer />
   
           <EditorSaveStatus :status="save_status" />
@@ -316,10 +309,7 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
-
-        <!--
         <div id="prosemirror-sidebar" />
-        -->
         
       </v-card>
     </div>
@@ -333,7 +323,6 @@ export default {
     </div>
 
     <EditorLinkDialog ref="linkDialog" />
-    
     <EditorImageDialog ref="imageDialog" />
 
   </div>
@@ -384,14 +373,14 @@ export default {
   top: 66px;
   left: 0;
   bottom: 0;
-  right: 0;
+  right: 250px;
   overflow-y: scroll;
 }
 
 .edit-container #prosemirror-sidebar {
   padding: 12px;
   position: absolute;
-  top: 67px;
+  top: 39px;
   bottom: 0;
   right: 0;
   overflow-y: scroll;

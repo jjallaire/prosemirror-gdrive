@@ -1,6 +1,8 @@
 
 <script>
 
+import _debounce from 'lodash/debounce'
+
 import { VApp, VNavigationDrawer, VToolbar, VContent, VContainer, 
          VSpacer, VBtn, VIcon } from 'vuetify/lib'
 
@@ -11,10 +13,15 @@ import ErrorPanel from './components/core/ErrorPanel.vue'
 import ErrorSnackbar from './components/core/ErrorSnackbar.vue'
 import ProgressSpinner from './components/core/ProgressSpinner.vue'
 import NavigationList from './components/navigation/NavigationList.vue'
+import EditorDocTitle from './components/editor/EditorDocTitle.vue'
 
+import dialog from './components/core/dialog'
 import drive from './drive'
-
 import config from './config'
+
+import { docInfo } from './store/state'
+import { SET_DOC } from './store/mutations'
+
 
 export default {
 
@@ -22,7 +29,7 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, VSpacer, VBtn, VIcon, 
-    ProgressSpinner, NavigationList, AuthPage, ErrorPanel, ErrorSnackbar
+    ProgressSpinner, NavigationList, AuthPage, ErrorPanel, ErrorSnackbar, EditorDocTitle
   },
 
   data () {
@@ -39,9 +46,12 @@ export default {
       'initialized',
       'init_error',
       'authorized',
-      'user'
+      'user',
+      'doc'
     ]),
   },
+
+
 
   methods: {
   
@@ -52,6 +62,21 @@ export default {
     onSignOutClicked() {
       drive.signOut();
     },
+
+    onTitleChanged: _debounce(function(value) {
+      drive
+        .renameFile(this.doc.id, value)
+        .then(result => {
+          this.$store.commit(
+            SET_DOC,
+            docInfo(this.doc.id, value, result.headRevisionId, this.doc.properties)
+          );
+          drive.updateRecentDocs();
+        })
+        .catch(error => {
+          dialog.error("Drive Error", error.message);
+        });
+    }, 1000),
   }
 
 }
@@ -68,7 +93,10 @@ export default {
     
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <router-link to="/" class="toolbar-title">
+      <v-toolbar-title class="toolbar-title" v-if="doc.title">
+        <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
+      </v-toolbar-title>
+      <router-link v-else to="/" class="toolbar-title">
         <v-toolbar-title>{{ title }}</v-toolbar-title>
       </router-link>
       <v-spacer />
@@ -118,6 +146,7 @@ export default {
 .toolbar-title {
   color: inherit;
   text-decoration: inherit;
+  margin-left: 0 !important;
 }
 
 .v-navigation-drawer {
