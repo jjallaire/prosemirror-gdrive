@@ -300,7 +300,7 @@ export default {
               :text="action.caption" 
               @clicked="onEditorAction(action.handler)" 
             />
-            <v-divider />
+            <v-divider v-if="menu_actions.length > 0" />
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>
           

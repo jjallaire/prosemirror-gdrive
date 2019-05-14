@@ -93,7 +93,7 @@ export default {
     
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="toolbar-title" v-if="doc.title">
+      <v-toolbar-title v-if="doc.title" class="toolbar-title">
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>
       <router-link v-else to="/" class="toolbar-title">
