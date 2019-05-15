@@ -126,7 +126,7 @@ export default {
   },
 
   // eslint-disable-next-line
-  convertToGoogleDoc(title, content) {
+  convertToGoogleDoc(title, content, contentMimeType) {
   },
 
   getFile(fileId) {

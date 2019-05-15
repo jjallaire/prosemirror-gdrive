@@ -239,6 +239,9 @@ export default {
       handler({
         id: this.doc_id,
         properties: this.doc.properties,
+        getHTML: () => {
+          return this.editor.getHTML();
+        },
         setProperties: (properties) => {
           return drive
             .setFileProperties(this.doc_id, properties)
