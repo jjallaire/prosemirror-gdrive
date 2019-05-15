@@ -7,7 +7,7 @@ import { VListGroup, VDivider, VList } from 'vuetify/lib'
 
 import NavigationTile from './NavigationTile.vue'
 
-import { addinNavigationGroups } from '../../addins'
+import { addinNavigation } from '../../addins'
 
 import { newDocument, openDocument } from '../core/docs'
 
@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       show_recent: true,
-      navigation_groups: addinNavigationGroups()
+      navigation: addinNavigation()
     }
   },
 
@@ -77,7 +77,13 @@ export default {
     </v-list-group>
     <v-divider v-else />
 
-    <template v-for="group in navigation_groups">
+    <template v-for="item in navigation.items">
+      <NavigationTile :key="item.path" :icon="item.icon" :caption="item.caption" :path="item.path" /> 
+    </template>
+
+    <v-divider v-if="navigation.items.length > 0" />
+
+    <template v-for="group in navigation.groups">
       
       <v-list-group
         :key="group.caption"
