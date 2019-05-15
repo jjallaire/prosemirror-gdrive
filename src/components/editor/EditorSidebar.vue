@@ -29,6 +29,12 @@ export default {
 
 <style>
 
+#prosemirror-sidebar .v-input__slot {
+  color: rgba(0,0,0,0.87);
+  background-color: #f5f5f5;
+  border-bottom: 1px solid rgba(0,0,0,0.12)
+}
+
 #prosemirror-sidebar .v-select__selection {
   font-size: 0.9em;
 }
