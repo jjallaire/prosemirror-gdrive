@@ -204,6 +204,9 @@ export default {
     let metadata = {
       id: fileId,
       mimeType: config.gdrive.mimeType,
+      appProperties: {
+        appId: config.gdrive.appId
+      },
       viewedByMeTime: new Date().toISOString()
     }
     return this._uploadFile(metadata, content);

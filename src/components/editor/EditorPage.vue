@@ -126,7 +126,8 @@ export default {
         // initialize editor
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
           autoFocus: true,
-          content: file.content,
+          editable: true,
+          content: this.asEditorContent(file.content),
           hooks: {
             isEditable: () => this.is_editable,
             onUpdate: this.onEditorUpdate,
@@ -214,8 +215,7 @@ export default {
         SET_DOC,
         docInfo(this.doc_id, doc.metadata.name, doc.metadata.headRevisionId, doc.metadata.properties)
       );
-      
-      this.editor.setContent(doc.content);
+      this.editor.setContent(this.asEditorContent(doc.content));
     },
 
     onSyncError(error) {
@@ -264,6 +264,14 @@ export default {
       let properties = this.doc.properties || {};
       return actions.filter(action => !action.filter || action.filter(properties));
     }
+
+    asEditorContent(content) {
+      if (content.length > 0)
+        return JSON.parse(content);
+      else
+        return content;
+    },
+
   }
 }
 
