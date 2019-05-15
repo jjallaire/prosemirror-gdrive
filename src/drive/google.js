@@ -188,7 +188,7 @@ export default {
   newFile(title, properties) {
     let metadata = {
       name: title,
-      mimeType: 'text/html; charset=UTF-8',
+      mimeType: config.gdrive.mimeType,
       appProperties: {
         appId: config.gdrive.appId,
       },
@@ -203,7 +203,7 @@ export default {
   saveFile(fileId, content) {
     let metadata = {
       id: fileId,
-      mimeType: 'text/html; charset=UTF-8',
+      mimeType: config.gdrive.mimeType,
       viewedByMeTime: new Date().toISOString()
     }
     return this._uploadFile(metadata, content);
@@ -503,7 +503,7 @@ export default {
     };
     let multipart = new MultipartBuilder()
       .append('application/json; charset=UTF-8', jsonStringifyEscaped(uploadMetadata))
-      .append('text/html; charset=UTF-8', content)
+      .append(config.gdrive.mimeType, content)
       .finish();
     return gapi.client.request({
       path: path,
