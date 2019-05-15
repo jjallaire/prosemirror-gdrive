@@ -263,7 +263,7 @@ export default {
       // apply the property filter
       let properties = this.doc.properties || {};
       return actions.filter(action => !action.filter || action.filter(properties));
-    }
+    },
 
     asEditorContent(content) {
       if (content.length > 0)
