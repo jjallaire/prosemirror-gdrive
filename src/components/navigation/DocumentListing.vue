@@ -19,6 +19,13 @@ export default {
     VDataTable, PopupMenu, MenuTile
   },
 
+  props: {
+    properties: {
+      type: String,
+      default: null
+    }
+  },
+
   data: function() {
     return {
       headers: [
@@ -70,6 +77,7 @@ export default {
         .listFiles({
           orderBy: this.pagination.sortBy,
           descending: this.pagination.descending, 
+          properties: this.properties,
           search: this.search
         })
         .then(files => {
