@@ -77,8 +77,8 @@ export default {
     :value="active" 
     persistent 
     max-width="600"
-    @keydown.esc.stop.prevent="onClickCancel"
-    @keydown.enter.stop.prevent="onClickOK"
+    @keydown.esc="onClickCancel"
+    @keydown.enter="onClickOK"
   >
     <v-card>
       <v-card-title>
