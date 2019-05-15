@@ -12,8 +12,12 @@ const kScopes = [
   'https://www.googleapis.com/auth/drive.file',              // files created by this app
   'https://www.googleapis.com/auth/drive.metadata.readonly', // read-only metadata
   'https://www.googleapis.com/auth/drive.install',           // installation of the app onto drive
-  'https://picasaweb.google.com/data/'                       // picasa photo albums
 ];
+
+// if we aren't using filestack then upload imgaes to picasa
+if (!config.filestack.apiKey)
+  kScopes.push('https://picasaweb.google.com/data/')         // picasa photo albums
+
 
 const kFileFields = 'id, name, headRevisionId, iconLink, viewedByMe, viewedByMeTime, ' +
                     'sharedWithMeTime, modifiedTime, shared, sharingUser, size, properties, appProperties';
