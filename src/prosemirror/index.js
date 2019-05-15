@@ -181,11 +181,13 @@ export default class ProsemirrorEditor {
   }
 
   _emitUpdate(transaction) {
-    this._options.hooks.onUpdate({
-      time: transaction.time,
-      getHTML: this.getHTML.bind(this),
-      getJSON: this.getJSON.bind(this),
-    })
+    if (this._options.hooks.onUpdate) {
+      this._options.hooks.onUpdate({
+        time: transaction.time,
+        getHTML: this.getHTML.bind(this),
+        getJSON: this.getJSON.bind(this),
+      })
+    }
   }
 
 }
