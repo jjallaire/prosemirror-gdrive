@@ -50,7 +50,7 @@ export default [
       */
 
       drive
-        .convertToGoogleDoc(doc.id)
+        .convertToGoogleDoc(doc.id, doc.getHTML())
         .then(response => {
           window.open(`https://docs.google.com/document/d/${response.id}/edit`, "_blank");
         })

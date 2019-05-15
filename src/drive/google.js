@@ -188,7 +188,7 @@ export default {
   newFile(title, properties) {
     let metadata = {
       name: title,
-      mimeType: 'text/html; charset=UTF-8',
+      mimeType: config.gdrive.mimeType,
       appProperties: {
         appId: config.gdrive.appId,
       },
@@ -203,7 +203,10 @@ export default {
   saveFile(fileId, content) {
     let metadata = {
       id: fileId,
-      mimeType: 'text/html; charset=UTF-8',
+      mimeType: config.gdrive.mimeType,
+      appProperties: {
+        appId: config.gdrive.appId
+      },
       viewedByMeTime: new Date().toISOString()
     }
     return this._uploadFile(metadata, content);
@@ -282,14 +285,14 @@ export default {
     });
   },
 
-  convertToGoogleDoc(fileId) {
-    return this.getFile(fileId)
-      .then(file => {
+  convertToGoogleDoc(fileId, content) {
+    return this.getFileMetadata(fileId)
+      .then(result => {
         let metadata = {
-          name: file.metadata.name,
+          name: result.name,
           mimeType: 'application/vnd.google-apps.document'
         };
-        return this._uploadFile(metadata, file.content);
+        return this._uploadFile(metadata, content, 'text/html; charset=UTF-8');
       });
   },
 
@@ -492,7 +495,7 @@ export default {
     .catch(catchHttpRequest);
   },
 
-  _uploadFile(metadata, content) {
+  _uploadFile(metadata, content, contentMimeType = metadata.mimeType) {
     let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
     let method = metadata.id ? 'PATCH' : 'POST';
     let uploadMetadata = metadata.id ? 
@@ -503,7 +506,7 @@ export default {
     };
     let multipart = new MultipartBuilder()
       .append('application/json; charset=UTF-8', jsonStringifyEscaped(uploadMetadata))
-      .append('text/html; charset=UTF-8', content)
+      .append(contentMimeType, content)
       .finish();
     return gapi.client.request({
       path: path,

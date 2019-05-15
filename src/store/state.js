@@ -10,6 +10,9 @@ export function initialState() {
     // current user 
     user: null,
 
+    // current doc
+    doc: docInfo(),
+
     // settings
     settings: {
       recent_documents: 5
@@ -21,4 +24,13 @@ export function initialState() {
     // snackbar error
     snackbar_error: null
   };
+}
+
+export function docInfo(id = null, title = null, headRevisionId = null, properties = null) {
+  return {
+    id,
+    title,
+    headRevisionId,
+    properties: properties || {}
+  }
 }
