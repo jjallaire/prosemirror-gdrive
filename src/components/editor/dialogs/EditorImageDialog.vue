@@ -6,8 +6,11 @@ import { VLayout, VFlex, VTextField, VIcon } from 'vuetify/lib'
 
 import ModalDialog from '../../core/ModalDialog.vue'
 
+import config from '../../../config'
+
 import drive from '../../../drive'
 
+import * as filestack from 'filestack-js';
 
 export default {
 
@@ -22,7 +25,13 @@ export default {
       src: null,
       title: null,
       width: null,
+      filestack_client: null
     }
+  },
+
+  created() {
+    if (config.filestack.apiKey)
+      this.filestack_client = filestack.init(config.filestack.apiKey);
   },
 
   methods: {
@@ -46,10 +55,19 @@ export default {
     },
 
     onBrowse() {
-      drive.selectImage()
+      if (this.filestack_client) {
+        this.filestack_client.picker({
+          onUploadDone: files => {
+            if (files.filesUploaded.length > 0)
+              this.src = files.filesUploaded[0].url;
+          }
+        }).open();
+      } else {
+        drive.selectImage()
         .then(url => {
           this.src = url;
         });
+      }
     }
    }
 }
