@@ -407,6 +407,10 @@ export default {
   outline: none;
 }
 
+.ProseMirror p {
+  margin-bottom: initial;
+}
+
 .ProseMirror code {
   color: inherit;
   background-color: inherit;
