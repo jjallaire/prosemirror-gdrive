@@ -285,7 +285,7 @@ export default {
   <div class="edit-container">
     <div v-show="editor">
       <v-card class="edit-card card--flex-toolbar">
-        <v-toolbar card dense :height="40" prominent>
+        <v-toolbar card dense :height="40">
 
        
           <EditorToolbar :editor="editor" />
@@ -403,11 +403,11 @@ export default {
 }
 
 
-.edit-container .ProseMirror {
+.ProseMirror {
   outline: none;
 }
 
-.edit-container .ProseMirror code {
+.ProseMirror code {
   color: inherit;
   background-color: inherit;
   font-size: inherit;
@@ -416,17 +416,17 @@ export default {
   box-shadow: none;
 }
 
-.edit-container .ProseMirror code:before,
-.edit-container .ProseMirror code:after {
+.ProseMirror code:before,
+.ProseMirror code:after {
   content: ''
 }
 
-.edit-container .ProseMirror pre code {
+.ProseMirror pre code {
   width: 100%;
   margin-bottom: 16px;
 }
 
-.edit-container .ProseMirror hr {
+.ProseMirror hr {
   margin-top: 8px;
   margin-bottom: 16px;
   border: 0;
@@ -435,26 +435,26 @@ export default {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.edit-container .ProseMirror blockquote {
+.ProseMirror blockquote {
   padding-left: 1em;
   border-left: 3px solid #eee;
   margin-left: 0;
   margin-right: 0;
 }
 
-.edit-container .ProseMirror li > p {
+.ProseMirror li > p {
   margin-bottom: 5px;
 }
 
-.edit-container .ProseMirror li:last-of-type > p {
+.ProseMirror li:last-of-type > p {
   margin-bottom: 16px;
 }
 
-.edit-container .ProseMirror img {
+.ProseMirror img {
   height: auto;
 }
 
-.edit-container .has-node-selection .ProseMirror .ProseMirror-selectednode {
+.has-node-selection .ProseMirror .ProseMirror-selectednode {
   outline: 2px solid #b3d4fc;
 }
 
