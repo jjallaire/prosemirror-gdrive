@@ -86,7 +86,11 @@ export default {
 
 .prosemirror-editor-component {
   padding: 12px;
-  height: 100%;
+  position: absolute;
+  top: 29px;
+  left: 0;
+  bottom: 0;
+  right: 0;
   overflow-y: scroll;
 }
 
