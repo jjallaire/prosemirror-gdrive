@@ -28,12 +28,12 @@ export default {
       students: {
         headers: [
           {
-            text: 'Foo',
-            value: 'foo'
+            text: 'Student',
+            value: 'student'
           },
           {
-            text: 'Bar',
-            value: 'bar'
+            text: 'Status',
+            value: 'status'
           }
 
         ],
@@ -192,17 +192,22 @@ export default {
             <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" />
           </v-flex>
           <v-flex class="students-table-container" sm7>
-            <v-data-table
-              :headers="students.headers"
-              :items="students.items"
-              :hide-actions="true"
-              class="elevation-1"
-            >
-              <template v-slot:items="props">
-                <td>{{ props.item.foo }}</td>
-                <td class="text-xs-right">{{ props.item.bar }}</td>
-              </template>
-            </v-data-table>
+            <v-card>
+              <v-card-title>
+                <v-btn color="info">Assign to Students...</v-btn>
+              </v-card-title>
+              <v-data-table
+                :headers="students.headers"
+                :items="students.items"
+                :hide-actions="true"
+                class="elevation-1"
+              >
+                <template v-slot:items="props">
+                  <td>{{ props.item.foo }}</td>
+                  <td class="text-xs-right">{{ props.item.bar }}</td>
+                </template>
+              </v-data-table>
+            </v-card>
           </v-flex>
             
       
