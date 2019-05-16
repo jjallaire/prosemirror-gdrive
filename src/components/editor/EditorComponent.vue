@@ -14,6 +14,13 @@ export default {
     EditorToolbar, EditorLinkDialog, EditorImageDialog
   },
 
+  props: {
+    minimal_toolbar: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   data: function() {
     return {
       editor: null,
@@ -62,7 +69,7 @@ export default {
     <v-card class="card--flex-toolbar">
       
       <v-toolbar class="editor-component-toolbar" card dense :height="30">
-        <EditorToolbar :editor="editor" />
+        <EditorToolbar :editor="editor" :minimal="minimal_toolbar" />
       </v-toolbar>
       
       <v-divider />

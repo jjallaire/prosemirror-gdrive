@@ -19,6 +19,10 @@ export default {
     editor: {
       type: Object,
       default: null
+    },
+    minimal: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -49,17 +53,18 @@ export default {
     <EditorToolbarButton :command="commands.undo" />
     <EditorToolbarButton :command="commands.redo" />
  
-    <v-divider inset vertical />
+    <template v-if="!minimal">
+      <v-divider inset vertical />
+      <EditorToolbarMenuBlock :commands="block_commands" /> 
+    </template>
 
-    <EditorToolbarMenuBlock :commands="block_commands" /> 
-     
     <v-divider inset vertical />
 
     <EditorToolbarButton :command="commands.strong" />
     <EditorToolbarButton :command="commands.em" />
-    <EditorToolbarButton :command="commands.code" />
-    <EditorToolbarButton :command="commands.underline" />
-    <EditorToolbarButton :command="commands.strikethrough" />
+    <EditorToolbarButton v-if="!minimal" :command="commands.code" />
+    <EditorToolbarButton v-if="!minimal" :command="commands.underline" />
+    <EditorToolbarButton v-if="!minimal" :command="commands.strikethrough" />
 
     <v-divider inset vertical />
 
@@ -70,8 +75,8 @@ export default {
     <v-divider inset vertical />
 
     <EditorToolbarButton :command="commands.link" />
-    <EditorToolbarButton :command="commands.image" />
-    <EditorToolbarButton :command="commands.horizontal_rule" />
+    <EditorToolbarButton v-if="!minimal" :command="commands.image" />
+    <EditorToolbarButton v-if="!minimal" :command="commands.horizontal_rule" />
     
   </span>
 

@@ -189,10 +189,10 @@ export default {
       }); 
   },
 
-  newFile(title, properties) {
+  newFile(title, properties, mimeType = config.gdrive.mimeType) {
     let metadata = {
       name: title,
-      mimeType: config.gdrive.mimeType,
+      mimeType: mimeType,
       appProperties: {
         appId: config.gdrive.appId,
       },
@@ -204,10 +204,10 @@ export default {
     return this._uploadFile(metadata, fileContent);
   },
   
-  saveFile(fileId, content, indexableText) {
+  saveFile(fileId, content, indexableText, mimeType = config.gdrive.mimeType) {
     let metadata = {
       id: fileId,
-      mimeType: config.gdrive.mimeType,
+      mimeType: mimeType,
       appProperties: {
         appId: config.gdrive.appId
       },
