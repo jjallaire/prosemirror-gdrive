@@ -47,7 +47,8 @@ export default {
       'init_error',
       'authorized',
       'user',
-      'doc'
+      'doc',
+      'page_title'
     ]),
   },
 
@@ -95,6 +96,9 @@ export default {
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-if="doc.title" class="toolbar-title">
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
+      </v-toolbar-title>
+      <v-toolbar-title v-else-if="page_title" class="toolbar-title">
+        {{ page_title }}
       </v-toolbar-title>
       <router-link v-else to="/" class="toolbar-title">
         <v-toolbar-title>{{ title }}</v-toolbar-title>

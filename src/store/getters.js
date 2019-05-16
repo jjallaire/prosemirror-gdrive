@@ -10,6 +10,8 @@ export default {
 
   user: (state) => state.user,
 
+  page_title: (state) => state.page_title,
+
   doc: (state) => state.doc,
 
   settings: (state) => state.settings,

@@ -5,6 +5,8 @@
 import ErrorPanel from './ErrorPanel.vue'
 import ProgressSpinner from './ProgressSpinner.vue'
 
+import { SET_PAGE_TITLE } from '../../store/mutations'
+
 export default {
   name: 'AppPage',
 
@@ -12,11 +14,27 @@ export default {
     ErrorPanel, ProgressSpinner
   },
 
+  props: {
+    title: {
+      type: String,
+      default: null
+    }
+  },
+
   data: function() {
     return {
       error: null,
       initialized: false
     }
+  },
+
+  mounted() {
+    if (this.title)
+      this.$store.commit( SET_PAGE_TITLE, this.title);
+  },
+
+  beforeDestroy() {
+    this.$store.commit( SET_PAGE_TITLE, null);
   },
 
   methods: {

@@ -10,6 +10,9 @@ export function initialState() {
     // current user 
     user: null,
 
+    // page title
+    page_title: null,
+
     // current doc
     doc: docInfo(),
 

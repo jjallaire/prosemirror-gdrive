@@ -4,9 +4,9 @@
 
 import ErrorPanel from '../core/ErrorPanel.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
-import { VContainer, VLayout, VFlex, VSubheader, VSelect, VCard, VCardTitle } from 'vuetify/lib'
+import { VContainer, VLayout, VFlex, VSubheader, VSelect, VCard } from 'vuetify/lib'
 
-import { UPDATE_SETTINGS } from '../../store/mutations'
+import { UPDATE_SETTINGS, SET_PAGE_TITLE } from '../../store/mutations'
 
 import drive from '../../drive'
 import { syncSettings } from '../../drive/settings'
@@ -15,7 +15,7 @@ export default {
   name: 'SettingsPage',
 
   components: {
-     ErrorPanel, ProgressSpinner, VContainer, VLayout, VFlex, VSubheader, VSelect, VCard, VCardTitle
+     ErrorPanel, ProgressSpinner, VContainer, VLayout, VFlex, VSubheader, VSelect, VCard
   },
 
   data: function() {
@@ -39,6 +39,7 @@ export default {
   },
 
   mounted() {
+    this.$store.commit(SET_PAGE_TITLE, "Settings");
     syncSettings()
       .then(() => {
         this.initialized = true;
@@ -47,6 +48,11 @@ export default {
         this.error = error;
       });
   },
+
+  beforeDestroy() {
+    this.$store.commit(SET_PAGE_TITLE, null);
+  },
+
   
   methods: {
     update_settings: function(name, value) {
@@ -70,7 +76,6 @@ export default {
     </div>
     <div v-else-if="initialized">
       <v-card class="settings-card">
-        <v-card-title><h2>Settings</h2></v-card-title>
         <v-container fluid>
           <v-layout row wrap align-center>
             <v-flex xs6>

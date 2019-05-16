@@ -29,7 +29,7 @@ export default {
 
 <template>
 
-  <AppPage ref="page">
+  <AppPage ref="page" title="Assignments">
     Page
   </AppPage>
 
