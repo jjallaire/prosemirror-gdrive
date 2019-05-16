@@ -6,6 +6,7 @@ import { addinRegister } from '..'
 import navigation from './navigation.js'
 //import behaviors from './behaviors.js'
 
+import AssignmentPage from './components/AssignmentPage.vue'
 import AssignmentsPage from './components/AssignmentsPage.vue'
 
 addinRegister({
@@ -16,6 +17,7 @@ addinRegister({
     // routes
   routes: [
    { path: "/assignments/", component: AssignmentsPage },
+   { path: '/assignment/:doc_id', component: AssignmentPage, props: true },
  ],
 
 });
