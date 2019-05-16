@@ -185,7 +185,7 @@ export default {
 
     <v-card>
       <v-card-text>
-        <v-layout style="height: 90vh;">
+        <v-layout>
 
           <v-flex sm5>
             <v-text-field label="Title" box />
@@ -222,10 +222,13 @@ export default {
 }
 
 .assignment-page > div,
-.assignment-page .layout,
 .assignment-page .v-card {
   height: 100%;
   width: 100%;
+}
+
+.assignment-page .layout {
+  height: calc(100vh - 100px)
 }
 
 
