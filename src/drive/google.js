@@ -204,7 +204,7 @@ export default {
     return this._uploadFile(metadata, fileContent);
   },
   
-  saveFile(fileId, content) {
+  saveFile(fileId, content, indexableText) {
     let metadata = {
       id: fileId,
       mimeType: config.gdrive.mimeType,
@@ -213,7 +213,7 @@ export default {
       },
       viewedByMeTime: new Date().toISOString()
     }
-    return this._uploadFile(metadata, content);
+    return this._uploadFile(metadata, content, indexableText);
   },
 
   renameFile(fileId, name) {
@@ -296,7 +296,7 @@ export default {
           name: result.name,
           mimeType: 'application/vnd.google-apps.document'
         };
-        return this._uploadFile(metadata, content, 'text/html; charset=UTF-8');
+        return this._uploadFile(metadata, content, content, 'text/html; charset=UTF-8');
       });
   },
 
@@ -499,15 +499,20 @@ export default {
     .catch(catchHttpRequest);
   },
 
-  _uploadFile(metadata, content, contentMimeType = metadata.mimeType) {
+  _uploadFile(metadata, content, indexableText, contentMimeType = metadata.mimeType) {
     let path = '/upload/drive/v3/files' + (metadata.id ? ('/' + metadata.id) : '');
     let method = metadata.id ? 'PATCH' : 'POST';
     let uploadMetadata = metadata.id ? 
       { name: metadata.name, mimeType: metadata.mimeType } : 
       metadata;
-    uploadMetadata = { 
-      ...uploadMetadata,
-    };
+    if (indexableText) {
+      uploadMetadata = { 
+        ...uploadMetadata,
+        contentHints: {
+          indexableText: indexableText
+        }
+      };
+    }
     let multipart = new MultipartBuilder()
       .append('application/json; charset=UTF-8', jsonStringifyEscaped(uploadMetadata))
       .append(contentMimeType, content)
