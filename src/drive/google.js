@@ -338,15 +338,15 @@ export default {
       let user = auth().currentUser.get();
       let view = new api.DocsView(api.ViewId.DOCS)
         .setMode(api.DocsViewMode.LIST)
-        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+        .setMimeTypes(config.gdrive.mimeType);
       let folderView = new api.DocsView(api.ViewId.FOLDERS)
-        .setMimeTypes('application/vnd.google.drive.ext-type.pmdoc');
+        .setMimeTypes(config.gdrive.mimeType);
     
       let picker = new api.PickerBuilder()
         .setAppId(config.gdrive.appId)
         .setOAuthToken(user.getAuthResponse().access_token)
         .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
-        .setSelectableMimeTypes('application/vnd.google.drive.ext-type.pmdoc')
+        .setSelectableMimeTypes(config.gdrive.mimeType)
         .addView(view)
         .addView(api.ViewId.RECENTLY_PICKED)
         .addView(folderView)

@@ -1,5 +1,7 @@
 
 
+import config from '../config'
+
 import localforage from 'localforage'
 import shortUuid from 'short-uuid'
 
@@ -87,7 +89,7 @@ export default {
     let file = {
       metadata: {
         'name': title,
-        'mimeType': 'application/vnd.google.drive.ext-type.pmdoc',
+        'mimeType': config.gdrive.mimeType,
       },
       content: ''
     };
