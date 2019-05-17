@@ -8,7 +8,7 @@ export function newDocument() {
     .prompt('New Document', 'Title')
     .then(title => {
       if (title)
-        return drive.newFile(title);
+        return drive.newFile(title, '{ "document": "" }');
       else
         return Promise.resolve();
     })

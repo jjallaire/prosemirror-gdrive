@@ -192,7 +192,7 @@ export default {
       }); 
   },
 
-  newFile(title, properties, mimeType = config.gdrive.mimeType) {
+  newFile(title, content, properties, mimeType = config.gdrive.mimeType) {
     let metadata = {
       name: title,
       mimeType: mimeType,
@@ -203,8 +203,7 @@ export default {
         ...properties
       }
     };
-    let fileContent = ''; 
-    return this._uploadFile(metadata, fileContent);
+    return this._uploadFile(metadata, content);
   },
   
   saveFile(fileId, content, indexableText, mimeType = config.gdrive.mimeType) {

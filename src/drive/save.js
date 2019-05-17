@@ -113,7 +113,9 @@ export default class DriveSave  {
         drive
           .saveFile(
             this._docId, 
-            jsonStringifyEscaped(update.getJSON()), 
+            jsonStringifyEscaped({
+              document: update.getJSON()
+            }), 
             update.getHTML()
           )
           .then(result => {

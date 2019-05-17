@@ -82,7 +82,7 @@ export default {
     })
   },
 
-  newFile(title) {
+  newFile(title, content) {
 
     let id = shortUuid().new();
     
@@ -91,7 +91,7 @@ export default {
         'name': title,
         'mimeType': config.gdrive.mimeType,
       },
-      content: ''
+      content: content
     };
    
     return docStore.setItem(id, file)
