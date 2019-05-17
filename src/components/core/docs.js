@@ -3,12 +3,12 @@ import dialog from './dialog'
 import drive from '../../drive'
 import router from '../../core/router'
 
-export function newDocument(type = 'doc') {
+export function newDocument() {
   dialog
     .prompt('New Document', 'Title')
     .then(title => {
       if (title)
-        return drive.newFile(title, '{ "document": "" }', type);
+        return drive.newFile(title, '{ "document": "" }');
       else
         return Promise.resolve();
     })
