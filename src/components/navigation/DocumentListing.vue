@@ -7,6 +7,8 @@ import { VDataTable } from 'vuetify/lib'
 import PopupMenu from '../core/PopupMenu'
 import MenuTile from '../core/MenuTile'
 
+import config from '../../config'
+
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
 import dialog from '../core/dialog'
@@ -23,6 +25,14 @@ export default {
     properties: {
       type: String,
       default: null
+    },
+    mime_type: {
+      type: String,
+      default: config.gdrive.mimeType
+    },
+    edit_path: {
+      type: String,
+      default: "/edit/"
     }
   },
 
@@ -78,7 +88,8 @@ export default {
           orderBy: this.pagination.sortBy,
           descending: this.pagination.descending, 
           properties: this.properties,
-          search: this.search
+          search: this.search,
+          mimeType: this.mime_type
         })
         .then(files => {
           this.items = files;
@@ -91,11 +102,11 @@ export default {
     },
 
     onNewDocument() {
-      newDocument();
+      newDocument(this.mime_type), this.edit_path;
     },
 
     onOpenDocument() {
-      openDocument()
+      openDocument(this.mime_type, this.edit_path)
     },
 
 
@@ -109,7 +120,7 @@ export default {
 
     
     onDocumentClicked(doc) {
-      this.$router.push({ path: "/edit/" + doc.id });
+      this.$router.push({ path: this.edit_path + doc.id });
     },
 
     onRemoveDocument(doc) {
@@ -135,7 +146,7 @@ export default {
     },
 
     onOpenInNewTab(doc) {
-      window.open("/edit/" + doc.id, "_blank");
+      window.open(this.edit_path + doc.id, "_blank");
     },
 
     handleDriveRequest(request) {
@@ -163,11 +174,11 @@ export default {
     <v-card>
       <v-card-title>
        
-        <v-btn title="Create new document" color="orange" fab dark small @click="onNewDocument">
+        <v-btn title="Create new" color="orange" fab dark small @click="onNewDocument">
           <v-icon>add</v-icon>
         </v-btn>
 
-        <v-btn title="Open file picker" color="orange" fab outline dark small @click="onOpenDocument">
+        <v-btn title="Open picker" color="orange" fab outline dark small @click="onOpenDocument">
           <v-icon>folder_open</v-icon>
         </v-btn>
       
@@ -193,7 +204,7 @@ export default {
         item-key="id"
         :pagination.sync="pagination"
         :rows-per-page-items="pagination.rowsPerPageItems"
-        no-data-text="(No documents found)"
+        no-data-text="(None found)"
         class="documents-table"
       >
 
@@ -206,7 +217,7 @@ export default {
 
         <template v-slot:no-results>
           <div class="table-status text-xs-center grey--text">
-            (No documents found)
+            (None)
           </div>
         </template>
 

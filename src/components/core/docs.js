@@ -5,7 +5,7 @@ import dialog from './dialog'
 import drive from '../../drive'
 import router from '../../core/router'
 
-export function newDocument(mimeType = config.gdrive.mimeType) {
+export function newDocument(mimeType = config.gdrive.mimeType, editPath = "/edit/") {
   dialog
     .prompt('New Document', 'Title')
     .then(title => {
@@ -16,17 +16,17 @@ export function newDocument(mimeType = config.gdrive.mimeType) {
     })
     .then(result => {
       if (result)
-        router.push({ path: "/edit/" + result.id });
+        router.push({ path: editPath + result.id });
     })
     .catch(error => {
       dialog.error("Drive Error", error.message);
     });
 }
 
-export function openDocument(mimeType = config.gdrive.mimeType) {
+export function openDocument(mimeType = config.gdrive.mimeType, editPath = "/edit/") {
   drive.selectFile(mimeType)
     .then(id => {
-      router.push({ path: "/edit/" + id });
+      router.push({ path: editPath + id });
     });
 }
 

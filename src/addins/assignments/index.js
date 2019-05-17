@@ -11,13 +11,21 @@ import AssignmentsPage from './components/AssignmentsPage.vue'
 
 addinRegister({
 
-   // navigation 
-   navigation: navigation,
+  // navigation 
+  navigation: navigation,
 
-    // routes
+  // routes
   routes: [
    { path: "/assignments/", component: AssignmentsPage },
    { path: '/assignment/:doc_id', component: AssignmentPage, props: true },
  ],
+
+ // editor types
+ editorTypes: [
+   {
+     mimeType: 'application/vnd.google.drive.ext-type.pmasn',
+     path: "/assignment/"
+   }
+ ]
 
 });

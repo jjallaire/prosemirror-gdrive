@@ -14,6 +14,7 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
+import config from '../../config'
 import drive from '../../drive'
 import DriveSave from '../../drive/save'
 import driveChanges, { docSyncHandler } from '../../drive/changes'
@@ -25,7 +26,7 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
-import { addinActions, addinBehaviors } from '../../addins'
+import { addinActions, addinBehaviors, addinEditorPath } from '../../addins'
 
 import printJS from 'print-js'
 
@@ -99,6 +100,16 @@ export default {
 
     drive.getFile(this.doc_id)
       .then(file => {
+
+        // if this has an alternate mimeType (possible w/ direct open from GDrive) then
+        // see if there is an editorType registered for it
+        let mimeType = file.metadata.mimeType;
+        if (mimeType !== config.gdrive.mimeType) {
+          let addinPath = addinEditorPath(mimeType);
+          if (addinPath)
+            this.$router.push({ path: addinPath + this.doc_id});
+            return;
+        }
 
         // set doc info
         this.$store.commit(
