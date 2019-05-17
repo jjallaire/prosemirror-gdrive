@@ -2,6 +2,7 @@
 <script>
 
 import EditorToolbar from './EditorToolbar'
+import EditorSaveStatus from './EditorSaveStatus'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
@@ -11,13 +12,17 @@ export default {
   name: 'EditorComponent',
 
   components: {
-    EditorToolbar, EditorLinkDialog, EditorImageDialog
+    EditorToolbar, EditorSaveStatus, EditorLinkDialog, EditorImageDialog
   },
 
   props: {
     minimal_toolbar: {
       type: Boolean,
       default: false
+    },
+    save_status: {
+      type: String,
+      default: null
     }
   },
 
@@ -70,6 +75,8 @@ export default {
       
       <v-toolbar class="editor-component-toolbar" card dense :height="30">
         <EditorToolbar :editor="editor" :minimal="minimal_toolbar" />
+        <v-spacer />
+        <EditorSaveStatus v-if="save_status" :status="save_status" />
       </v-toolbar>
       
       <v-divider />

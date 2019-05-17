@@ -5,7 +5,9 @@
 
 import AppPage from '../../../components/core/AppPage.vue'
 
-import EditorComponent from '../../../components/editor/EditorComponent'
+import EditorComponent from '../../../components/editor/EditorComponent.vue'
+
+
 
 
 export default {
@@ -25,6 +27,11 @@ export default {
 
   data: function() {
     return {
+
+      driveSave: null,
+
+      save_status: "clean",
+
       students: {
         headers: [
           {
@@ -172,6 +179,7 @@ export default {
   },
 
   mounted() {
+
     this.$refs.page.initialize();
   }
 
@@ -189,7 +197,7 @@ export default {
 
           <v-flex sm5>
             <v-text-field label="Title" box />
-            <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" />
+            <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" :save_status="save_status" />
           </v-flex>
           <v-flex class="students-table-container" sm7>
             <v-card>
