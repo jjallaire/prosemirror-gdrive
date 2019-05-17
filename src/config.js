@@ -2,7 +2,8 @@
 export default {
 
   app: {
-    title: "Prosemirror GDrive"
+    title: "Prosemirror GDrive",
+    storage: "promisemirror-gdrive"
   },
 
   ga: {

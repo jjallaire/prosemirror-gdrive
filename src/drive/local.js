@@ -14,12 +14,12 @@ const kUserAppData = "user.json"
 const kUserMimeType = "application/json; charset=UTF-8"
 
 var appDataStore = localforage.createInstance({
-  name: "promisemirror-gdrive",
+  name: config.app.storage,
   storeName: "appData"
 });
 
 var docStore = localforage.createInstance({
-  name: "promisemirror-gdrive",
+  name: config.app.storage,
   storeName: "docs"
 });
 
