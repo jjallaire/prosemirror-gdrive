@@ -144,6 +144,7 @@ export default {
       search: null,
       properties: null,
       spaces: [],
+      type: 'doc',
       limit: 1000,
       ...options
     }
@@ -156,7 +157,7 @@ export default {
       orderByQuery = 'quotaBytesUsed';
       
     // build query
-    let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and trashed = false`
+    let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and appProperties has { key="type" and value="${options.type}" } and trashed = false`
     if (options.properties) {
       query = query + " and (" + options.properties + ") "
     }
@@ -192,12 +193,13 @@ export default {
       }); 
   },
 
-  newFile(title, content, properties, mimeType = config.gdrive.mimeType) {
+  newFile(title, content, type, properties, mimeType = config.gdrive.mimeType) {
     let metadata = {
       name: title,
       mimeType: mimeType,
       appProperties: {
         appId: config.gdrive.appId,
+        type: type
       },
       properties: {
         ...properties
