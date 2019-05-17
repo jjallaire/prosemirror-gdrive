@@ -324,6 +324,9 @@ export default {
           id: fileId,
           name: name,
           mimeType: mimeType,
+          appProperties: {
+            appId: config.gdrive.appId,
+          },
           parents: ["appDataFolder"]
         }, content);
       }); 
