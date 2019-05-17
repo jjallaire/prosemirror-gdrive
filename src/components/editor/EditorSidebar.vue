@@ -37,6 +37,7 @@ export default {
 
 #prosemirror-sidebar .v-select__selection {
   font-size: 0.9em;
+  color: rgba(0,0,0,0.6);
 }
 
 #prosemirror-sidebar .v-text-field.v-text-field--solo .v-input__control {
