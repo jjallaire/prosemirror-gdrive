@@ -143,6 +143,7 @@ export default {
       descending: true,
       search: null,
       properties: null,
+      spaces: [],
       limit: 1000,
       ...options
     }
@@ -167,8 +168,10 @@ export default {
     let params = {
       q: query,
       pageSize: options.limit,
-      fields: kFileListFields
+      fields: kFileListFields,
     };
+    if (options.spaces.length > 0)
+      params.spaces = options.spaces.join(',');
 
     // add orderBy if this isn't a search
     if (options.orderBy && !options.search)
