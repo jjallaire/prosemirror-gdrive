@@ -143,6 +143,7 @@ export default {
       descending: true,
       search: null,
       properties: null,
+      mimeType: config.gdrive.mimeType,
       spaces: [],
       limit: 1000,
       ...options
@@ -156,7 +157,7 @@ export default {
       orderByQuery = 'quotaBytesUsed';
       
     // build query
-    let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and trashed = false`
+    let query = `appProperties has { key="appId" and value="${config.gdrive.appId}" } and mimeType="${options.mimeType}" and trashed = false`
     if (options.properties) {
       query = query + " and (" + options.properties + ") "
     }
@@ -192,7 +193,7 @@ export default {
       }); 
   },
 
-  newFile(title, content, properties, mimeType = config.gdrive.mimeType) {
+  newFile(title, content, indexableText, mimeType = config.gdrive.mimeType, properties = {}) {
     let metadata = {
       name: title,
       mimeType: mimeType,
@@ -203,7 +204,7 @@ export default {
         ...properties
       }
     };
-    return this._uploadFile(metadata, content);
+    return this._uploadFile(metadata, content, indexableText);
   },
   
   saveFile(fileId, content, indexableText, mimeType = config.gdrive.mimeType) {
@@ -331,21 +332,21 @@ export default {
       }); 
   },
 
-  selectFile() {
+  selectFile(mimeType = config.gdrive.mimeType) {
     return new Promise((resolve) => {
       let api = gapi.picker.api;
       let user = auth().currentUser.get();
       let view = new api.DocsView(api.ViewId.DOCS)
         .setMode(api.DocsViewMode.LIST)
-        .setMimeTypes(config.gdrive.mimeType);
+        .setMimeTypes(mimeType);
       let folderView = new api.DocsView(api.ViewId.FOLDERS)
-        .setMimeTypes(config.gdrive.mimeType);
+        .setMimeTypes(mimeType);
     
       let picker = new api.PickerBuilder()
         .setAppId(config.gdrive.appId)
         .setOAuthToken(user.getAuthResponse().access_token)
         .enableFeature(api.Feature.SUPPORT_TEAM_DRIVES)
-        .setSelectableMimeTypes(config.gdrive.mimeType)
+        .setSelectableMimeTypes(mimeType)
         .addView(view)
         .addView(api.ViewId.RECENTLY_PICKED)
         .addView(folderView)
