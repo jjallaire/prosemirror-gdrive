@@ -211,7 +211,7 @@ export default {
     },
 
     onSyncDoc(file) {
-      this.$store.commmit(
+      this.$store.commit(
         SET_DOC,
         docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
       );
