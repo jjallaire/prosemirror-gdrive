@@ -41,8 +41,8 @@ export default {
       students: {
         headers: [
           {
-            text: 'Student',
-            value: 'student'
+            text: 'Name',
+            value: 'name'
           },
           {
             text: 'Status',
@@ -208,7 +208,8 @@ export default {
           // initialize editor
           this.$refs.editor.initialize({
             content: JSON.parse(file.content).document,
-            onUpdate: this.onEditorUpdate
+            onUpdate: this.onEditorUpdate,
+            autoFocus: true
           });
         })
     );
@@ -248,25 +249,28 @@ export default {
       <v-card-text>
         <v-layout>
           <v-flex sm5>
+            <v-subheader>Assignment:</v-subheader>
             <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" :save_status="save_status" />
           </v-flex>
           <v-flex class="students-table-container" sm7>
-            <v-card>
-              <v-card-title>
-                <v-btn color="info">Assign to Students...</v-btn>
-              </v-card-title>
-              <v-data-table
-                :headers="students.headers"
-                :items="students.items"
-                :hide-actions="true"
-                class="elevation-1"
-              >
-                <template v-slot:items="props">
-                  <td>{{ props.item.foo }}</td>
-                  <td class="text-xs-right">{{ props.item.bar }}</td>
-                </template>
-              </v-data-table>
-            </v-card>
+            <v-subheader>
+              Students: 
+              <v-spacer /> 
+              <v-btn color="info">Assign...</v-btn>
+            </v-subheader>
+           
+            <v-data-table
+              :headers="students.headers"
+              :items="students.items"
+              :hide-actions="true"
+              class="elevation-1"
+            >
+              <template v-slot:items="props">
+                <td>{{ props.item.foo }}</td>
+                <td class="text-xs-right">{{ props.item.bar }}</td>
+              </template>
+            </v-data-table>
+            
           </v-flex>
             
       
@@ -297,7 +301,7 @@ export default {
 
 
 .assignment-editor {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 145px);
   width: 100%;
 }
 

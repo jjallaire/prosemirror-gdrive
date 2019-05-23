@@ -42,9 +42,10 @@ export default {
 
   methods: {
 
-    initialize({ content, onUpdate }) {
+    initialize({ content, onUpdate, autoFocus }) {
       this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
         content: content,
+        autoFocus: autoFocus || false,
         hooks: {
           onUpdate: onUpdate,
           onSelectionChanged: this.onEditorSelectionChanged,
