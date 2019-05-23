@@ -32,20 +32,28 @@ export default {
     }
   },
 
-  mounted() {
 
-    // initialize editor
-    this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
-      content: '',
-      hooks: {
-        onSelectionChanged: this.onEditorSelectionChanged,
-        onEditLink: this.onEditLink,
-        onEditImage: this.onEditImage
-      }
-    });
+  beforeDestroy() {
+    if (this.editor) {
+      this.editor.destroy();
+      this.editor = null;
+    }
   },
 
   methods: {
+
+    initialize({ content, onUpdate }) {
+      this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
+        content: content,
+        hooks: {
+          onUpdate: onUpdate,
+          onSelectionChanged: this.onEditorSelectionChanged,
+          onEditLink: this.onEditLink,
+          onEditImage: this.onEditImage
+        }
+      })
+    },
+
     onEditLink(link) {
       return this.$refs.linkDialog.show(link);
     },

@@ -65,12 +65,14 @@ export default {
     <div v-if="error">
       <ErrorPanel :error="error" />
     </div>
-    <div v-else-if="initialized">
-      <slot />
-    </div>
-    <div v-else>
-      <ProgressSpinner />
-    </div>
+    <template v-else>
+      <div v-show="initialized">
+        <slot />
+      </div>
+      <div v-if="!initialized">
+        <ProgressSpinner />
+      </div>
+    </template>
 
   </div>
 

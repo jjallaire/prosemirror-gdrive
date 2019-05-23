@@ -7,14 +7,13 @@ import drive from '../../../drive'
 
 import AppPage from '../../../components/core/AppPage.vue'
 
-import EditorComponent from '../../../components/editor/EditorComponent'
 
 export default {
 
   name: 'FooPage',
 
   components: {
-    AppPage, EditorComponent
+    AppPage
   },
 
   data: function() {
@@ -44,7 +43,7 @@ export default {
     <div v-for="file in files" :key="file.id">
       {{ file.name }}
     </div>
-    <EditorComponent ref="editor" class="assignment-editor" />
+ 
   </AppPage>
 
 </template>

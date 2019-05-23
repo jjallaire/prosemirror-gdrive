@@ -7,7 +7,13 @@ import AppPage from '../../../components/core/AppPage.vue'
 
 import EditorComponent from '../../../components/editor/EditorComponent.vue'
 
+import drive from '../../../drive'
+import DriveSave from '../../../drive/save'
 
+import dialog from '../../../components/core/dialog'
+
+import { docInfo } from '../../../store/state'
+import { SET_DOC } from '../../../store/mutations'
 
 
 export default {
@@ -180,7 +186,54 @@ export default {
 
   mounted() {
 
-    this.$refs.page.initialize();
+    this.$refs.page.initialize(
+      drive.getFile(this.doc_id)
+        .then(file => {
+          
+          // set doc info
+          this.$store.commit(
+            SET_DOC, 
+            docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+          );
+      
+          // monitor and save editor changes (triggered by onUpdate hook installed below)
+          this.driveSave = new DriveSave(
+            this.doc_id,
+            this.onSaveStatus,
+            null,
+            this.onSaveError,
+            "application/vnd.google.drive.ext-type.pmasn"
+          );
+        
+          // initialize editor
+          this.$refs.editor.initialize({
+            content: JSON.parse(file.content).document,
+            onUpdate: this.onEditorUpdate
+          });
+        })
+    );
+  },
+
+  beforeDestroy() {
+    this.$store.commit(SET_DOC, docInfo());
+  },
+
+  methods: {
+    
+    onEditorUpdate(update) {
+      this.driveSave.onEditorUpdate(update);
+    },
+
+    onSaveStatus(status) {
+      this.save_status = status;
+    },
+
+    onSaveError(error) {
+      dialog.errorSnackbar(
+        "Unable to save changes (" + error.message + "). " +
+        "Please ensure you are online so that you don't lose work."
+      );
+    },
   }
 
 }
@@ -189,14 +242,12 @@ export default {
 
 <template>
 
-  <AppPage ref="page" title="Assignment" class="assignment-page">
+  <AppPage ref="page" class="assignment-page">
 
     <v-card>
       <v-card-text>
         <v-layout>
-
           <v-flex sm5>
-            <v-text-field label="Title" box />
             <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" :save_status="save_status" />
           </v-flex>
           <v-flex class="students-table-container" sm7>
@@ -246,7 +297,7 @@ export default {
 
 
 .assignment-editor {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 100px);
   width: 100%;
 }
 

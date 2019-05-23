@@ -4,18 +4,20 @@ import _throttle from 'lodash/throttle'
 import _retry from 'async/retry'
 
 import drive from '.'
+import config from '../config'
 
 import { jsonStringifyEscaped } from '../core/json'
 
 export default class DriveSave  {
 
-  constructor(docId, onStatus, onSaved, onSaveError) {
+  constructor(docId, onStatus, onSaved, onSaveError, mimeType = config.gdrive.mimeType) {
 
     // doc id and callbacks
     this._docId = docId;
     this._onStatus = onStatus;
     this._onSaved = onSaved;
     this._onSaveError = onSaveError;
+    this._mimeType = mimeType;
 
     // track updates
     this._editorUpdates = {
@@ -116,7 +118,8 @@ export default class DriveSave  {
             jsonStringifyEscaped({
               document: update.getJSON()
             }), 
-            update.getHTML()
+            update.getHTML(),
+            this._mimeType
           )
           .then(result => {
             this._editorUpdates.lastSaveTime = update.time;
@@ -134,7 +137,8 @@ export default class DriveSave  {
         // success! 
         if (result) {
 
-          this._onSaved(result);
+          if (this._onSaved)
+            this._onSaved(result);
 
         // error (display to user)
         } else if (error) {
