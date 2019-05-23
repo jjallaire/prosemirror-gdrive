@@ -15,13 +15,15 @@ import dialog from '../../../components/core/dialog'
 import { docInfo } from '../../../store/state'
 import { SET_DOC } from '../../../store/mutations'
 
+import AssignStudentsDialog from './AssignStudentsDialog.vue'
+
 
 export default {
 
   name: 'AssignmentPage',
 
   components: {
-    AppPage, EditorComponent
+    AppPage, EditorComponent, AssignStudentsDialog
   },
 
   props: {
@@ -235,6 +237,10 @@ export default {
         "Please ensure you are online so that you don't lose work."
       );
     },
+
+    onAssignStudents() {
+      this.$refs.assignStudentsDialog.show();
+    }
   }
 
 }
@@ -256,7 +262,7 @@ export default {
             <v-subheader>
               Students: 
               <v-spacer /> 
-              <v-btn color="info">Assign...</v-btn>
+              <v-btn color="info" @click="onAssignStudents">Assign...</v-btn>
             </v-subheader>
            
             <v-data-table
@@ -277,6 +283,8 @@ export default {
         </v-layout>
       </v-card-text>
     </v-card>
+
+    <AssignStudentsDialog ref="assignStudentsDialog" />
 
   </AppPage>
 
