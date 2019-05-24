@@ -39,7 +39,10 @@ export default {
   <ModalDialog ref="dialog" caption="Assign to Students">
     <template slot="content">
       <v-layout row wrap>
-        <v-flex xs12 />
+        <v-flex xs12>
+          <v-subheader>Student email addresses:</v-subheader>
+          <v-textarea solo autofocus full-width rows="12" />
+        </v-flex>
       </v-layout>
     </template>
   </ModalDialog>
