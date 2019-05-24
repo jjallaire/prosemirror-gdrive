@@ -4,7 +4,7 @@
 
 import { VDialog, VCard, VCardTitle, VCardText, VCardActions, VSpacer, VBtn } from 'vuetify/lib'
 
-import { dialogAutoFocus } from './dialog.js'
+import dialog, { dialogAutoFocus } from './dialog.js'
 
 export default {
 
@@ -18,6 +18,10 @@ export default {
     caption: {
       type: String,
       required: true
+    },
+    ok_caption: {
+      type: String,
+      default: "OK"
     }
   },
 
@@ -25,6 +29,7 @@ export default {
     return {
       active: false,
       resolve: null,
+      disable_actions: false,
       handlers: {
         ok: true,
         cancel: false
@@ -38,6 +43,7 @@ export default {
     // when the dialog is dimissed
     show(handlers) {
       this.active = true;
+      this.disable_actions = false;
       this.handlers = {
         ...this.handlers,
         ...handlers
@@ -46,6 +52,10 @@ export default {
       return new Promise(resolve => {
         this.resolve = resolve;
       });
+    },
+
+    disableActions() {
+      this.disable_actions = true;
     },
 
     // dismiss the dialog with a result
@@ -65,7 +75,15 @@ export default {
     onClick(action) {
       let handler = this.handlers[action];
       let result = (typeof handler === "function") ? handler() : handler; 
-      this.dismiss(result);
+      if (result instanceof Promise) {
+        result
+          .then(this.dismiss)
+          .catch(error => {
+            dialog.error("Error", error.message);
+          }) 
+      } else {
+        this.dismiss(result);
+      }
     }
   }
 }
@@ -90,8 +108,8 @@ export default {
       <v-card-actions>
         <slot name="left_buttons" />
         <v-spacer />
-        <v-btn flat @click="onClickCancel">Cancel</v-btn>
-        <v-btn flat color="primary" @click="onClickOK">OK</v-btn>
+        <v-btn flat :disabled="disable_actions" @click="onClickCancel">Cancel</v-btn>
+        <v-btn flat :disabled="disable_actions" color="primary" @click="onClickOK">{{ ok_caption }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -101,6 +119,15 @@ export default {
 
 .v-dialog .v-card__title .headline {
   font-size: 18px !important;
+}
+
+.v-dialog .v-card__text {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.v-dialog .v-textarea {
+  margin-top: 8px;
 }
 
 
