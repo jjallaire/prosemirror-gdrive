@@ -54,10 +54,6 @@ export default {
       });
     },
 
-    disableActions() {
-      this.disable_actions = true;
-    },
-
     // dismiss the dialog with a result
     dismiss(result) {
       this.active = false;
@@ -76,6 +72,7 @@ export default {
       let handler = this.handlers[action];
       let result = (typeof handler === "function") ? handler() : handler; 
       if (result instanceof Promise) {
+        this.disable_actions = true;
         result
           .then(this.dismiss)
           .catch(error => {

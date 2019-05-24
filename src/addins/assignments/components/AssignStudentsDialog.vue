@@ -34,22 +34,26 @@ export default {
 
       // show the dialog 
       return this.$refs.dialog.show({
-        ok: () => {
-          
-          return new Promise((resolve) => {
-          
-            this.progress = 30;
-
-            this.$refs.dialog.disableActions();
-
-            setTimeout(() => {
-              resolve();
-            }, 2000);
-          })
-        },
+        ok: this.assignStudents,
         cancel: null
       });
     },
+
+    assignStudents() {
+      
+       return new Promise((resolve) => {
+          
+          this.progress = 30;
+
+          setTimeout(() => {
+
+            resolve();
+          }, 2000);
+        })
+
+    }
+
+
   }
 }
 
