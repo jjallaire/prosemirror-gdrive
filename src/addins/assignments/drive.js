@@ -2,16 +2,35 @@
 
 
 
+import config from '../../config'
+
 import drive from '../../drive'
 
 
-export function assignToStudent(doc_id, student) {
+// status:
+//   draft
+//   draft_review
+//   draft_revisions
+//   submitted
+//   complete
 
-  return new Promise(resolve => {
-    setTimeout(() => resolve(), 2000);
-  })
+// TODO: unload dialog on error
 
 
+export function assignToStudent(assignment, student) {
+
+  // properties
+  let properties = {
+    assignmentId: assignment.metadata.id,
+    status: 'draft'
+  };
+
+  // create assignment and share it
+  return drive
+    .newFile(assignment.metadata.name, '{ "document": "" }', '', config.gdrive.mimeType, properties)
+    .then(result => {
+      return drive.shareFile(result.id, 'writer', 'user', student)
+    });
 }
 
 

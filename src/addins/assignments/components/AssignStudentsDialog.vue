@@ -4,6 +4,8 @@
 
 import ModalDialog from '../../../components/core//ModalDialog.vue'
 
+import drive from '../../../drive'
+
 import { assignToStudent } from '../drive'
 
 export default {
@@ -51,19 +53,24 @@ export default {
       });
     },
 
-    assignStudents(doc_id) {   
-      return this.students.reduce( (previousPromise, nextStudent, idx) => {
-        return previousPromise.then(() => {
-          return this.assignStudent(doc_id, nextStudent, idx);
+    assignStudents(doc_id) {  
+      this.progress = 20;
+      this.progress_caption = "Reading assignment...";
+      return drive.getFile(doc_id)
+        .then(assignment => {
+          return this.students.reduce( (previousPromise, nextStudent, idx) => {
+            return previousPromise.then(() => {
+              return this.assignStudent(assignment, nextStudent, idx);
+            });
+          }, Promise.resolve());
         });
-      }, Promise.resolve());
     },
 
-    assignStudent(doc_id, student, idx) {
+    assignStudent(assignment, student, idx) {
       return new Promise(resolve => {
-        this.progress = Math.max((idx / this.students.length) * 100, 10);
+        this.progress = 20 + (idx / this.students.length) * 80;
         this.progress_caption = `Assigning to ${student}...`;
-        assignToStudent(doc_id, student).then(resolve);
+        assignToStudent(assignment, student).then(resolve);
       });
     },
 

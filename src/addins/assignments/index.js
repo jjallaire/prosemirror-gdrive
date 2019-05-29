@@ -3,13 +3,6 @@
 import { addinRegister } from '..'
 
 
-// status:
-//   draft
-//   draft_review
-//   draft_revisions
-//   submitted
-//   complete
-
 import AssignmentPage from './components/AssignmentPage.vue'
 import AssignmentsPage from './components/AssignmentsPage.vue'
 
