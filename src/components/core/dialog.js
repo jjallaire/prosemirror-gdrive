@@ -39,7 +39,7 @@ export default {
 
 export function dialogAutoFocus(select) {
   setTimeout(() => {
-    let input = document.querySelector('.v-dialog input[autofocus]');
+    let input = document.querySelector('.v-dialog [autofocus]');
     if (input) {
       input.focus();
       if (select && input.select)
