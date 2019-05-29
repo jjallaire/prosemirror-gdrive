@@ -239,7 +239,7 @@ export default {
     },
 
     onAssignStudents() {
-      this.$refs.assignStudentsDialog.show();
+      this.$refs.assignStudentsDialog.show(this.doc_id);
     }
   }
 

@@ -2,9 +2,13 @@
 
 import { addinRegister } from '..'
 
-//import actions from './actions.js'
-import navigation from './navigation.js'
-//import behaviors from './behaviors.js'
+
+// status:
+//   draft
+//   draft_review
+//   draft_revisions
+//   submitted
+//   complete
 
 import AssignmentPage from './components/AssignmentPage.vue'
 import AssignmentsPage from './components/AssignmentsPage.vue'
@@ -12,7 +16,15 @@ import AssignmentsPage from './components/AssignmentsPage.vue'
 addinRegister({
 
   // navigation 
-  navigation: navigation,
+  navigation: {
+    items: [
+      {
+        caption: "Assignments",
+        icon: "alarm",
+        path: "/assignments/"
+      }
+    ]
+  },
 
   // routes
   routes: [
