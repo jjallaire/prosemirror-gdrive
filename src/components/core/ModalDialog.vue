@@ -77,6 +77,7 @@ export default {
           .then(this.dismiss)
           .catch(error => {
             dialog.error("Error", error.message);
+            this.dismiss(null);
           }) 
       } else {
         this.dismiss(result);
