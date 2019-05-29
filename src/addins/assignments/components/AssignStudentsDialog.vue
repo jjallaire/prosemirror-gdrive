@@ -70,7 +70,11 @@ export default {
       return new Promise(resolve => {
         this.progress = 20 + (idx / this.students.length) * 80;
         this.progress_caption = `Assigning to ${student}...`;
-        assignToStudent(assignment, student).then(resolve);
+        assignToStudent(
+          assignment.metadata.id, 
+          assignment.metadata.name, 
+          student
+        ).then(resolve);
       });
     },
 

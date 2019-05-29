@@ -15,19 +15,22 @@ import drive from '../../drive'
 //   complete
 
 // TODO: unload dialog on error
+// TODO: constant for empty dialog
 
 
-export function assignToStudent(assignment, student) {
+
+
+export function assignToStudent(id, title, student) {
 
   // properties
   let properties = {
-    assignmentId: assignment.metadata.id,
+    assignmentId: id,
     status: 'draft'
   };
 
   // create assignment and share it
   return drive
-    .newFile(assignment.metadata.name, '{ "document": "" }', '', config.gdrive.mimeType, properties)
+    .newFile(title, '{ "document": "" }', '', config.gdrive.mimeType, properties)
     .then(result => {
       return drive.shareFile(result.id, 'writer', 'user', student)
     });
