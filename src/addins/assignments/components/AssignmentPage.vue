@@ -17,6 +17,8 @@ import { SET_DOC } from '../../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
+import { mapGetters } from 'vuex'
+
 
 export default {
 
@@ -43,8 +45,8 @@ export default {
       students: {
         headers: [
           {
-            text: 'Name',
-            value: 'name'
+            text: 'Student',
+            value: 'student'
           },
           {
             text: 'Status',
@@ -61,129 +63,19 @@ export default {
             foo: 3,
             bar: 4
           },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          }
-        ]
+        ],
+        pagination: {
+          sortBy: 'bar',
+          descending: true,
+        }
       }
     }
+  },
+
+  computed: {
+    ...mapGetters([
+      'user',
+    ]),
   },
 
   mounted() {
@@ -239,7 +131,7 @@ export default {
     },
 
     onAssignStudents() {
-      this.$refs.assignStudentsDialog.show(this.doc_id);
+      this.$refs.assignStudentsDialog.show(this.doc_id, this.user.name);
     }
   }
 
@@ -268,6 +160,7 @@ export default {
             <v-data-table
               :headers="students.headers"
               :items="students.items"
+              :pagination.sync="students.pagination"
               :hide-actions="true"
               class="elevation-1"
             >
