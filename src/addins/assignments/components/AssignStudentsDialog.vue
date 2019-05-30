@@ -6,7 +6,7 @@ import ModalDialog from '../../../components/core//ModalDialog.vue'
 
 import drive from '../../../drive'
 
-import { assignToStudent } from '../assignment'
+import { Status, createStudentAssignment, studentAssignments, setStudentAssignmentStatus } from '../assignment'
 
 
 export default {
@@ -56,34 +56,51 @@ export default {
 
     assignStudents(doc_id, teacher) {  
       this.progress = 20;
-      this.progress_caption = "Reading assignment...";
-      return drive.getFile(doc_id)
-        // determine which students are already assigned
-        .then(assignment => {
+      this.progress_caption = "Accessing assignment...";
+      let student_assignments = [];
+      
+      function existingAssignment(student) {
+        for (let i=0; i<student_assignments.length; i++) {
+          let assignment = student_assignments[i];
+          if (assignment.student === student)
+            return assignment;
+        }
+        return null;
+      }
+    
 
-          
-
-          return assignment;
+      return studentAssignments(doc_id)
+        .then(assignments => {
+          student_assignments = assignments;
+          return drive.getFile(doc_id);
         })
         .then(assignment => {
           return this.students.reduce( (previousPromise, nextStudent, idx) => {
             return previousPromise.then(() => {
-              return this.assignStudent(assignment, nextStudent, teacher, idx);
-            });
-          }, Promise.resolve());
+              
+              // update progress
+              this.progress = 20 + (idx / this.students.length) * 80;
+              this.progress_caption = `Assigning to ${nextStudent}...`;
+
+              // check assignment status
+              let existing = existingAssignment(nextStudent);
+              if (existing !== null) {
+                if (existing.status === Status.Unassigned)
+                  return setStudentAssignmentStatus(existing.id, Status.StudentDraft);
+                else
+                  return Promise.resolve();
+              } else {
+                return createStudentAssignment(
+                  assignment.metadata.id, 
+                  assignment.metadata.name, 
+                  nextStudent,
+                  teacher
+                );
+              }
+          })}, Promise.resolve());
         });
     },
 
-    assignStudent(assignment, student, teacher, idx) {
-      this.progress = 20 + (idx / this.students.length) * 80;
-      this.progress_caption = `Assigning to ${student}...`;
-      return assignToStudent(
-        assignment.metadata.id, 
-        assignment.metadata.name, 
-        student,
-        teacher
-      );
-    },
 
     clearProgress() {
       this.progress = 0;

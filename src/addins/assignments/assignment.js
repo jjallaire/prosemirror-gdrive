@@ -19,13 +19,23 @@ export const Status = {
 }
 
 export function studentAssignments(id) {
-  return drive.listFiles({
-    properties: `properties has { key='assignmentId' and value='${id}' }`,
-    mimeType: config.gdrive.mimeType
-  })
+  return drive
+    .listFiles({
+      properties: `properties has { key='assignmentId' and value='${id}' }`,
+      mimeType: config.gdrive.mimeType
+    })
+    .then(assignments => {
+      return assignments.map(assignment => {
+        return {
+          id: assignment.id,
+          student: assignment.properties.student,
+          status: Number.parseInt(assignment.properties.status, 10)
+        }
+      });
+    });
 }
 
-export function assignToStudent(id, title, student, teacher) {
+export function createStudentAssignment(id, title, student, teacher) {
 
   // properties
   let properties = {
@@ -46,6 +56,13 @@ export function assignToStudent(id, title, student, teacher) {
         student,
         `You have received an assignment from ${teacher}`
       )
+    });
+}
+
+export function setStudentAssignmentStatus(id, status) {
+  return drive
+    .setFileProperties(id, {
+      status: status.toString()
     });
 }
 

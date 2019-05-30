@@ -7,6 +7,9 @@ import AppPage from '../../../components/core/AppPage.vue'
 
 import EditorComponent from '../../../components/editor/EditorComponent.vue'
 
+import PopupMenu from '../../../components/core/PopupMenu'
+import MenuTile from '../../../components/core/MenuTile'
+
 import drive from '../../../drive'
 import DriveSave from '../../../drive/save'
 
@@ -17,7 +20,7 @@ import { SET_DOC } from '../../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
-import { studentAssignments } from '../assignment'
+import { Status, studentAssignments, setStudentAssignmentStatus } from '../assignment'
 
 import { mapGetters } from 'vuex'
 
@@ -27,7 +30,7 @@ export default {
   name: 'AssignmentPage',
 
   components: {
-    AppPage, EditorComponent, AssignStudentsDialog
+    AppPage, EditorComponent, AssignStudentsDialog, PopupMenu, MenuTile
   },
 
   props: {
@@ -53,14 +56,18 @@ export default {
           {
             text: 'Status',
             value: 'status'
+          },
+          { 
+            text: 'Actions', 
+            sortable: false , width: '5%'
           }
-
         ],
         items: [],
         pagination: {
           sortBy: 'bar',
           descending: true,
-        }
+        },
+        loading: false,
       }
     }
   },
@@ -112,21 +119,19 @@ export default {
 
   methods: {
 
-    updateStudents() {
-
+    updateStudents(clear = false) {
+      if (clear)
+        this.students.items = [];
+      this.students.loading = true;
       studentAssignments(this.doc_id)
         .then(assignments => {
-          this.students.items = assignments.map(assignment => {
-            return {
-              student: assignment.properties.student,
-              status: assignment.properties.status
-            }
-          });
+          this.students.items = assignments.filter(assignment => assignment.status !== Status.Unassigned);
+          this.students.loading = false;
+        })
+        .catch(error => {
+          dialog.error("Error", error.message);
+          this.students.loading = false;
         });
-      
-
-
-      
     },
     
     onEditorUpdate(update) {
@@ -150,8 +155,24 @@ export default {
         .then(() => {
           this.updateStudents();
         });
+    },
+
+    onUnassign(assignment) {
+      setStudentAssignmentStatus(assignment.id, Status.Unassigned)
+        .then(() => {
+          this.updateStudents();
+        })
+        .catch(error => {
+          dialog.errorSnackbar(error.message);
+        })
+    },
+
+    onOpenInNewTab(assignment) {
+      window.open("/edit/" + assignment.id, "_blank");
     }
-  }
+  },
+
+ 
 
 }
 
@@ -179,12 +200,28 @@ export default {
               :headers="students.headers"
               :items="students.items"
               :pagination.sync="students.pagination"
+              :loading="students.loading"
               :hide-actions="true"
               class="elevation-1"
             >
+              <template v-slot:no-data>
+                <div class="table-status text-xs-center grey--text">
+                  <span v-if="students.loading">Loading...</span>
+                  <span v-else>(No students assigned)</span>
+                </div>
+              </template>
+
               <template v-slot:items="props">
-                <td>{{ props.item.student }}</td>
-                <td class="text-xs-right">{{ props.item.status }}</td>
+                <tr class="table-row">
+                  <td>{{ props.item.student }}</td>
+                  <td class="text-xs-right">{{ props.item.status }}</td>
+                  <td align="center">
+                    <PopupMenu>
+                      <MenuTile icon="delete" text="Unassign..." @clicked="onUnassign(props.item)" />
+                      <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
+                    </PopupMenu>
+                  </td>
+                </tr>
               </template>
             </v-data-table>
             
