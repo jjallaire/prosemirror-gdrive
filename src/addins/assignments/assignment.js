@@ -18,12 +18,20 @@ export const Status = {
   Unassigned: 6
 }
 
+export function studentAssignments(id) {
+  return drive.listFiles({
+    properties: `properties has { key='assignmentId' and value='${id}' }`,
+    mimeType: config.gdrive.mimeType
+  })
+}
 
 export function assignToStudent(id, title, student, teacher) {
 
   // properties
   let properties = {
     assignmentId: id,
+    student: student,
+    teacher: teacher,
     status: Status.StudentDraft
   };
 

@@ -19,7 +19,7 @@ if (!config.filestack.apiKey)
   kScopes.push('https://picasaweb.google.com/data/')         // picasa photo albums
 
 
-const kFileFields = 'id, name, mimeType, headRevisionId, iconLink, viewedByMe, viewedByMeTime, ' +
+const kFileFields = 'id, name, mimeType, headRevisionId, iconLink, viewedByMe, viewedByMeTime,' +
                     'sharedWithMeTime, modifiedTime, shared, sharingUser, size, properties, appProperties';
 
 const kFileListFields = 'nextPageToken, files(' + kFileFields + ')';
@@ -565,6 +565,7 @@ function fileListResponse(response) {
       icon: file.iconLink,
       owner: owner,
       shared: file.shared,
+      properties: file.properties,
       lastViewed: Date.parse(lastViewed),
       size: parseInt(file.size)
     }

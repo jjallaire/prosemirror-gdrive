@@ -58,6 +58,13 @@ export default {
       this.progress = 20;
       this.progress_caption = "Reading assignment...";
       return drive.getFile(doc_id)
+        // determine which students are already assigned
+        .then(assignment => {
+
+          
+
+          return assignment;
+        })
         .then(assignment => {
           return this.students.reduce( (previousPromise, nextStudent, idx) => {
             return previousPromise.then(() => {

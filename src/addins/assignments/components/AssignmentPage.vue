@@ -17,6 +17,8 @@ import { SET_DOC } from '../../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
+import { studentAssignments } from '../assignment'
+
 import { mapGetters } from 'vuex'
 
 
@@ -54,16 +56,7 @@ export default {
           }
 
         ],
-        items: [
-          {
-            foo: 1,
-            bar: 2
-          },
-          {
-            foo: 3,
-            bar: 4
-          },
-        ],
+        items: [],
         pagination: {
           sortBy: 'bar',
           descending: true,
@@ -105,7 +98,11 @@ export default {
             onUpdate: this.onEditorUpdate,
             autoFocus: true
           });
+
+          // load students
+          this.updateStudents();
         })
+        
     );
   },
 
@@ -114,6 +111,23 @@ export default {
   },
 
   methods: {
+
+    updateStudents() {
+
+      studentAssignments(this.doc_id)
+        .then(assignments => {
+          this.students.items = assignments.map(assignment => {
+            return {
+              student: assignment.properties.student,
+              status: assignment.properties.status
+            }
+          });
+        });
+      
+
+
+      
+    },
     
     onEditorUpdate(update) {
       this.driveSave.onEditorUpdate(update);
@@ -131,7 +145,11 @@ export default {
     },
 
     onAssignStudents() {
-      this.$refs.assignStudentsDialog.show(this.doc_id, this.user.name);
+      this.$refs.assignStudentsDialog
+        .show(this.doc_id, this.user.email)
+        .then(() => {
+          this.updateStudents();
+        });
     }
   }
 
@@ -165,8 +183,8 @@ export default {
               class="elevation-1"
             >
               <template v-slot:items="props">
-                <td>{{ props.item.foo }}</td>
-                <td class="text-xs-right">{{ props.item.bar }}</td>
+                <td>{{ props.item.student }}</td>
+                <td class="text-xs-right">{{ props.item.status }}</td>
               </template>
             </v-data-table>
             
