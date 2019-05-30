@@ -71,17 +71,13 @@ export default {
     onClick(action) {
       let handler = this.handlers[action];
       let result = (typeof handler === "function") ? handler() : handler; 
-      if (result instanceof Promise) {
-        this.disable_actions = true;
-        result
-          .then(this.dismiss)
-          .catch(error => {
-            dialog.error("Error", error.message);
-            this.dismiss(null);
-          }) 
-      } else {
-        this.dismiss(result);
-      }
+      this.disable_actions = true;
+      Promise.resolve(result)
+        .then(this.dismiss)
+        .catch(error => {
+          dialog.error("Error", error.message);
+          this.dismiss(null);
+        });
     }
   }
 }

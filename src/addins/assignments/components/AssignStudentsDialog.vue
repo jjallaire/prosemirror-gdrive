@@ -75,10 +75,9 @@ export default {
           return drive.getFile(doc_id);
         })
         .then(assignment => {
-          return this.students.reduce( (previousPromise, nextStudent, idx) => {
+          let result = this.students.reduce( (previousPromise, nextStudent, idx) => {
             return previousPromise.then(() => {
-              
-              // update progress
+                
               this.progress = 20 + (idx / this.students.length) * 80;
               this.progress_caption = `Assigning to ${nextStudent}...`;
 
@@ -90,17 +89,24 @@ export default {
                 else
                   return Promise.resolve();
               } else {
-                return createStudentAssignment(
-                  assignment.metadata.id, 
-                  assignment.metadata.name, 
-                  nextStudent,
-                  teacher
-                );
+                return this.assignStudent(assignment, nextStudent, teacher);
               }
-          })}, Promise.resolve());
+            });
+          }, Promise.resolve());
+          return result;
         });
     },
 
+
+
+    assignStudent(assignment, student, teacher) {
+      return createStudentAssignment(
+        assignment.metadata.id, 
+        assignment.metadata.name, 
+        student,
+        teacher
+      );
+    },
 
     clearProgress() {
       this.progress = 0;
