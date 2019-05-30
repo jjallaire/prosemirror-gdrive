@@ -5,12 +5,16 @@ import dialog from './dialog'
 import drive from '../../drive'
 import router from '../../core/router'
 
+export function emptyDocument() {
+  return '{ "document": "" }';
+}
+
 export function newDocument(mimeType = config.gdrive.mimeType, editPath = "/edit/") {
   dialog
     .prompt('New Document', 'Title')
     .then(title => {
       if (title)
-        return drive.newFile(title, '{ "document": "" }', '', mimeType);
+        return drive.newFile(title, emptyDocument(), '', mimeType);
       else
         return Promise.resolve();
     })
