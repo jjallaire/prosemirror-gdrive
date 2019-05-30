@@ -17,10 +17,6 @@ import { emptyDocument } from '../../components/core/docs.js'
 //   complete
 //   unassigned
 
-// TODO: unload dialog on error
-//   issue may be the list of promises?
-
-
 export function assignToStudent(id, title, student) {
 
   // properties
