@@ -255,7 +255,7 @@ export default {
       <v-card-text>
         <v-layout>
           <v-flex sm5>
-            <v-subheader>Assignment:</v-subheader>
+            <v-subheader>Assignment description:</v-subheader>
             <EditorComponent ref="editor" class="assignment-editor" :minimal_toolbar="true" :save_status="save_status" />
           </v-flex>
           <v-flex class="students-table-container" sm7>
