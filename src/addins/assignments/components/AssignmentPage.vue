@@ -217,7 +217,7 @@ export default {
                   <td class="text-xs-right">{{ props.item.status }}</td>
                   <td align="center">
                     <PopupMenu>
-                      <MenuTile icon="delete" text="Unassign..." @clicked="onUnassign(props.item)" />
+                      <MenuTile icon="delete" text="Unassign" @clicked="onUnassign(props.item)" />
                       <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
                     </PopupMenu>
                   </td>
