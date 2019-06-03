@@ -22,6 +22,10 @@ export default {
 
   filestack: {
     apiKey: process.env.VUE_APP_FILESTACK_API_KEY || null
+  },
+
+  roles: {
+    teachers: process.env.VUE_APP_TEACHERS ? process.env.VUE_APP_TEACHERS.split(/, /) : null
   }
 
 }
