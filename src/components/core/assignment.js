@@ -3,11 +3,9 @@
 
 
 import config from '../../config'
-
 import drive from '../../drive'
-
-import { emptyDocument } from './docs.js'
-
+import dialog from './dialog'
+import router from '../../core/router'
 
 export const Status = {
   TeacherReview: 1,
@@ -17,6 +15,36 @@ export const Status = {
   Completed: 5,
   Unassigned: 6
 }
+
+export function emptyAssignment() {
+  return '{ "document": "" }';
+}
+
+export function newAssignment(mimeType, editPath) {
+  dialog
+    .prompt('New Assignment', 'Title')
+    .then(title => {
+      if (title)
+        return drive.newFile(title, emptyAssignment(), '', mimeType);
+      else
+        return Promise.resolve();
+    })
+    .then(result => {
+      if (result)
+        router.push({ path: editPath + result.id });
+    })
+    .catch(error => {
+      dialog.error("Drive Error", error.message);
+    });
+}
+
+export function openAssignment(mimeType, editPath) {
+  drive.selectFile(mimeType)
+    .then(id => {
+      router.push({ path: editPath + id });
+    });
+}
+
 
 export function studentAssignments(id) {
   return drive
@@ -47,7 +75,7 @@ export function createStudentAssignment(id, title, student, teacher) {
 
   // create assignment and share it
   return drive
-    .newFile(title, emptyDocument(), '', config.gdrive.studentAssignmentMimeType, properties)
+    .newFile(title, emptyAssignment(), '', config.gdrive.studentAssignmentMimeType, properties)
     .then(result => {
       return drive.shareFile(
         result.id, 

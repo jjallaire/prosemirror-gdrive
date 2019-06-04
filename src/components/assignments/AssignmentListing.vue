@@ -12,7 +12,7 @@ import config from '../../config'
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
 import dialog from '../core/dialog'
-import { newDocument, openDocument } from '../core/docs'
+import { newAssignment, openAssignment } from '../core/assignment'
 
 export default {
   name: 'AssignmentListing',
@@ -103,12 +103,12 @@ export default {
         });
     },
 
-    onNewDocument() {
-      newDocument(this.mime_type, this.edit_path);
+    onNewAssignment() {
+      newAssignment(this.mime_type, this.edit_path);
     },
 
-    onOpenDocument() {
-      openDocument(this.mime_type, this.edit_path)
+    onOpenAssignment() {
+      openAssignment(this.mime_type, this.edit_path)
     },
 
 
@@ -127,7 +127,7 @@ export default {
 
     onRemoveDocument(doc) {
       dialog
-        .confirm ('Remove Document', 'Are you sure you want to remove this document?')
+        .confirm ('Remove Assignment', 'Are you sure you want to remove this assignment?')
         .then(confirmed => {
           if (confirmed)
             this.handleDriveRequest(drive.removeFile(doc.id));
@@ -136,7 +136,7 @@ export default {
 
     onRenameDocument(doc) {
       dialog
-        .prompt('Rename Document', 'New name for document:')
+        .prompt('Rename Assignment', 'New name for assignment:')
         .then(title => {
           if (title)
             this.handleDriveRequest(drive.renameFile(doc.id, title));
@@ -176,11 +176,11 @@ export default {
     <v-card>
       <v-card-title>
        
-        <v-btn title="Create new" color="orange" fab dark small @click="onNewDocument">
+        <v-btn title="Create new" color="orange" fab dark small @click="onNewAssignment">
           <v-icon>add</v-icon>
         </v-btn>
 
-        <v-btn title="Open picker" color="orange" fab outline dark small @click="onOpenDocument">
+        <v-btn title="Open picker" color="orange" fab outline dark small @click="onOpenAssignment">
           <v-icon>folder_open</v-icon>
         </v-btn>
       
@@ -213,7 +213,7 @@ export default {
         <template v-slot:no-data>
           <div class="table-status text-xs-center grey--text">
             <span v-if="loading">Loading...</span>
-            <span v-else>(No documents)</span>
+            <span v-else>(No assignments)</span>
           </div>
         </template>
 
