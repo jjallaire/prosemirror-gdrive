@@ -9,10 +9,6 @@ import NavigationTile from './NavigationTile.vue'
 
 import { addinNavigation } from '../../addins'
 
-import { newDocument, openDocument } from '../core/docs'
-
-import { mapGetters } from 'vuex'
-
 export default {
 
   name: 'NavigationList',
@@ -23,26 +19,16 @@ export default {
 
   data () {
     return {
-      show_recent: true,
       navigation: addinNavigation()
     }
   },
 
   computed: {
-    ...mapGetters([
-      'recent_docs'
-    ])
+   
   },
 
   methods: {
 
-    onNewDocumentClicked() {
-      newDocument();
-    },
-
-    onOpenDocumentClicked() {
-      openDocument();
-    }
   }
 
 }
@@ -56,26 +42,6 @@ export default {
     <NavigationTile path="/" icon="alarm" caption="Assignments" />
 
     <v-divider />
-
-    <NavigationTile icon="add" caption="New Document" @click="onNewDocumentClicked" />
-    <NavigationTile icon="folder_open" caption="Open Document" @click="onOpenDocumentClicked" />
-
-    <v-list-group
-      v-if="recent_docs.length > 0"
-      v-model="show_recent"
-      class="recent-documents"
-      no-action=""
-    >
-      <template v-slot:activator>
-        <NavigationTile icon="history" caption="Recent Documents" />
-      </template>
-
-      <NavigationTile v-for="file in recent_docs.slice(0,8)" :key="file.id"
-                      :caption="file.name" :path="'/edit/' + file.id" 
-      />
-    
-    </v-list-group>
-    <v-divider v-else />
 
     <template v-for="item in navigation.items">
       <NavigationTile :key="item.path" :icon="item.icon" :caption="item.caption" :path="item.path" /> 
