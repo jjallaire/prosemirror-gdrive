@@ -6,7 +6,7 @@ import ModalDialog from '../core/ModalDialog.vue'
 
 import drive from '../../drive'
 
-import { Status, createStudentAssignment, studentAssignments, setStudentAssignmentStatus } from '../core/assignment'
+import { Status, createStudentAssignment, studentAssignments, setStudentAssignmentStatus } from './assignment'
 
 
 export default {

@@ -4,7 +4,7 @@
 
 import config from '../../config'
 import drive from '../../drive'
-import dialog from './dialog'
+import dialog from '../core/dialog'
 import router from '../../core/router'
 
 export const Status = {

@@ -21,7 +21,7 @@ import { SET_DOC } from '../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
-import { Status, studentAssignments, setStudentAssignmentStatus } from '../core/assignment'
+import { Status, studentAssignments, setStudentAssignmentStatus } from './assignment'
 
 import { mapGetters } from 'vuex'
 

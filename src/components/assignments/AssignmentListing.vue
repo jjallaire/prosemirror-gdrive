@@ -12,7 +12,7 @@ import config from '../../config'
 import drive from '../../drive'
 import driveChanges from '../../drive/changes'
 import dialog from '../core/dialog'
-import { newAssignment, openAssignment } from '../core/assignment'
+import { newAssignment, openAssignment } from './assignment'
 
 export default {
   name: 'AssignmentListing',
