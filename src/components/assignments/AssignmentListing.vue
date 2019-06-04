@@ -155,7 +155,6 @@ export default {
       request
         .then(() => {
           this.updateItems();
-          drive.updateRecentDocs();
         })
         .catch(error => {
           dialog.error("Drive Error", error.message);

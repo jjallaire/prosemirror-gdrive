@@ -21,9 +21,6 @@ export function initialState() {
       recent_documents: 5
     },
 
-    // document history
-    recent_docs: [],
-
     // snackbar error
     snackbar_error: null
   };

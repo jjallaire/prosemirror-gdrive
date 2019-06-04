@@ -35,7 +35,7 @@ import driveChanges from './changes'
 import { jsonStringifyEscaped } from '../core/json'
 
 import store from '../store'
-import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
+import { SET_INITIALIZED, SET_INIT_ERROR, SET_USER } from '../store/mutations'
 
 
 export class GAPIError extends Error {
@@ -83,21 +83,12 @@ export default {
               auth().isSignedIn.listen(() => {
                 if (!this._isSignedIn()) {
                   driveChanges.stop();
-                  this._clearRecentDocs();
                   store.commit(SET_USER, null);
                 }
               });
 
-              // subscribe to drive changes
-              driveChanges.subscribe(() => {
-                this.updateRecentDocs();
-              });
-
               // listen for changes 
               return driveChanges.start();
-            })
-            .then(() => {
-              return this.updateRecentDocs();
             })
             .then(() => {
               store.commit(SET_INITIALIZED, true);
@@ -432,18 +423,6 @@ export default {
     share.showSettingsDialog();
   },
 
-  updateRecentDocs() {
-    return this
-      .listFiles({
-        orderBy: 'recency', 
-        limit: store.getters.settings.recent_documents,
-        mimeType: config.gdrive.studentAssignmentMimeType
-      })
-      .then(files => {
-        store.commit(SET_RECENT_DOCS, files);
-      })
-  },
-
   _appDataFileId(name) {
     return gapi.client.drive.files
       .list({
@@ -462,10 +441,6 @@ export default {
       .catch(response => {
         return Promise.reject(new GAPIError(response.result.error));
       });
-  },
-
-  _clearRecentDocs() {
-    store.commit(SET_RECENT_DOCS, []);
   },
 
   _isSignedIn() {

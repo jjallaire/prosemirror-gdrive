@@ -16,8 +16,6 @@ export default {
 
   settings: (state) => state.settings,
 
-  recent_docs: (state) => state.recent_docs,
-
   snackbar_error: (state) => state.snackbar_error
 
 }

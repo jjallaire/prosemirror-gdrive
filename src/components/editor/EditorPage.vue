@@ -152,9 +152,6 @@ export default {
       .then(() => {
         return drive.setFileViewed(this.doc_id);
       })
-      .then(() => {
-        drive.updateRecentDocs();
-      })
       .catch(error => {
         this.error = error;
       });

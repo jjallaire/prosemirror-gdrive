@@ -6,7 +6,7 @@ import localforage from 'localforage'
 import shortUuid from 'short-uuid'
 
 import store from '../store'
-import { SET_INITIALIZED, SET_USER, SET_RECENT_DOCS } from '../store/mutations'
+import { SET_INITIALIZED, SET_USER } from '../store/mutations'
 
 import { initSettings } from './settings'
 
@@ -33,9 +33,6 @@ export default {
         if (user) {
           initSettings()
             .then(() => {
-              return this.updateRecentDocs();
-            })
-            .then(() => {
               store.commit(SET_INITIALIZED, true);
             });
         } else {
@@ -60,7 +57,6 @@ export default {
     this.writeAppData(kUserAppData, kUserMimeType, null)
       .then(() => {
         store.commit(SET_USER, null);
-        store.commit(SET_RECENT_DOCS, []);
       });
   },
 
@@ -188,13 +184,6 @@ export default {
         return name;
       });
   },
-
-  updateRecentDocs() {
-    return this.listFiles().then(files => {
-      store.commit(SET_RECENT_DOCS, files);
-    });
-  },
-
 
   selectFile() {
     return new Promise(() => {

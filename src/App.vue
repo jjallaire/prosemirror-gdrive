@@ -77,7 +77,6 @@ export default {
             SET_DOC,
             docInfo(this.doc.id, value, result.headRevisionId, this.doc.properties)
           );
-          drive.updateRecentDocs();
         })
         .catch(error => {
           dialog.error("Drive Error", error.message);
