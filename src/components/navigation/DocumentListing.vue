@@ -29,10 +29,6 @@ export default {
     mime_type: {
       type: String,
       default: config.gdrive.mimeType
-    },
-    edit_path: {
-      type: String,
-      default: "/edit/"
     }
   },
 
@@ -55,6 +51,12 @@ export default {
       search: '',
       loading: true,
       items: []
+    }
+  },
+
+  computed: {
+    edit_path: function() {
+      return this.mime_type === config.gdrive.assignmentMimeType ? "/assignment/" : "/edit/";
     }
   },
 
