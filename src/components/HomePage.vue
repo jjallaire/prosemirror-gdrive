@@ -2,11 +2,13 @@
 
 <script>
 
-import DocumentListing from './navigation/DocumentListing.vue'
+import AssignmentListing from './assignments/AssignmentListing.vue'
 
 import { mapGetters } from 'vuex'
 
 import config from '../config'
+
+import { SET_PAGE_TITLE } from '../store/mutations'
 
 import { isTeacher } from '../store/selectors'
 
@@ -14,7 +16,7 @@ export default {
   name: 'HomePage',
 
   components: {
-    DocumentListing
+    AssignmentListing
   },
 
   computed: {
@@ -32,6 +34,14 @@ export default {
     }
   },
 
+  mounted() {
+    this.$store.commit(SET_PAGE_TITLE, "Assignments");
+  },
+
+  beforeDestroy() {
+    this.$store.commit(SET_PAGE_TITLE, null);
+  }
+
 }
 
 </script>
@@ -40,7 +50,7 @@ export default {
 <template>
 
   <div class="home-container">
-    <DocumentListing :mime_type="mime_type" />
+    <AssignmentListing :mime_type="mime_type" />
   </div>
 
 </template>

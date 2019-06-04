@@ -15,7 +15,7 @@ import dialog from '../core/dialog'
 import { newDocument, openDocument } from '../core/docs'
 
 export default {
-  name: 'DocumentListing',
+  name: 'AssignmentListing',
 
   components: {
     VDataTable, PopupMenu, MenuTile
@@ -104,7 +104,7 @@ export default {
     },
 
     onNewDocument() {
-      newDocument(this.mime_type), this.edit_path;
+      newDocument(this.mime_type, this.edit_path);
     },
 
     onOpenDocument() {
