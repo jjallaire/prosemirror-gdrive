@@ -227,7 +227,6 @@ export default {
             <td @click="onAssignmentClicked(props.item)"><img :src="props.item.icon"></td>
             <td class="table-doc-name" @click="onAssignmentClicked(props.item)">
               {{ props.item.name }}
-              <v-icon v-if="props.item.shared" title="Shared" small>people</v-icon>
             </td>
             <td @click="onAssignmentClicked(props.item)">{{ props.item.owner }}</td>
             <td @click="onAssignmentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
