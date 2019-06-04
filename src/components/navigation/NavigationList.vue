@@ -67,8 +67,6 @@ export default {
       <v-divider :key="group.caption + 'divider'" />
 
     </template>
-
-    <NavigationTile path="/settings/" icon="settings" caption="Settings" />
   
     <v-divider />
 

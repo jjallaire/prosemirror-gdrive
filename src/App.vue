@@ -117,9 +117,6 @@ export default {
         <v-btn title="Sign out" icon @click="onSignOutClicked">
           <v-icon>exit_to_app</v-icon>
         </v-btn>
-        <v-btn title="Settings" :to="{ path: '/settings/' }" icon>
-          <v-icon>settings</v-icon>
-        </v-btn>
       </template>
       <template v-else-if="initialized">
         <v-btn flat @click="onSignInClicked">Sign In</v-btn>
