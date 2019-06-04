@@ -121,11 +121,11 @@ export default {
     }, 500),
 
     
-    onDocumentClicked(doc) {
+    onAssignmentClicked(doc) {
       this.$router.push({ path: this.edit_path + doc.id });
     },
 
-    onRemoveDocument(doc) {
+    onRemoveAssignment(doc) {
       dialog
         .confirm ('Remove Assignment', 'Are you sure you want to remove this assignment?')
         .then(confirmed => {
@@ -134,17 +134,13 @@ export default {
         });
     },
 
-    onRenameDocument(doc) {
+    onRenameAssignment(doc) {
       dialog
         .prompt('Rename Assignment', 'New name for assignment:')
         .then(title => {
           if (title)
             this.handleDriveRequest(drive.renameFile(doc.id, title));
         });
-    },
-
-    onShareDocument(doc) {
-      drive.shareFileDialog(doc.id);
     },
 
     onOpenInNewTab(doc) {
@@ -170,7 +166,7 @@ export default {
 
 <template>
 
-  <div class="recent-documents">
+  <div class="recent-assignments">
 
     <v-card>
       <v-card-title>
@@ -206,7 +202,7 @@ export default {
         :pagination.sync="pagination"
         :rows-per-page-items="pagination.rowsPerPageItems"
         no-data-text="(None found)"
-        class="documents-table"
+        class="assignments-table"
       >
 
         <template v-slot:no-data>
@@ -224,19 +220,18 @@ export default {
 
         <template v-slot:items="props">
           <tr class="table-row">
-            <td @click="onDocumentClicked(props.item)"><img :src="props.item.icon"></td>
-            <td class="table-doc-name" @click="onDocumentClicked(props.item)">
+            <td @click="onAssignmentClicked(props.item)"><img :src="props.item.icon"></td>
+            <td class="table-doc-name" @click="onAssignmentClicked(props.item)">
               {{ props.item.name }}
               <v-icon v-if="props.item.shared" title="Shared" small>people</v-icon>
             </td>
-            <td @click="onDocumentClicked(props.item)">{{ props.item.owner }}</td>
-            <td @click="onDocumentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
-            <td @click="onDocumentClicked(props.item)">{{ props.item.size | bytes }}</td>
+            <td @click="onAssignmentClicked(props.item)">{{ props.item.owner }}</td>
+            <td @click="onAssignmentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
+            <td @click="onAssignmentClicked(props.item)">{{ props.item.size | bytes }}</td>
             <td align="center">
               <PopupMenu>
-                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameDocument(props.item)" />
-                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveDocument(props.item)" />
-                <MenuTile icon="people" text="Share..." @clicked="onShareDocument(props.item)" />
+                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameAssignment(props.item)" />
+                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveAssignment(props.item)" />
                 <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
               </PopupMenu>
             </td>
@@ -251,32 +246,32 @@ export default {
 <style>
 
 
-.recent-documents td > a {
+.recent-assignments td > a {
   text-decoration: none;
 }
 
-.recent-documents .v-card__title {
+.recent-assignments .v-card__title {
   padding-left: 8px;
 }
 
-.recent-documents .table-status {
+.recent-assignments .table-status {
   padding-top: 70px;
   padding-bottom: 80px;
 }
 
-.recent-documents .table-doc-name {
+.recent-assignments .table-doc-name {
   font-weight: 500;
 }
 
-.recent-documents .table-doc-name i {
+.recent-assignments .table-doc-name i {
   margin-left: 10px;
 }
 
-.recent-documents .table-row {
+.recent-assignments .table-row {
   cursor: pointer;
 }
 
-.recent-documents .table-row i {
+.recent-assignments .table-row i {
    color: rgba(0,0,0,0.54) !important;
 }
 
