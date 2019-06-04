@@ -7,7 +7,6 @@ const actions = [];
 const navigationItems = [];
 const navigationGroups = [];
 const behaviors = [];
-const editorTypes = [];
 
 export function addinRegister(addin) {
 
@@ -40,10 +39,6 @@ export function addinRegister(addin) {
   // add behaviors
   if (addin.behaviors)
     behaviors.push(addin.behaviors);
-
-  // add editor types
-  if (addin.editorTypes)
-    editorTypes.push(...addin.editorTypes);
 }
 
 export function addinNavigation() {
@@ -59,14 +54,4 @@ export function addinActions() {
 
 export function addinBehaviors() {
   return behaviors;
-}
-
-export function addinEditorPath(mimeType) {
-
-  for (let i=0; i<editorTypes.length; i++) {
-    if (editorTypes[i].mimeType === mimeType)
-      return editorTypes[i].path;
-  }
-
-  return null;
 }

@@ -3,24 +3,25 @@
 
 <script>
 
-import AppPage from '../../../components/core/AppPage.vue'
+import AppPage from '../core/AppPage.vue'
 
-import EditorComponent from '../../../components/editor/EditorComponent.vue'
+import EditorComponent from '../editor/EditorComponent.vue'
 
-import PopupMenu from '../../../components/core/PopupMenu'
-import MenuTile from '../../../components/core/MenuTile'
+import PopupMenu from '../core/PopupMenu'
+import MenuTile from '../core/MenuTile'
 
-import drive from '../../../drive'
-import DriveSave from '../../../drive/save'
+import drive from '../../drive'
+import DriveSave from '../../drive/save'
+import config from '../../config'
 
-import dialog from '../../../components/core/dialog'
+import dialog from '../core/dialog'
 
-import { docInfo } from '../../../store/state'
-import { SET_DOC } from '../../../store/mutations'
+import { docInfo } from '../../store/state'
+import { SET_DOC } from '../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
-import { Status, studentAssignments, setStudentAssignmentStatus } from '../assignment'
+import { Status, studentAssignments, setStudentAssignmentStatus } from '../core/assignment'
 
 import { mapGetters } from 'vuex'
 
@@ -96,7 +97,7 @@ export default {
             this.onSaveStatus,
             null,
             this.onSaveError,
-            "application/vnd.google.drive.ext-type.pmasn"
+            config.gdrive.assignmentMimeType
           );
         
           // initialize editor

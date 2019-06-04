@@ -6,7 +6,7 @@ import config from '../../config'
 
 import drive from '../../drive'
 
-import { emptyDocument } from '../../components/core/docs.js'
+import { emptyDocument } from './docs.js'
 
 
 export const Status = {

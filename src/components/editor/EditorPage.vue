@@ -26,7 +26,7 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
-import { addinActions, addinBehaviors, addinEditorPath } from '../../addins'
+import { addinActions, addinBehaviors } from '../../addins'
 
 import printJS from 'print-js'
 
@@ -101,14 +101,11 @@ export default {
     drive.getFile(this.doc_id)
       .then(file => {
 
-        // if this has an alternate mimeType (possible w/ direct open from GDrive) then
-        // see if there is an editorType registered for it
+        // if this is an assignment then re-route it
         let mimeType = file.metadata.mimeType;
-        if (mimeType !== config.gdrive.mimeType) {
-          let addinPath = addinEditorPath(mimeType);
-          if (addinPath)
-            this.$router.push({ path: addinPath + this.doc_id});
-            return;
+        if (mimeType === config.gdrive.assignmentMimeType) {
+          this.$router.push({ path: "/assignment/" + this.doc_id});
+          return;
         }
 
         // set doc info

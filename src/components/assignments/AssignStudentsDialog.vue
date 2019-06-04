@@ -2,11 +2,11 @@
 
 <script>
 
-import ModalDialog from '../../../components/core//ModalDialog.vue'
+import ModalDialog from '../core/ModalDialog.vue'
 
-import drive from '../../../drive'
+import drive from '../../drive'
 
-import { Status, createStudentAssignment, studentAssignments, setStudentAssignmentStatus } from '../assignment'
+import { Status, createStudentAssignment, studentAssignments, setStudentAssignmentStatus } from '../core/assignment'
 
 
 export default {

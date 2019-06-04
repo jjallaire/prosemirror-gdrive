@@ -5,9 +5,11 @@
 
 <script>
 
-import AppPage from '../../../components/core/AppPage.vue'
+import AppPage from '../core/AppPage.vue'
 
-import DocumentListing from '../../../components/navigation/DocumentListing.vue'
+import config from '../../config'
+
+import DocumentListing from '../navigation/DocumentListing.vue'
 
 export default {
 
@@ -19,7 +21,7 @@ export default {
 
   data: function() {
     return {
-     
+      mimeType: config.gdrive.assignmentMimeType
     }
   },
 
@@ -34,7 +36,7 @@ export default {
 <template>
 
   <AppPage ref="page" title="Assignments">
-    <DocumentListing mime_type="application/vnd.google.drive.ext-type.pmasn" edit_path="/assignment/" />
+    <DocumentListing :mime_type="mimeType" edit_path="/assignment/" />
   </AppPage>
 
 </template>

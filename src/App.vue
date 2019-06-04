@@ -18,6 +18,7 @@ import EditorDocTitle from './components/editor/EditorDocTitle.vue'
 import dialog from './components/core/dialog'
 import drive from './drive'
 import config from './config'
+import { isTeacher } from './store/selectors'
 
 import { docInfo } from './store/state'
 import { SET_DOC } from './store/mutations'
@@ -50,6 +51,10 @@ export default {
       'doc',
       'page_title'
     ]),
+
+    is_teacher: function() {
+      return this.authorized && isTeacher(this.user);
+    }
   },
 
 
@@ -88,12 +93,15 @@ export default {
 <template>
   <v-app>
 
-    <v-navigation-drawer v-if="authorized" v-model="drawer" temporary fixed app>
+    <v-navigation-drawer v-if="is_teacher" v-model="drawer" temporary fixed app>
       <NavigationList />
     </v-navigation-drawer>
     
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-toolbar-side-icon v-if="is_teacher" @click.stop="drawer = !drawer" />
+      <v-btn v-else title="Home" :to="{ path: '/' }" icon>
+        <v-icon>home</v-icon>
+      </v-btn>
       <v-toolbar-title v-if="doc.title" class="toolbar-title">
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>

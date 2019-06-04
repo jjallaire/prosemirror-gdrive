@@ -77,6 +77,9 @@ export default {
     </v-list-group>
     <v-divider v-else />
 
+    <NavigationTile icon="alarm" caption="Assignments" path="/assignments/" />
+    <v-divider /> 
+
     <template v-for="item in navigation.items">
       <NavigationTile :key="item.path" :icon="item.icon" :caption="item.caption" :path="item.path" /> 
     </template>
