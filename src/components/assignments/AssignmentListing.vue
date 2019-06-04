@@ -29,6 +29,10 @@ export default {
     mime_type: {
       type: String,
       required: true
+    },
+    creator: {
+      type: Boolean,
+      required: true
     }
   },
 
@@ -37,7 +41,7 @@ export default {
       headers: [
         { text: 'Type', value: 'icon', sortable: false, width: '5%' },
         { text: 'Name', value: 'name' },
-        { text: 'Owner', value: 'owner', sortable: false},
+        { text: 'Instructor', value: 'owner', sortable: false},
         { text: 'Last viewed', value: 'lastViewed' },
         { text: 'File size', value: 'size' },
         { text: 'Actions', sortable: false , width: '5%'}
@@ -171,7 +175,7 @@ export default {
     <v-card>
       <v-card-title>
        
-        <v-btn title="Create new" color="orange" fab dark small @click="onNewAssignment">
+        <v-btn v-if="creator" title="Create new" color="orange" fab dark small @click="onNewAssignment">
           <v-icon>add</v-icon>
         </v-btn>
 
@@ -230,8 +234,8 @@ export default {
             <td @click="onAssignmentClicked(props.item)">{{ props.item.size | bytes }}</td>
             <td align="center">
               <PopupMenu>
-                <MenuTile icon="text_fields" text="Rename..." @clicked="onRenameAssignment(props.item)" />
-                <MenuTile icon="delete" text="Remove..." @clicked="onRemoveAssignment(props.item)" />
+                <MenuTile v-if="creator" icon="text_fields" text="Rename..." @clicked="onRenameAssignment(props.item)" />
+                <MenuTile v-if="creator" icon="delete" text="Remove..." @clicked="onRemoveAssignment(props.item)" />
                 <MenuTile icon="open_in_new" text="Open in new tab" @clicked="onOpenInNewTab(props.item)" />
               </PopupMenu>
             </td>
