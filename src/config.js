@@ -17,8 +17,8 @@ export default {
     appId: "880472811488",
     clientId: "880472811488-1hm06rum32dj0g28hkcedfb6h456ll4l.apps.googleusercontent.com",
     apiKey: process.env.VUE_APP_API_KEY || "AIzaSyCT-dDWWmNJawfBf-Lot471GGtQrYk1fMQ",
-    mimeType: 'application/vnd.google.drive.ext-type.pmdoc',
-    assignmentMimeType: 'application/vnd.google.drive.ext-type.pmasn'
+    assignmentMimeType: 'application/vnd.google.drive.ext-type.pmasn',
+    studentAssignmentMimeType: 'application/vnd.google.drive.ext-type.pmdoc',
   },
 
   filestack: {

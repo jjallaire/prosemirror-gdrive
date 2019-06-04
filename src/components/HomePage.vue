@@ -30,7 +30,7 @@ export default {
     },
 
     mime_type: function() {
-      return this.is_teacher ? config.gdrive.assignmentMimeType : config.mimeType
+      return this.is_teacher ? config.gdrive.assignmentMimeType : config.gdrive.studentAssignmentMimeType
     }
   },
 

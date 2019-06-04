@@ -22,7 +22,7 @@ export function studentAssignments(id) {
   return drive
     .listFiles({
       properties: `properties has { key='assignmentId' and value='${id}' }`,
-      mimeType: config.gdrive.mimeType
+      mimeType: config.gdrive.studentAssignmentMimeType
     })
     .then(assignments => {
       return assignments.map(assignment => {
@@ -47,7 +47,7 @@ export function createStudentAssignment(id, title, student, teacher) {
 
   // create assignment and share it
   return drive
-    .newFile(title, emptyDocument(), '', config.gdrive.mimeType, properties)
+    .newFile(title, emptyDocument(), '', config.gdrive.studentAssignmentMimeType, properties)
     .then(result => {
       return drive.shareFile(
         result.id, 

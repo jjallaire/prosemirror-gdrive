@@ -89,7 +89,7 @@ export default {
     let file = {
       metadata: {
         'name': title,
-        'mimeType': config.gdrive.mimeType,
+        'mimeType': config.gdrive.studentAssignmentMimeType,
       },
       content: content
     };

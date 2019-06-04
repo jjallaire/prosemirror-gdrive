@@ -143,7 +143,6 @@ export default {
       descending: true,
       search: null,
       properties: null,
-      mimeType: config.gdrive.mimeType,
       spaces: [],
       limit: 1000,
       ...options
@@ -193,7 +192,7 @@ export default {
       }); 
   },
 
-  newFile(title, content, indexableText, mimeType = config.gdrive.mimeType, properties = {}) {
+  newFile(title, content, indexableText, mimeType, properties = {}) {
     let metadata = {
       name: title,
       mimeType: mimeType,
@@ -207,7 +206,7 @@ export default {
     return this._uploadFile(metadata, content, indexableText);
   },
   
-  saveFile(fileId, content, indexableText, mimeType = config.gdrive.mimeType) {
+  saveFile(fileId, content, indexableText, mimeType) {
     let metadata = {
       id: fileId,
       mimeType: mimeType,
@@ -332,7 +331,7 @@ export default {
       }); 
   },
 
-  selectFile(mimeType = config.gdrive.mimeType) {
+  selectFile(mimeType) {
     return new Promise((resolve) => {
       let api = gapi.picker.api;
       let user = auth().currentUser.get();
@@ -437,7 +436,8 @@ export default {
     return this
       .listFiles({
         orderBy: 'recency', 
-        limit: store.getters.settings.recent_documents
+        limit: store.getters.settings.recent_documents,
+        mimeType: config.gdrive.studentAssignmentMimeType
       })
       .then(files => {
         store.commit(SET_RECENT_DOCS, files);

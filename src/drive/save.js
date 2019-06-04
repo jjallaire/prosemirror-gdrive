@@ -10,7 +10,7 @@ import { jsonStringifyEscaped } from '../core/json'
 
 export default class DriveSave  {
 
-  constructor(docId, onStatus, onSaved, onSaveError, mimeType = config.gdrive.mimeType) {
+  constructor(docId, onStatus, onSaved, onSaveError, mimeType = config.gdrive.studentAssignmentMimeType) {
 
     // doc id and callbacks
     this._docId = docId;

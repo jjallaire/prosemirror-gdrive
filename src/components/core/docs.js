@@ -1,6 +1,4 @@
 
-import config from '../../config'
-
 import dialog from './dialog'
 import drive from '../../drive'
 import router from '../../core/router'
@@ -9,7 +7,7 @@ export function emptyDocument() {
   return '{ "document": "" }';
 }
 
-export function newDocument(mimeType = config.gdrive.mimeType, editPath = "/edit/") {
+export function newDocument(mimeType, editPath) {
   dialog
     .prompt('New Document', 'Title')
     .then(title => {
@@ -27,7 +25,7 @@ export function newDocument(mimeType = config.gdrive.mimeType, editPath = "/edit
     });
 }
 
-export function openDocument(mimeType = config.gdrive.mimeType, editPath = "/edit/") {
+export function openDocument(mimeType, editPath) {
   drive.selectFile(mimeType)
     .then(id => {
       router.push({ path: editPath + id });

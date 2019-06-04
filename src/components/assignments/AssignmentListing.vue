@@ -28,7 +28,7 @@ export default {
     },
     mime_type: {
       type: String,
-      default: config.gdrive.mimeType
+      required: true
     }
   },
 

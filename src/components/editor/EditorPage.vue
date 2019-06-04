@@ -119,7 +119,8 @@ export default {
           this.doc_id,
           this.onSaveStatus,
           this.onSaved,
-          this.onSaveError
+          this.onSaveError,
+          config.gdrive.studentAssignmentMimeType
         );
 
         // synchronize to changes made in other browsers
