@@ -49,7 +49,8 @@ export default {
       'authorized',
       'user',
       'doc',
-      'page_title'
+      'page_title',
+      'page_subtitle'
     ]),
 
     is_teacher: function() {
@@ -107,9 +108,7 @@ export default {
       <v-toolbar-title v-else-if="doc.title" class="toolbar-title">
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>
-      <router-link v-else to="/" class="toolbar-title">
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
-      </router-link>
+      <span v-if="page_subtitle">&nbsp;&mdash;&nbsp;{{ page_subtitle }}</span>
       <v-spacer />
       <template v-if="authorized">
         <span>{{ user.email }}</span>

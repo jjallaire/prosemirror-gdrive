@@ -12,6 +12,7 @@ export function initialState() {
 
     // page title
     page_title: null,
+    page_subtitle: null,
 
     // current doc
     doc: docInfo(),

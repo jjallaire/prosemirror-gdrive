@@ -5,6 +5,7 @@ export const SET_INIT_ERROR = 'SET_INIT_ERROR'
 export const SET_USER = 'SET_USER'
 export const SET_DOC = 'SET_DOC'
 export const SET_PAGE_TITLE = 'SET_PAGE_TITLE'
+export const SET_PAGE_SUBTITLE = 'SET_PAGE_SUBTITLE'
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
 export const SET_SNACKBAR_ERROR = 'SET_SNACKBAR_ERROR'
 
@@ -25,6 +26,10 @@ export default {
 
   [SET_PAGE_TITLE](state, page_title) {
     state.page_title = page_title;
+  },
+
+  [SET_PAGE_SUBTITLE](state, page_subtitle) {
+    state.page_subtitle = page_subtitle;
   },
 
   [SET_DOC](state, doc) {

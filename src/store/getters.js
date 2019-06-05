@@ -12,6 +12,8 @@ export default {
 
   page_title: (state) => state.page_title,
 
+  page_subtitle: (state) => state.page_subtitle,
+
   doc: (state) => state.doc,
 
   settings: (state) => state.settings,

@@ -1,7 +1,7 @@
 <script>
 
 import { docInfo } from '../../store/state'
-import { SET_DOC, SET_PAGE_TITLE } from '../../store/mutations'
+import { SET_DOC, SET_PAGE_TITLE, SET_PAGE_SUBTITLE } from '../../store/mutations'
 import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
@@ -69,8 +69,16 @@ export default {
       'user'
     ]),
 
-    is_editable() {
+    is_editable: function() {
       return this.doc.properties.student === this.user.email;
+    },
+
+    page_subtitle: function() {
+      if (this.doc.properties.student !== this.user.email) {
+        return this.doc.properties.student;
+      } else {
+        return null;
+      }
     }
   },
 
@@ -87,11 +95,12 @@ export default {
         }
 
         // set doc info
-        this.$store.commit( SET_PAGE_TITLE, file.metadata.name);
         this.$store.commit(
           SET_DOC, 
           docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
         );
+        this.$store.commit(SET_PAGE_TITLE, file.metadata.name);
+        this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
        
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
@@ -146,8 +155,9 @@ export default {
 
   beforeDestroy() {
 
-    this.$store.commit(SET_PAGE_TITLE, null);
     this.$store.commit(SET_DOC, docInfo());
+    this.$store.commit(SET_PAGE_TITLE, null);
+    this.$store.commit(SET_PAGE_SUBTITLE, null);
 
     if (this.editor) {
       this.editor.destroy();
@@ -198,11 +208,12 @@ export default {
     },
 
     onSyncMetadata(metadata) {
-      this.$store.commit( SET_PAGE_TITLE, metadata.name);
       this.$store.commit(
         SET_DOC,
         docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties)
       );
+      this.$store.commit(SET_PAGE_TITLE, metadata.name);
+      this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
     },
 
     onSyncDoc(file) {
