@@ -13,6 +13,7 @@ import MenuTile from '../core/MenuTile'
 import drive from '../../drive'
 import DriveSave from '../../drive/save'
 import config from '../../config'
+import driveChanges from '../../drive/changes'
 
 import dialog from '../core/dialog'
 
@@ -109,12 +110,16 @@ export default {
 
           // load students
           this.updateStudents();
+
+          // update students on drive changees
+          driveChanges.subscribe(this.updateStudents);
         })
         
     );
   },
 
   beforeDestroy() {
+    driveChanges.unsubscribe(this.updateStudents);
     this.$store.commit(SET_DOC, docInfo());
   },
 

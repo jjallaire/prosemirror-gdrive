@@ -2,6 +2,8 @@
 
 import Vue from 'vue'
 
+import visibility from 'vue-visibility-change'
+
 const gapi = window.gapi;
 
 import { GAPIError } from './google'
@@ -15,6 +17,14 @@ class ChangeMonitor  {
     this._timer = null;
     this._pageToken = null;
     this._eventBus = new Vue();
+
+    // check when page becomes visible
+    visibility.change((evt, hidden) => {
+      if (!hidden) {
+        this.check();
+      }
+    });
+
   }
 
   subscribe(handler) {
