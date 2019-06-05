@@ -8,7 +8,6 @@ import ProsemirrorEditor from '../../prosemirror'
 
 import EditorSidebar from './EditorSidebar.vue'
 import EditorToolbar from './EditorToolbar.vue'
-import EditorActionButton from './EditorActionButton.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
@@ -26,8 +25,6 @@ import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
-import { addinActions, addinBehaviors } from '../../addins'
-
 import printJS from 'print-js'
 
 export default {
@@ -35,7 +32,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorSidebar, EditorToolbar, EditorActionButton, EditorSaveStatus,
+    EditorSidebar, EditorToolbar, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -62,13 +59,6 @@ export default {
 
       // load error
       error: null,
-
-      // addin actions
-      addin_actions: addinActions(),
-
-      // addin behaviors
-      addin_behaviors: addinBehaviors()
-
     }
   },
 
@@ -77,21 +67,8 @@ export default {
     ...mapGetters([
       'doc'
     ]),
-    
-    button_actions() {
-      return this.filterActions('button');
-    },
-
-    menu_actions() {
-      return this.filterActions('menu');
-    },
 
     is_editable() {
-      for (let i=0; i<this.addin_behaviors.length; i++) {
-        let behavior = this.addin_behaviors[i];
-        if (behavior.editable && !behavior.editable(this.doc.properties))
-          return false;
-      }
       return true;
     }
   },
@@ -276,15 +253,6 @@ export default {
       });
     },
 
-    filterActions(type) { 
-      // get all of the actions of this type
-      let actions = this.addin_actions.filter(action => action.type === type);
-      
-      // apply the property filter
-      let properties = this.doc.properties || {};
-      return actions.filter(action => !action.filter || action.filter(properties));
-    },
-
     editorDocumentContent(content) {
       if (content.length > 0)
         return JSON.parse(content).document;
@@ -310,26 +278,8 @@ export default {
           <v-spacer />
   
           <EditorSaveStatus :status="save_status" />
-
-          <span>
-            <EditorActionButton 
-              v-for="action in button_actions" 
-              :key="action.caption"
-              :icon="action.icon" 
-              :caption="action.caption" 
-              @clicked="onEditorAction(action.handler)" 
-            />
-          </span>
           
           <PopupMenu>
-            <MenuTile
-              v-for="action in menu_actions"
-              :key="action.caption" 
-              :icon="action.icon" 
-              :text="action.caption" 
-              @clicked="onEditorAction(action.handler)" 
-            />
-            <v-divider v-if="menu_actions.length > 0" />
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>
           
