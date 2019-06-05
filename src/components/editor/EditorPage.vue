@@ -1,7 +1,7 @@
 <script>
 
 import { docInfo } from '../../store/state'
-import { SET_DOC } from '../../store/mutations'
+import { SET_DOC, SET_PAGE_TITLE } from '../../store/mutations'
 import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
@@ -109,6 +109,7 @@ export default {
         }
 
         // set doc info
+        this.$store.commit( SET_PAGE_TITLE, file.metadata.name);
         this.$store.commit(
           SET_DOC, 
           docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
@@ -167,6 +168,7 @@ export default {
 
   beforeDestroy() {
 
+    this.$store.commit(SET_PAGE_TITLE, null);
     this.$store.commit(SET_DOC, docInfo());
 
     if (this.editor) {
@@ -218,6 +220,7 @@ export default {
     },
 
     onSyncMetadata(metadata) {
+      this.$store.commit( SET_PAGE_TITLE, metadata.name);
       this.$store.commit(
         SET_DOC,
         docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties)

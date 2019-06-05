@@ -101,11 +101,11 @@ export default {
       <v-btn v-else title="Home" :to="{ path: '/' }" icon>
         <v-icon>home</v-icon>
       </v-btn>
-      <v-toolbar-title v-if="doc.title" class="toolbar-title">
-        <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
-      </v-toolbar-title>
-      <v-toolbar-title v-else-if="page_title" class="toolbar-title">
+      <v-toolbar-title v-if="page_title" class="toolbar-title">
         {{ page_title }}
+      </v-toolbar-title>
+      <v-toolbar-title v-else-if="doc.title" class="toolbar-title">
+        <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>
       <router-link v-else to="/" class="toolbar-title">
         <v-toolbar-title>{{ title }}</v-toolbar-title>
