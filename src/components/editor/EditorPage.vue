@@ -65,11 +65,12 @@ export default {
   computed: {
 
     ...mapGetters([
-      'doc'
+      'doc',
+      'user'
     ]),
 
     is_editable() {
-      return true;
+      return this.doc.properties.student === this.user.email;
     }
   },
 
