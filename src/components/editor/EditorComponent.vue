@@ -70,6 +70,10 @@ export default {
         this.$refs.prosemirror.classList.remove("has-node-selection");
       }
     },
+
+    onClickedBelowEditor() {
+      this.editor.focus();
+    }
   }
 }
 
@@ -90,7 +94,7 @@ export default {
       
       <v-divider />
 
-      <div ref="prosemirror" class="prosemirror-editor-component" />
+      <div ref="prosemirror" class="prosemirror-editor-component" @click="onClickedBelowEditor" />
 
     </v-card>
 
