@@ -59,15 +59,21 @@ export default {
             text: 'Status',
             value: 'status'
           },
+          {
+            text: 'Grade',
+            align: 'center',
+            view: 'grade'
+          },
           { 
             text: 'Actions', 
-            sortable: false , width: '5%'
+            sortable: false , 
+            width: '5%'
           }
         ],
         items: [],
         pagination: {
-          sortBy: 'bar',
-          descending: true,
+          sortBy: 'status',
+          descending: false,
         },
         loading: false,
       }
@@ -179,7 +185,24 @@ export default {
 
     onAssignmentClicked(doc) {
       this.$router.push({ path: "/edit/" + doc.id });
-    }
+    },
+
+    statusText(status) {
+      switch(status) {
+        case Status.TeacherReview: 
+          return "Review Draft";
+        case Status.TeacherEvaluate:
+          return "Review Final";
+        case Status.StudentDraft:
+          return "Draft";
+        case Status.StudentRevision:
+          return "Revising";
+        case Status.Completed:
+          return "Completed";
+        case Status.Unassigned:
+          return "Unassigned";
+      }
+    },
     
   },
 
@@ -225,7 +248,11 @@ export default {
               <template v-slot:items="props">
                 <tr class="table-row">
                   <td @click="onAssignmentClicked(props.item)">{{ props.item.student }}</td>
-                  <td class="text-xs-right" @click="onAssignmentClicked(props.item)">{{ props.item.status }}</td>
+                  <td class="text-xs-left" @click="onAssignmentClicked(props.item)">{{ statusText(props.item.status) }}</td>
+                  <td class="text-xs-center" @click="onAssignmentClicked(props.item)">
+                    <span v-if="props.item.grade">{{ props.item.grade }}</span>
+                    <span v-else>&mdash;</span>
+                  </td>
                   <td align="center">
                     <PopupMenu>
                       <MenuTile icon="delete" text="Unassign" @clicked="onUnassign(props.item)" />

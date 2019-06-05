@@ -12,7 +12,7 @@ export const Status = {
   TeacherEvaluate: 2,
   StudentDraft: 3,
   StudentRevision: 4,
-  Completed: 5,
+  Complete: 5,
   Unassigned: 6
 }
 
@@ -57,7 +57,9 @@ export function studentAssignments(id) {
         return {
           id: assignment.id,
           student: assignment.properties.student,
-          status: Number.parseInt(assignment.properties.status, 10)
+          teacher: assignment.properties.teacher,
+          status: Number.parseInt(assignment.properties.status, 10),
+          grade: assignment.properties.grade
         }
       });
     });
@@ -70,7 +72,8 @@ export function createStudentAssignment(id, title, student, teacher) {
     assignmentId: id,
     student: student,
     teacher: teacher,
-    status: Status.StudentDraft
+    status: Status.StudentDraft,
+    grade: null
   };
 
   // create assignment and share it
