@@ -170,7 +170,12 @@ export default {
 
     onOpenInNewTab(assignment) {
       window.open("/edit/" + assignment.id, "_blank");
+    },
+
+    onAssignmentClicked(doc) {
+      this.$router.push({ path: "/edit/" + doc.id });
     }
+    
   },
 
  
@@ -203,7 +208,7 @@ export default {
               :pagination.sync="students.pagination"
               :loading="students.loading"
               :hide-actions="true"
-              class="elevation-1"
+              class="student-assignments elevation-1"
             >
               <template v-slot:no-data>
                 <div class="table-status text-xs-center grey--text">
@@ -214,8 +219,8 @@ export default {
 
               <template v-slot:items="props">
                 <tr class="table-row">
-                  <td>{{ props.item.student }}</td>
-                  <td class="text-xs-right">{{ props.item.status }}</td>
+                  <td @click="onAssignmentClicked(props.item)">{{ props.item.student }}</td>
+                  <td class="text-xs-right" @click="onAssignmentClicked(props.item)">{{ props.item.status }}</td>
                   <td align="center">
                     <PopupMenu>
                       <MenuTile icon="delete" text="Unassign" @clicked="onUnassign(props.item)" />
@@ -269,6 +274,10 @@ export default {
 .assignment-page .students-table-container {
   margin-left: 24px;
   overflow-y: scroll;
+}
+
+.student-assignments .table-row {
+  cursor: pointer;
 }
 
 </style>
