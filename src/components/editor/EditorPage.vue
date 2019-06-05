@@ -153,6 +153,14 @@ export default {
         return drive.setFileViewed(this.doc_id);
       })
       .catch(error => {
+        // if we haven't yet authorized then open within the drive UI
+        if (error.code === 403 && error.reason === "appNotAuthorizedToFile") {
+          let docURL = `https://drive.google.com/open?id=${this.doc_id}`;
+          window.location.href = docURL;
+          return;
+        }
+
+        // record the error 
         this.error = error;
       });
   },
