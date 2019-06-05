@@ -99,7 +99,7 @@ export default {
     
     <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon v-if="is_teacher" @click.stop="drawer = !drawer" />
-      <v-btn v-else title="Home" :to="{ path: '/' }" icon>
+      <v-btn v-else-if="initialized" title="Home" :to="{ path: '/' }" icon>
         <v-icon>home</v-icon>
       </v-btn>
       <v-toolbar-title v-if="page_title" class="toolbar-title">
