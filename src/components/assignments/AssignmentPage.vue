@@ -62,7 +62,7 @@ export default {
           {
             text: 'Grade',
             align: 'center',
-            view: 'grade'
+            value: 'grade'
           },
           { 
             text: 'Actions', 
