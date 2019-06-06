@@ -6,7 +6,7 @@ import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
 
-import EditorSidebar from './EditorSidebar.vue'
+import EditorSidebar from './sidebar/EditorSidebar.vue'
 import EditorToolbar from './EditorToolbar.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
