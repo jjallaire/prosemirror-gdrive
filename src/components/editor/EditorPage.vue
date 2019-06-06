@@ -380,6 +380,7 @@ export default {
 
 .edit-container #prosemirror {
   padding: 12px;
+  padding-right: 36px;
   position: absolute;
   top: 39px;
   left: 0;
@@ -392,7 +393,7 @@ export default {
 
   position: absolute;
   top: 41px;
-  
+
   bottom: 0;
   right: 0;
   overflow-y: scroll;
