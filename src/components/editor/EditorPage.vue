@@ -5,8 +5,6 @@ import { SET_DOC, SET_PAGE_TITLE, SET_PAGE_SUBTITLE } from '../../store/mutation
 import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
-
-import EditorSidebar from './sidebar/EditorSidebar.vue'
 import EditorToolbar from './EditorToolbar.vue'
 import EditorSaveStatus from './EditorSaveStatus.vue'
 
@@ -32,7 +30,7 @@ export default {
 
   components: {
     ProgressSpinner, ErrorPanel, 
-    EditorSidebar, EditorToolbar, EditorSaveStatus,
+    EditorToolbar, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog
   },
@@ -49,6 +47,18 @@ export default {
     
       // editor
       editor: null,
+
+      // sidebarss
+      sidebars: [
+        {
+          text: 'Assignment',
+          value: 'assignment'
+        },
+        {
+          text: 'Comments',
+          value: 'comments'
+        }
+      ],
 
       // save and sync managers
       driveSave: null,
@@ -300,7 +310,10 @@ export default {
         <v-divider />
 
         <div id="prosemirror" ref="prosemirror" />
-        <EditorSidebar />
+
+        <div id="prosemirror-sidebar">
+          <v-select :items="sidebars" solo flat value="assignment" />
+        </div>
         
       </v-card>
     </div>
@@ -439,6 +452,21 @@ export default {
 
 .has-node-selection .ProseMirror .ProseMirror-selectednode {
   outline: 2px solid #b3d4fc;
+}
+
+#prosemirror-sidebar .v-input__slot {
+  color: rgba(0,0,0,0.87);
+  background-color: #f5f5f5;
+  border-bottom: 1px solid rgba(0,0,0,0.12)
+}
+
+#prosemirror-sidebar .v-select__selection {
+  font-size: 0.9em;
+  color: rgba(0,0,0,0.6);
+}
+
+#prosemirror-sidebar .v-text-field.v-text-field--solo .v-input__control {
+  min-height: 0;
 }
 
 
