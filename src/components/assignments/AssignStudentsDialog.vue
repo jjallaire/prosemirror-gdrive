@@ -103,6 +103,7 @@ export default {
       return createStudentAssignment(
         assignment.metadata.id, 
         assignment.metadata.name, 
+        JSON.parse(assignment.content).document,
         student,
         teacher
       );

@@ -175,9 +175,11 @@ export default class ProsemirrorEditor {
   }
 
   _emitSelectionChanged() {
-    this._options.hooks.onSelectionChanged({
-      type: (this._state.selection instanceof NodeSelection) ? 'node' : 'text'
-    })
+    if (this._options.hooks.onSelectionChanged) {
+      this._options.hooks.onSelectionChanged({
+        type: (this._state.selection instanceof NodeSelection) ? 'node' : 'text'
+      });
+    }
   }
 
   _emitUpdate(transaction) {

@@ -6,6 +6,7 @@ import config from '../../config'
 import drive from '../../drive'
 import dialog from '../core/dialog'
 import router from '../../core/router'
+import { jsonStringifyEscaped } from '../../core/json';
 
 export const Status = {
   TeacherReview: 1,
@@ -65,7 +66,7 @@ export function studentAssignments(id) {
     });
 }
 
-export function createStudentAssignment(id, title, student, teacher) {
+export function createStudentAssignment(id, title, description, student, teacher) {
 
   // properties
   let properties = {
@@ -76,9 +77,15 @@ export function createStudentAssignment(id, title, student, teacher) {
     grade: null
   };
 
+  // create the assignment
+  let assignment = {
+    document: '',
+    description: description
+  };
+
   // create assignment and share it
   return drive
-    .newFile(title, emptyAssignment(), '', config.gdrive.studentAssignmentMimeType, properties)
+    .newFile(title, jsonStringifyEscaped(assignment), '', config.gdrive.studentAssignmentMimeType, properties)
     .then(result => {
       return drive.shareFile(
         result.id, 
