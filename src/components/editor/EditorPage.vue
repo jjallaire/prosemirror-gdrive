@@ -11,6 +11,9 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
+import AssignmentSidebar from './sidebar/AssignmentSidebar.vue'
+import CommentsSidebar from './sidebar/CommentsSidebar.vue'
+
 import config from '../../config'
 import drive from '../../drive'
 import DriveSave from '../../drive/save'
@@ -32,7 +35,8 @@ export default {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorSaveStatus,
     PopupMenu, MenuTile,
-    EditorLinkDialog, EditorImageDialog
+    EditorLinkDialog, EditorImageDialog,
+    AssignmentSidebar, CommentsSidebar
   },
 
   props: {
@@ -48,7 +52,8 @@ export default {
       // editor
       editor: null,
 
-      // sidebarss
+      // sidebars
+      sidebar: 'assignment',
       sidebars: [
         {
           text: 'Assignment',
@@ -312,7 +317,9 @@ export default {
         <div id="prosemirror" ref="prosemirror" />
 
         <div id="prosemirror-sidebar">
-          <v-select :items="sidebars" solo flat value="assignment" />
+          <v-select v-model="sidebar " :items="sidebars" solo flat />
+          <AssignmentSidebar v-show="sidebar == 'assignment'" />
+          <CommentsSidebar v-show="sidebar == 'comments'" />
         </div>
         
       </v-card>

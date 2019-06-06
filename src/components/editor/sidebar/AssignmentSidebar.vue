@@ -1,7 +1,7 @@
 <script>
 
 export default {
-  name: 'EditorSidebar',
+  name: 'AssignmentSidebar',
 
 }
 
@@ -9,7 +9,9 @@ export default {
 
 <template>
 
-
+  <div>
+    Assignment
+  </div>
 
 </template>
 
