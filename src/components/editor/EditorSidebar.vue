@@ -7,6 +7,10 @@ export default {
     return {
       panes: [
         {
+          text: 'Assignment',
+          value: 'assignment'
+        },
+        {
           text: 'Comments',
           value: 'comments'
         }
@@ -22,7 +26,7 @@ export default {
 <template>
 
   <div id="prosemirror-sidebar">
-    <v-select :items="panes" solo flat value="comments" />
+    <v-select :items="panes" solo flat value="assignment" />
   </div>
 
 </template>
