@@ -8,6 +8,7 @@ const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/r
 const kScopes = [
   'email', 
   'profile', 
+  'https://www.googleapis.com/auth/drive.appfolder',         // application data folder 
   'https://www.googleapis.com/auth/drive.file',              // files created by this app
   'https://www.googleapis.com/auth/drive.metadata.readonly', // read-only metadata
   'https://www.googleapis.com/auth/drive.install',           // installation of the app onto drive
