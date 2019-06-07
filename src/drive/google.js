@@ -269,6 +269,47 @@ export default {
       });
   },
 
+  addComment(fileId, content) {
+
+    // params 
+    let params = {
+      fields: '*',
+    };
+
+    // comment resource
+    const comment = {
+      content: content, 
+    };
+
+    // send request
+    return gapi.client.request({
+      path: `/drive/v3/files/${fileId}/comments`,
+      method: 'POST',
+      params: params,
+      body: jsonStringifyEscaped(comment)
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(catchHttpRequest);
+  },
+
+  listComments(fileId) {
+     // send request
+     return gapi.client.request({
+      path: `/drive/v3/files/${fileId}/comments`,
+      method: 'GET',
+      params: {
+        fields: '*',
+        pageSize: 100
+      },
+    })
+    .then(result => {
+      return result.result.comments;
+    })
+    .catch(catchHttpRequest);
+  },
+
   removeFile(fileId) {
     return gapi.client.drive.files.delete({
       fileId: fileId,
