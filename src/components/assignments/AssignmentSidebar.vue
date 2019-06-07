@@ -2,7 +2,7 @@
 
 import { mapGetters } from 'vuex'
 
-import ProsemirrorEditor from '../../../prosemirror'
+import ProsemirrorEditor from '../../prosemirror'
 
 export default {
   name: 'AssignmentSidebar',

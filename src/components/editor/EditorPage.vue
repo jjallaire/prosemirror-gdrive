@@ -11,7 +11,7 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
-import AssignmentSidebar from './sidebar/AssignmentSidebar.vue'
+import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
 import CommentsSidebar from './sidebar/CommentsSidebar.vue'
 
 import config from '../../config'
