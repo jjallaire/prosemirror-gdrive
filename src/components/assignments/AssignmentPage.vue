@@ -91,7 +91,10 @@ export default {
     this.$refs.page.initialize(
       drive.getFile(this.doc_id)
         .then(file => {
-          
+      
+          // parse content
+          let content = JSON.parse(file.content);
+
           // set doc info
           this.$store.commit(
             SET_DOC, 
@@ -102,7 +105,7 @@ export default {
           this.driveSave = new DriveSave(
             this.doc_id,
             this.onSaveStatus,
-            null,
+            this.onSave,
             null,
             this.onSaveError,
             config.gdrive.assignmentMimeType
@@ -110,7 +113,7 @@ export default {
         
           // initialize editor
           this.$refs.editor.initialize({
-            content: JSON.parse(file.content).document,
+            content: content.document,
             onUpdate: this.onEditorUpdate,
             autoFocus: true
           });
@@ -149,6 +152,12 @@ export default {
     
     onEditorUpdate(update) {
       this.driveSave.onEditorUpdate(update);
+    },
+
+    onSave() {
+      return {
+        // extra fields here
+      }
     },
 
     onSaveStatus(status) {
