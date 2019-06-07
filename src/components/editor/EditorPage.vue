@@ -12,7 +12,7 @@ import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
 import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
-import CommentsSidebar from './sidebar/CommentsSidebar.vue'
+import CommentsSidebar from '../comments/CommentsSidebar.vue'
 
 import config from '../../config'
 import drive from '../../drive'
