@@ -12,11 +12,12 @@ import { jsonStringifyEscaped } from '../core/json'
 
 export default class DriveSave  {
 
-  constructor(docId, onStatus, onSaved, onSaveError, mimeType = config.gdrive.studentAssignmentMimeType) {
+  constructor(docId, onStatus, onSave, onSaved, onSaveError, mimeType = config.gdrive.studentAssignmentMimeType) {
 
     // doc id and callbacks
     this._docId = docId;
     this._onStatus = onStatus;
+    this._onSave = onSave;
     this._onSaved = onSaved;
     this._onSaveError = onSaveError;
     this._mimeType = mimeType;
@@ -112,13 +113,23 @@ export default class DriveSave  {
         // have a save in flight that will cover subsequent updates
         this._saveLastUpdatePending = false;
         
+        // call onSave callback and include any return value
+        let extraSaveData = {};
+        if (this._onSave) {
+          extraSaveData = {
+            ...extraSaveData,
+            ...this._onSave()
+          }
+        }
+
         // perform save
         let update = this._editorUpdates.last;
         drive
           .saveFile(
             this._docId, 
             jsonStringifyEscaped({
-              document: update.getJSON()
+              document: update.getJSON(),
+              ...extraSaveData
             }), 
             update.getHTML(),
             this._mimeType

@@ -109,10 +109,13 @@ export default {
           return;
         }
 
+        // parse content
+        let content = JSON.parse(file.content);
+
         // set doc info
         this.$store.commit(
           SET_DOC, 
-          docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+          docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties, content.description)
         );
         this.$store.commit(SET_PAGE_TITLE, file.metadata.name);
         this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
@@ -121,6 +124,7 @@ export default {
         this.driveSave = new DriveSave(
           this.doc_id,
           this.onSaveStatus,
+          this.onSave,
           this.onSaved,
           this.onSaveError,
           config.gdrive.studentAssignmentMimeType
@@ -139,7 +143,7 @@ export default {
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
           autoFocus: true,
           editable: true,
-          content: this.editorDocumentContent(file.content),
+          content: content.document,
           hooks: {
             isEditable: () => this.is_editable,
             onUpdate: this.onEditorUpdate,
@@ -207,6 +211,12 @@ export default {
       this.save_status = status;
     },
 
+    onSave() {
+      return {
+        description: this.doc.description
+      }
+    },
+
     onSaved(result) {
       this.doc.headRevisionId = result.headRevisionId;
     },
@@ -232,11 +242,12 @@ export default {
     },
 
     onSyncDoc(file) {
+      let content = JSON.parse(file.content);
       this.$store.commit(
         SET_DOC,
-        docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
+        docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties, content.description)
       );
-      this.editor.setContent(this.editorDocumentContent(file.content));
+      this.editor.setContent(content.document);
     },
 
     onSyncError(error) {
@@ -278,13 +289,6 @@ export default {
             })
         }
       });
-    },
-
-    editorDocumentContent(content) {
-      if (content.length > 0)
-        return JSON.parse(content).document;
-      else
-        return content;
     },
 
   }

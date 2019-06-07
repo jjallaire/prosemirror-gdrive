@@ -103,6 +103,7 @@ export default {
             this.doc_id,
             this.onSaveStatus,
             null,
+            null,
             this.onSaveError,
             config.gdrive.assignmentMimeType
           );

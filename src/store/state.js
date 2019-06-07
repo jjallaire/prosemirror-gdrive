@@ -27,11 +27,12 @@ export function initialState() {
   };
 }
 
-export function docInfo(id = null, title = null, headRevisionId = null, properties = null) {
+export function docInfo(id = null, title = null, headRevisionId = null, properties = null, description = null) {
   return {
     id,
     title,
     headRevisionId,
-    properties: properties || {}
+    properties: properties || {},
+    description: description
   }
 }

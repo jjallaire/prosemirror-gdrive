@@ -2,9 +2,6 @@
 
 import { mapGetters } from 'vuex'
 
-import drive from '../../../drive'
-import dialog from '../../core/dialog'
-
 import ProsemirrorEditor from '../../../prosemirror'
 
 export default {
@@ -19,8 +16,7 @@ export default {
   computed: {
 
     ...mapGetters([
-      'doc',
-      'user'
+      'doc'
     ]),
 
   },
@@ -28,7 +24,7 @@ export default {
   watch: {
     doc: {
       handler () {
-        this.loadAssignment();
+        this.editor.setContent(this.doc.description);
       },
       deep: true
     }
@@ -45,20 +41,7 @@ export default {
   },
 
   methods: {
-    loadAssignment() {
-
-      drive
-        .getFile(this.doc.id)
-        .then(assignment => {
-          this.editor.setContent(JSON.parse(assignment.content).description);
-        })
-        .catch(error => {
-          dialog.errorSnackbar(
-            "Unable to load assignment (" + error.message + ")."
-          );
-        })
-
-    }
+   
   }
 
 }
