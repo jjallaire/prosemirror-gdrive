@@ -46,14 +46,18 @@ export default {
     },
 
     updateComments() {
-      drive
-        .listComments(this.doc.id)
-        .then(result => {
-          this.comments = result;
-        })
-        .catch(error => {
-          dialog.errorSnackbar(`Error listing comments: ${error.message}`);
-        });
+      if (this.doc.id) {
+        drive
+          .listComments(this.doc.id)
+          .then(result => {
+            this.comments = result;
+          })
+          .catch(error => {
+            dialog.errorSnackbar(`Error listing comments: ${error.message}`);
+          });
+      } else {
+        this.comments = [];
+      }
 
     }
   }
