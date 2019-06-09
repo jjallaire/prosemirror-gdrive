@@ -19,7 +19,7 @@ export function initialState() {
 
     // settings
     settings: {
-      recent_documents: 5
+      my_setting: 5
     },
 
     // snackbar error
