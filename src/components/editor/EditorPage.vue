@@ -11,6 +11,9 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
+import EditorSubmitDraftButton from './actions/EditorSubmitDraftButton.vue'
+import EditorReturnDraftButton from './actions/EditorReturnDraftButton.vue'
+
 import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
 import CommentsSidebar from '../comments/CommentsSidebar.vue'
 
@@ -36,7 +39,8 @@ export default {
     EditorToolbar, EditorSaveStatus,
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog,
-    AssignmentSidebar, CommentsSidebar
+    AssignmentSidebar, CommentsSidebar,
+    EditorSubmitDraftButton, EditorReturnDraftButton
   },
 
   props: {
@@ -86,6 +90,10 @@ export default {
 
     is_editable: function() {
       return this.doc.properties.student === this.user.email;
+    },
+
+    status: function() {
+      return this.doc.properties.status;
     },
 
     page_subtitle: function() {
@@ -310,6 +318,9 @@ export default {
   
           <EditorSaveStatus :status="save_status" />
           
+          <EditorSubmitDraftButton v-if="status === '3'" />
+          <EditorReturnDraftButton v-if="status === '1'" />
+
           <PopupMenu>
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>

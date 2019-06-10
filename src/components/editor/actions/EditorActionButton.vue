@@ -1,0 +1,60 @@
+<script>
+
+import EditorActionDialog from './EditorActionDialog.vue'
+
+import { VBtn, VIcon } from 'vuetify/lib'
+
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'EditorActionButton',
+
+  components: {
+    VBtn, VIcon, EditorActionDialog
+  },
+
+  data: function() {
+    return {
+      icon: null,
+      caption: null,
+      prompt: null,
+      status: null,
+      color: 'info'
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'doc'
+    ])
+  },
+
+  methods: {
+    onClicked() {
+      this.$refs.dialog.show(
+        this.doc.id,
+        this.status,
+        this.caption,
+        this.prompt
+      )
+
+    }
+  }
+}
+
+</script>
+
+<template>
+
+  <v-btn depressed small :color="color" @click="onClicked">
+    <v-icon v-if="icon" small light>{{ icon }}</v-icon>
+    &nbsp;
+    {{ caption }}
+    <EditorActionDialog ref="dialog" />
+  </v-btn>
+
+</template>
+
+<style>
+
+</style>

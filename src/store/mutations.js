@@ -4,6 +4,7 @@ export const SET_INITIALIZED = 'SET_INITIALIZED'
 export const SET_INIT_ERROR = 'SET_INIT_ERROR'
 export const SET_USER = 'SET_USER'
 export const SET_DOC = 'SET_DOC'
+export const SET_DOC_STATUS = 'SET_DOC_STATUS'
 export const SET_PAGE_TITLE = 'SET_PAGE_TITLE'
 export const SET_PAGE_SUBTITLE = 'SET_PAGE_SUBTITLE'
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
@@ -34,6 +35,13 @@ export default {
 
   [SET_DOC](state, doc) {
     state.doc = doc;
+  },
+
+  [SET_DOC_STATUS](state, status) {
+    Vue.set(state.doc, "properties", {
+      ...state.doc.properties,
+      status: status.toString()
+    });
   },
 
   [UPDATE_SETTINGS](state, settings) {

@@ -200,9 +200,9 @@ export default {
     statusText(status) {
       switch(status) {
         case Status.TeacherReview: 
-          return "Review Draft";
+          return "Draft Review";
         case Status.TeacherEvaluate:
-          return "Review Final";
+          return "Final Review";
         case Status.StudentDraft:
           return "Draft";
         case Status.StudentRevision:
