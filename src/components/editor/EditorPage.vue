@@ -96,6 +96,21 @@ export default {
       return this.doc.properties.status;
     },
 
+    // active action_button (if there is no active action then
+    // a status_message will be shown)
+    action_button: function() {
+      return "submit-draft";
+
+    },
+
+    // active status message (shown in place of action_button when 
+    // no actions are possible)
+    status_message: function() {
+
+      return "Foo";
+
+    },
+
     page_subtitle: function() {
       if (this.doc.properties.student !== this.user.email) {
         return this.doc.properties.student;
@@ -321,6 +336,8 @@ export default {
           <EditorSubmitDraftButton v-if="status === '3'" />
           <EditorReturnDraftButton v-if="status === '1'" />
 
+          <v-chip class="status-message" color="info" disabled label outline>{{ status_message }}</v-chip>
+
           <PopupMenu>
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
           </PopupMenu>
@@ -391,6 +408,17 @@ export default {
 
 .edit-container .editor-save-status {
   margin-right: 5px;
+}
+
+.edit-container .status-message {
+  height: 28px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.edit-container .v-chip.v-chip.v-chip--outline,
+.edit-container .v-chip__content {
+  height: 28px;
 }
 
 .edit-container #prosemirror {

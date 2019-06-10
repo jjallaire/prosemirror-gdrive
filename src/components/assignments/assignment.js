@@ -9,12 +9,12 @@ import router from '../../core/router'
 import { jsonStringifyEscaped } from '../../core/json';
 
 export const Status = {
-  TeacherReview: 1,
-  TeacherEvaluate: 2,
-  StudentDraft: 3,
-  StudentRevision: 4,
-  Complete: 5,
-  Unassigned: 6
+  TeacherReview: "1",
+  TeacherEvaluate: "2",
+  StudentDraft: "3",
+  StudentRevision: "4",
+  Complete: "5",
+  Unassigned: "6"
 }
 
 export function emptyAssignment() {
@@ -59,7 +59,7 @@ export function studentAssignments(id) {
           id: assignment.id,
           student: assignment.properties.student,
           teacher: assignment.properties.teacher,
-          status: Number.parseInt(assignment.properties.status, 10),
+          status: assignment.properties.status,
           grade: assignment.properties.grade
         }
       });
@@ -100,7 +100,7 @@ export function createStudentAssignment(id, title, description, student, teacher
 export function setStudentAssignmentStatus(id, status) {
   return drive
     .setFileProperties(id, {
-      status: status.toString()
+      status: status
     });
 }
 

@@ -40,7 +40,7 @@ export default {
   [SET_DOC_STATUS](state, status) {
     Vue.set(state.doc, "properties", {
       ...state.doc.properties,
-      status: status.toString()
+      status: status
     });
   },
 
