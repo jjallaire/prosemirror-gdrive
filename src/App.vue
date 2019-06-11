@@ -76,7 +76,7 @@ export default {
         .then(result => {
           this.$store.commit(
             SET_DOC,
-            docInfo(this.doc.id, value, result.headRevisionId, this.doc.properties)
+            docInfo(this.doc.id, value, result.headRevisionId, this.doc.properties, this.doc.description)
           );
         })
         .catch(error => {

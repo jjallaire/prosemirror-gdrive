@@ -258,7 +258,7 @@ export default {
     onSyncMetadata(metadata) {
       this.$store.commit(
         SET_DOC,
-        docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties)
+        docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties, this.doc.description)
       );
       this.$store.commit(SET_PAGE_TITLE, metadata.name);
       this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
