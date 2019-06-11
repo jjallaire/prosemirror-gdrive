@@ -1,7 +1,7 @@
 <script>
 
 import { docInfo } from '../../store/state'
-import { SET_DOC, SET_PAGE_TITLE, SET_PAGE_SUBTITLE } from '../../store/mutations'
+import { SET_DOC, SET_PAGE_TITLE, SET_PAGE_TITLE_LINK, SET_PAGE_SUBTITLE } from '../../store/mutations'
 import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
@@ -35,6 +35,7 @@ import MenuTile from '../core/MenuTile'
 import dialog from '../core/dialog'
 
 import printJS from 'print-js'
+import { isTeacher } from '../../store/selectors';
 
 export default {
   name: 'EditorPage',
@@ -102,6 +103,10 @@ export default {
       return this.doc.properties.grade;
     },
 
+    is_teacher: function() {
+      return isTeacher(this.user);
+    },
+
     is_editor: function() {
       return this.doc.properties.student === this.user.email;
     },
@@ -130,6 +135,13 @@ export default {
       } else {
         return null;
       }
+    },
+
+    page_title_link: function() {
+      if (this.is_teacher)
+        return "/assignment/" + this.doc.properties.assignmentId;
+      else
+        return null;
     }
   },
 
@@ -153,7 +165,8 @@ export default {
           SET_DOC, 
           docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties, content.description)
         );
-        this.$store.commit(SET_PAGE_TITLE, file.metadata.name);
+        this.$store.commit(SET_PAGE_TITLE, file.metadata.name, this.page_title_link);
+        this.$store.commit(SET_PAGE_TITLE_LINK, this.page_title_link);
         this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
        
         // monitor and save editor changes (triggered by onUpdate hook installed below)
@@ -212,6 +225,7 @@ export default {
 
     this.$store.commit(SET_DOC, docInfo());
     this.$store.commit(SET_PAGE_TITLE, null);
+    this.$store.commit(SET_PAGE_TITLE_LINK, null);
     this.$store.commit(SET_PAGE_SUBTITLE, null);
 
     if (this.editor) {
@@ -274,6 +288,7 @@ export default {
         docInfo(this.doc_id, metadata.name, metadata.headRevisionId, metadata.properties, this.doc.description)
       );
       this.$store.commit(SET_PAGE_TITLE, metadata.name);
+      this.$store.commit(SET_PAGE_TITLE_LINK, this.page_title_link);
       this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
     },
 

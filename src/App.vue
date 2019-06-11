@@ -50,6 +50,7 @@ export default {
       'user',
       'doc',
       'page_title',
+      'page_title_link',
       'page_subtitle'
     ]),
 
@@ -103,12 +104,13 @@ export default {
         <v-icon>home</v-icon>
       </v-btn>
       <v-toolbar-title v-if="page_title" class="toolbar-title">
-        {{ page_title }}
+        <a v-if="page_title_link" class="page-title-link" :href="page_title_link">{{ page_title }}</a>
+        <span v-else>{{ page_title }}</span>
       </v-toolbar-title>
       <v-toolbar-title v-else-if="doc.title" class="toolbar-title">
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>
-      <span v-if="page_subtitle">&nbsp;&mdash;&nbsp;{{ page_subtitle }}</span>
+      <span v-if="page_subtitle">&nbsp;&nbsp;&nbsp;&nbsp;{{ page_subtitle }}</span>
       <v-spacer />
       <template v-if="authorized">
         <span>{{ user.email }}</span>
@@ -154,6 +156,15 @@ export default {
   color: inherit;
   text-decoration: inherit;
   margin-left: 0 !important;
+}
+
+.page-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-title-link:hover {
+  color: rgba(255,255,255,0.8);
 }
 
 .v-navigation-drawer {
