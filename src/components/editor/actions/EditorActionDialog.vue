@@ -19,19 +19,17 @@ export default {
     return {
       caption: '',
       text: '',
-      ok_caption: 'OK',
       progress: false
     }
   },
 
   methods: {
 
-    show(doc_id, status, caption, text, ok_caption = 'OK') {
+    show(doc_id, status, caption, text) {
 
       // reset state
       this.caption = caption;
       this.text = text;
-      this.ok_caption = ok_caption;
       this.progress = false;
 
       // show the dialog 
@@ -55,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <ModalDialog ref="dialog" :caption="caption" :ok_caption="ok_caption">
+  <ModalDialog ref="dialog" :caption="caption">
     <template slot="content">
       <v-layout row wrap>
         <v-flex xs12>
