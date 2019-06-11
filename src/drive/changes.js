@@ -20,7 +20,7 @@ class ChangeMonitor  {
 
     // check when page becomes visible
     visibility.change((evt, hidden) => {
-      if (!hidden) {
+      if (!hidden && this._timer) {
         this.check();
       }
     });
@@ -51,7 +51,6 @@ class ChangeMonitor  {
       .then(() => {
         return gapi.client.drive.changes.list({
           pageToken: this._pageToken,
-          restrictToMyDrive: true,
           supportsTeamDrives: true
         })
       })

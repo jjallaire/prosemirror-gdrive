@@ -5,15 +5,15 @@ import EditorActionButton from './EditorActionButton.vue'
 import { Status } from '../../assignments/assignment.js'
 
 export default {
-  name: 'EditorReturnDraftButton',
+  name: 'EditorAssignGradeButton',
   extends: EditorActionButton,
  
   data: function() {
     return {
-      icon: 'assignment_returned',
-      caption: 'Return Draft',
-      prompt: "Return reviewed draft to student?",
-      status: Status.StudentRevision
+      icon: 'assignment_turned_in',
+      caption: 'Grade Assignment',
+      prompt: "Grade this assignment now?",
+      status: Status.Complete
     }
   },
 }

@@ -11,9 +11,14 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
+import { actionButton, statusMessage } from './actions/manager.js'
 import EditorSubmitDraftButton from './actions/EditorSubmitDraftButton.vue'
 import EditorReturnDraftButton from './actions/EditorReturnDraftButton.vue'
+import EditorSubmitFinalDraftButton from './actions/EditorSubmitFinalDraftButton.vue'
+import EditorAssignGradeButton from './actions/EditorAssignGradeButton.vue'
 
+
+import { Status } from '../assignments/assignment.js'
 import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
 import CommentsSidebar from '../comments/CommentsSidebar.vue'
 
@@ -40,7 +45,8 @@ export default {
     PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog,
     AssignmentSidebar, CommentsSidebar,
-    EditorSubmitDraftButton, EditorReturnDraftButton
+    EditorSubmitDraftButton, EditorReturnDraftButton, 
+    EditorSubmitFinalDraftButton, EditorAssignGradeButton
   },
 
   props: {
@@ -88,31 +94,34 @@ export default {
       'user'
     ]),
 
-    is_editable: function() {
-      return this.doc.properties.student === this.user.email;
-    },
-
     status: function() {
       return this.doc.properties.status;
     },
 
+    is_editor: function() {
+      return this.doc.properties.student === this.user.email;
+    },
+
+    editable: function() {
+      return this.is_editor && 
+             (this.status === Status.StudentDraft || this.status === Status.StudentRevision);
+    },
+
+
     // active action_button (if there is no active action then
     // a status_message will be shown)
     action_button: function() {
-      return "submit-draft";
-
+      return actionButton(this.user, this.status);
     },
 
     // active status message (shown in place of action_button when 
     // no actions are possible)
     status_message: function() {
-
-      return "Foo";
-
+      return statusMessage(this.user, this.status);
     },
 
     page_subtitle: function() {
-      if (this.doc.properties.student !== this.user.email) {
+      if (!this.is_editor) {
         return this.doc.properties.student;
       } else {
         return null;
@@ -168,7 +177,7 @@ export default {
           editable: true,
           content: content.document,
           hooks: {
-            isEditable: () => this.is_editable,
+            isEditable: () => this.editable,
             onUpdate: this.onEditorUpdate,
             onSelectionChanged: this.onEditorSelectionChanged,
             onEditLink: this.onEditLink,
@@ -325,18 +334,18 @@ export default {
     <div v-show="editor">
       <v-card class="edit-card card--flex-toolbar">
         <v-toolbar card dense :height="40">
-
        
           <EditorToolbar :editor="editor" />
+          <EditorSaveStatus :status="save_status" />
                  
           <v-spacer />
   
-          <EditorSaveStatus :status="save_status" />
-          
-          <EditorSubmitDraftButton v-if="status === '3'" />
-          <EditorReturnDraftButton v-if="status === '1'" />
+          <EditorSubmitDraftButton v-if="action_button === 'submit-draft'" />
+          <EditorReturnDraftButton v-if="action_button === 'return-draft'" />
+          <EditorSubmitFinalDraftButton v-if="action_button === 'submit-final-draft'" />
+          <EditorAssignGradeButton v-if="action_button === 'assign-grade'" />
 
-          <v-chip class="status-message" color="info" disabled label outline>{{ status_message }}</v-chip>
+          <v-chip v-if="status_message" class="status-message" color="info" disabled label outline>{{ status_message }}</v-chip>
 
           <PopupMenu>
             <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
@@ -395,6 +404,10 @@ export default {
 
 .edit-container .edit-card .v-btn--icon {
   margin: 6px 0;
+}
+
+.edit-container .edit-card .editor-save-status {
+  margin-left: 10px;
 }
 
 .edit-container .v-toolbar__content  .v-btn--small {
