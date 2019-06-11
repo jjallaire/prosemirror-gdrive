@@ -98,6 +98,10 @@ export default {
       return this.doc.properties.status;
     },
 
+    grade: function() {
+      return this.doc.properties.grade;
+    },
+
     is_editor: function() {
       return this.doc.properties.student === this.user.email;
     },
@@ -117,7 +121,7 @@ export default {
     // active status message (shown in place of action_button when 
     // no actions are possible)
     status_message: function() {
-      return statusMessage(this.user, this.status);
+      return statusMessage(this.user, this.status, this.grade);
     },
 
     page_subtitle: function() {

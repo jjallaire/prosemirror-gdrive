@@ -207,7 +207,7 @@ export default {
           return "Draft";
         case Status.StudentRevision:
           return "Revising";
-        case Status.Completed:
+        case Status.Complete:
           return "Completed";
         case Status.Unassigned:
           return "Unassigned";

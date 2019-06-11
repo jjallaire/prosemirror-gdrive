@@ -97,11 +97,15 @@ export function createStudentAssignment(id, title, description, student, teacher
     });
 }
 
-export function setStudentAssignmentStatus(id, status) {
-  return drive
-    .setFileProperties(id, {
-      status: status
-    });
+export function setStudentAssignmentStatus(id, status, grade) {
+
+  let props = {
+    status: status
+  };
+  if (grade)
+    props.grade = grade;
+
+  return drive.setFileProperties(id, props);
 }
 
 

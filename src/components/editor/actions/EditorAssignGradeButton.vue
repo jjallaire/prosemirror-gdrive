@@ -11,9 +11,10 @@ export default {
   data: function() {
     return {
       icon: 'assignment_turned_in',
-      caption: 'Grade Assignment',
-      prompt: "Grade this assignment now?",
-      status: Status.Complete
+      caption: 'Assign Grade',
+      prompt: "Grade",
+      status: Status.Complete,
+      enter_grade: true
     }
   },
 }

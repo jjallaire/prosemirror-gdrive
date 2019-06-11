@@ -19,17 +19,21 @@ export default {
     return {
       caption: '',
       text: '',
+      enter_grade: false,
+      grade: null,
       progress: false
     }
   },
 
   methods: {
 
-    show(doc_id, status, caption, text) {
+    show(doc_id, status, caption, text, enter_grade = false, grade = null) {
 
       // reset state
       this.caption = caption;
       this.text = text;
+      this.enter_grade = enter_grade;
+      this.grade = grade,
       this.progress = false;
 
       // show the dialog 
@@ -39,7 +43,8 @@ export default {
           this.progress = true;
 
           // perform action 
-          return this.$store.dispatch(SET_DOC_STATUS, status)
+          let grade = this.grade;
+          return this.$store.dispatch(SET_DOC_STATUS, { status, grade })
             .then(() => {
               this.progress = false;
             })
@@ -57,7 +62,10 @@ export default {
     <template slot="content">
       <v-layout row wrap>
         <v-flex xs12>
-          {{ text }}
+          
+          <v-text-field v-if="enter_grade" v-model="grade" :label="text" solo autofocus />
+          <span v-else>{{ text }}</span>
+
           <v-progress-linear :indeterminate="true" class="action-progress" :active="progress" />
         </v-flex>
       </v-layout>

@@ -19,6 +19,7 @@ export default {
       caption: null,
       prompt: null,
       status: null,
+      enter_grade: false,
       color: 'info'
     }
   },
@@ -35,9 +36,10 @@ export default {
         this.doc.id,
         this.status,
         this.caption,
-        this.prompt
+        this.prompt,
+        this.enter_grade,
+        this.doc.properties.grade
       )
-
     }
   }
 }

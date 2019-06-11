@@ -16,6 +16,7 @@ export function actionButton(user, status) {
       case Status.StudentRevision:
         return null;
       case Status.TeacherEvaluate:
+      case Status.Complete:
         return "assign-grade";
       default:
         return null;
@@ -37,7 +38,7 @@ export function actionButton(user, status) {
 
 }
 
-export function statusMessage(user, status) {
+export function statusMessage(user, status, grade) {
 
   if (isTeacher(user)) {
     switch(status) {
@@ -49,6 +50,8 @@ export function statusMessage(user, status) {
         return "Final Draft in Progress";
       case Status.TeacherEvaluate:
         return null;
+      case Status.Complete:
+        return `Grade: ${grade}`;
       default:
         return null;
     }
@@ -62,6 +65,8 @@ export function statusMessage(user, status) {
         return null;
       case Status.TeacherEvaluate:
         return "Final Draft Submitted";
+      case Status.Complete:
+        return `Grade: ${grade}`;
       default:
         return null;
     }
