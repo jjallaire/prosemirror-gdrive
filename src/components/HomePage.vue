@@ -50,7 +50,7 @@ export default {
 <template>
 
   <div class="home-container">
-    <AssignmentListing :mime_type="mime_type" :creator="is_teacher" />
+    <AssignmentListing :mime_type="mime_type" :creator="is_teacher" :include_grade="!is_teacher" />
   </div>
 
 </template>

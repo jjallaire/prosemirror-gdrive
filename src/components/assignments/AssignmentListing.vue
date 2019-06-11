@@ -33,19 +33,15 @@ export default {
     creator: {
       type: Boolean,
       required: true
+    },
+    include_grade: {
+      type: Boolean,
+      default: false
     }
   },
 
   data: function() {
     return {
-      headers: [
-        { text: 'Type', value: 'icon', sortable: false, width: '5%' },
-        { text: 'Name', value: 'name' },
-        { text: 'Instructor', value: 'owner', sortable: false},
-        { text: 'Last viewed', value: 'lastViewed' },
-        { text: 'File size', value: 'size' },
-        { text: 'Actions', sortable: false , width: '5%'}
-      ],
       pagination: {
         sortBy: 'lastViewed',
         descending: true,
@@ -61,6 +57,24 @@ export default {
   computed: {
     edit_path: function() {
       return this.mime_type === config.gdrive.assignmentMimeType ? "/assignment/" : "/edit/";
+    },
+    headers() {
+
+      let hdrs = [
+        { text: 'Type', value: 'icon', sortable: false, width: '5%' },
+        { text: 'Name', value: 'name' },
+      ];
+      
+      if (this.include_grade) {
+        hdrs.push({ text: 'Grade', value: 'grade' });
+      }
+
+      return hdrs.concat([
+        { text: 'Instructor', value: 'owner', sortable: false},
+        { text: 'Last viewed', value: 'lastViewed' },
+        { text: 'File size', value: 'size' },
+        { text: 'Actions', sortable: false , width: '5%'}
+      ]);
     }
   },
 
@@ -98,7 +112,17 @@ export default {
           mimeType: this.mime_type
         })
         .then(files => {
-          this.items = files;
+          this.items = files.map(file => {
+            return {
+              id: file.id,
+              icon: file.icon,
+              name: file.name,
+              grade: file.properties ? file.properties.grade : null,
+              owner: file.owner,
+              lastViewed: file.lastViewed,
+              size: file.size
+            }
+          });
           this.loading = false;
         })
         .catch(error => {
@@ -227,6 +251,10 @@ export default {
             <td @click="onAssignmentClicked(props.item)"><img :src="props.item.icon"></td>
             <td class="table-doc-name" @click="onAssignmentClicked(props.item)">
               {{ props.item.name }}
+            </td>
+            <td v-if="include_grade" @click="onAssignmentClicked(props.item)">
+              <span v-if="props.item.grade">{{ props.item.grade }}</span>
+              <span v-else>&mdash;</span>
             </td>
             <td @click="onAssignmentClicked(props.item)">{{ props.item.owner }}</td>
             <td @click="onAssignmentClicked(props.item)">{{ new Date(props.item.lastViewed).toDateString() }}</td>
