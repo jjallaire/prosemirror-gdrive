@@ -1,7 +1,7 @@
 <script>
 
 import { docInfo } from '../../store/state'
-import { SET_DOC, SET_PAGE_TITLE, SET_PAGE_TITLE_LINK, SET_PAGE_SUBTITLE } from '../../store/mutations'
+import { SET_DOC, SET_SAVE_STATUS, SET_PAGE_TITLE, SET_PAGE_TITLE_LINK, SET_PAGE_SUBTITLE } from '../../store/mutations'
 import { mapGetters } from 'vuex'
 
 import ProsemirrorEditor from '../../prosemirror'
@@ -80,9 +80,6 @@ export default {
       driveSave: null,
       syncHandler: null,
 
-      // save status
-      save_status: "clean",
-
       // load error
       error: null,
     }
@@ -92,6 +89,7 @@ export default {
 
     ...mapGetters([
       'doc',
+      'save_status',
       'user'
     ]),
 
@@ -168,6 +166,9 @@ export default {
         this.$store.commit(SET_PAGE_TITLE, file.metadata.name, this.page_title_link);
         this.$store.commit(SET_PAGE_TITLE_LINK, this.page_title_link);
         this.$store.commit(SET_PAGE_SUBTITLE, this.page_subtitle);
+
+        // set save status
+        this.$store.commit(SET_SAVE_STATUS, "clean");
        
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
@@ -258,7 +259,7 @@ export default {
     },
 
     onSaveStatus(status) {
-      this.save_status = status;
+      this.$store.commit(SET_SAVE_STATUS, status);
     },
 
     onSave() {

@@ -8,8 +8,6 @@ import config from '../config'
 
 import { jsonStringifyEscaped } from '../core/json'
 
-// TODO: need to save additional fields (e.g. assignment description)
-
 export default class DriveSave  {
 
   constructor(docId, onStatus, onSave, onSaved, onSaveError, mimeType = config.gdrive.studentAssignmentMimeType) {

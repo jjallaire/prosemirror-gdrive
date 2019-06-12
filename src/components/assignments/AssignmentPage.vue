@@ -18,7 +18,7 @@ import driveChanges from '../../drive/changes'
 import dialog from '../core/dialog'
 
 import { docInfo } from '../../store/state'
-import { SET_DOC } from '../../store/mutations'
+import { SET_DOC, SET_SAVE_STATUS } from '../../store/mutations'
 
 import AssignStudentsDialog from './AssignStudentsDialog.vue'
 
@@ -46,8 +46,6 @@ export default {
     return {
 
       driveSave: null,
-
-      save_status: "clean",
 
       students: {
         headers: [
@@ -83,6 +81,7 @@ export default {
   computed: {
     ...mapGetters([
       'user',
+      'save_status'
     ]),
   },
 
@@ -100,6 +99,9 @@ export default {
             SET_DOC, 
             docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties)
           );
+
+          // set save status
+          this.$store.commit(SET_SAVE_STATUS, "clean");
       
           // monitor and save editor changes (triggered by onUpdate hook installed below)
           this.driveSave = new DriveSave(
@@ -161,7 +163,7 @@ export default {
     },
 
     onSaveStatus(status) {
-      this.save_status = status;
+      this.$store.commit(SET_SAVE_STATUS, status);
     },
 
     onSaveError(error) {

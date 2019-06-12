@@ -4,6 +4,7 @@ export const SET_INITIALIZED = 'SET_INITIALIZED'
 export const SET_INIT_ERROR = 'SET_INIT_ERROR'
 export const SET_USER = 'SET_USER'
 export const SET_DOC = 'SET_DOC'
+export const SET_SAVE_STATUS = 'SET_SAVE_STATUS'
 export const SET_DOC_PROPERTIES = 'SET_DOC_PROPERTIES'
 export const SET_PAGE_TITLE = 'SET_PAGE_TITLE'
 export const SET_PAGE_TITLE_LINK = 'SET_PAGE_TITLE_LINK'
@@ -40,6 +41,10 @@ export default {
 
   [SET_DOC](state, doc) {
     state.doc = doc;
+  },
+
+  [SET_SAVE_STATUS](state, save_status) {
+    state.save_status = save_status;
   },
 
   [SET_DOC_PROPERTIES](state, properties) {

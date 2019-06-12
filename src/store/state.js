@@ -18,6 +18,9 @@ export function initialState() {
     // current doc
     doc: docInfo(),
 
+    // current save_status
+    save_status: "clean",
+
     // settings
     settings: {
       my_setting: 5

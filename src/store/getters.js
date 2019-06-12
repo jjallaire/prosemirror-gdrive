@@ -18,6 +18,8 @@ export default {
 
   doc: (state) => state.doc,
 
+  save_status: (state) => state.save_status,
+
   settings: (state) => state.settings,
 
   snackbar_error: (state) => state.snackbar_error
