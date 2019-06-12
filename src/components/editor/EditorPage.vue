@@ -189,11 +189,16 @@ export default {
           this.onSyncError
         );
 
+        // get editor document
+        return this.editorDocument(content);
+      })
+      .then(document => {
+
         // initialize editor
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
           autoFocus: true,
           editable: true,
-          content: content.document,
+          content: document,
           hooks: {
             isEditable: () => this.editable,
             onUpdate: this.onEditorUpdate,
@@ -342,6 +347,16 @@ export default {
         }
       });
     },
+
+
+    editorDocument(content) {
+
+      // apply comments
+
+      // show diffs
+
+      return Promise.resolve(content.document);
+    }
 
   }
 }
