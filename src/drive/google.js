@@ -464,6 +464,24 @@ export default {
     share.showSettingsDialog();
   },
 
+  updateRevision(fileId, revisionId, properties) {
+    let path = `/drive/v3/files/${fileId}/revisions/${revisionId}`;
+    let method = 'PATCH'
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: {
+        fields: 'id'
+      },
+      headers: { 'Content-Type' : "application/json; charset=UTF-8" },
+      body: jsonStringifyEscaped(properties)
+    })
+    .then(result => {
+      return handleUploadResponse(result);
+    })
+    .catch(catchHttpRequest);
+  },
+
   _appDataFileId(name) {
     return gapi.client.drive.files
       .list({

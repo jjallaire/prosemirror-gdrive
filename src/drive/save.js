@@ -134,8 +134,8 @@ export default class DriveSave  {
           )
           .then(result => {
             this._editorUpdates.lastSaveTime = update.time;
-            this._emitStatus();
             callback(null, result);
+            this._emitStatus();
           })
           .catch(error => {
             callback(error, null);
