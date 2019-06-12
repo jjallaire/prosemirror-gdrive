@@ -18,6 +18,7 @@
     "lodash": "^4.17.11",
     "material-icons": "^0.3.0",
     "print-js": "^1.0.54",
+    "prosemirror-changeset": "^2.0.4",
     "prosemirror-commands": "^1.0.7",
     "prosemirror-dropcursor": "^1.1.1",
     "prosemirror-gapcursor": "^1.0.3",
