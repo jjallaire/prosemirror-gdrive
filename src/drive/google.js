@@ -477,9 +477,30 @@ export default {
       body: jsonStringifyEscaped(properties)
     })
     .then(result => {
-      return handleUploadResponse(result);
+      return handleResultResponse(result);
     })
     .catch(catchHttpRequest);
+  },
+
+  getRevision(fileId, revisionId, media = false) {
+    let path = `/drive/v3/files/${fileId}/revisions/${revisionId}`;
+    let method = 'GET'
+    let params = {};
+    if (media)
+      params = { alt: 'media' };
+    return gapi.client.request({
+      path: path,
+      method: method,
+      params: params
+    })
+    .then(response => {
+      if (media)
+        return response.result;
+      else
+        return handleResultResponse(response);
+    })
+    .catch(catchHttpRequest);
+
   },
 
   _appDataFileId(name) {
@@ -534,7 +555,7 @@ export default {
       body: jsonStringifyEscaped(metadata)
     })
     .then(result => {
-      return handleUploadResponse(result);
+      return handleResultResponse(result);
     })
     .catch(catchHttpRequest);
   },
@@ -568,7 +589,7 @@ export default {
       headers: { 'Content-Type' : multipart.type },
       body: multipart.body
     })
-    .then(handleUploadResponse)
+    .then(handleResultResponse)
     .catch(catchHttpRequest);
   },
 };
@@ -606,7 +627,7 @@ function fileListResponse(response) {
   });  
 }
 
-function handleUploadResponse(response) {
+function handleResultResponse(response) {
   if (response.result.id)
     return response.result;
   else

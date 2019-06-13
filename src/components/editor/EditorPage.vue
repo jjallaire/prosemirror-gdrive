@@ -190,15 +190,16 @@ export default {
         );
 
         // get editor document
-        return this.editorDocument(content);
+        return this.editorContent(content);
       })
-      .then(document => {
+      .then(content => {
 
         // initialize editor
         this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
           autoFocus: true,
           editable: true,
-          content: document,
+          content: content.base,
+          content_revision: content.revision,
           hooks: {
             isEditable: () => this.editable,
             onUpdate: this.onEditorUpdate,
@@ -304,7 +305,8 @@ export default {
         SET_DOC,
         docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties, content.description)
       );
-      this.editor.setContent(content.document);
+      if (this.editable)
+        this.editor.setContent(content.document);
     },
 
     onSyncError(error) {
@@ -349,14 +351,28 @@ export default {
     },
 
 
-    editorDocument(content) {
+    editorContent(content) {
 
-      // apply comments
-
-      // render diffs
+      // is this teacher evaluation mode and do we have a draft as a baseline?
+      if ((this.status === Status.TeacherEvaluate || this.status === Status.Complete) && 
+          this.doc.properties.draftRevisionId) {
+        return drive
+          .getRevision(this.doc_id, this.doc.properties.draftRevisionId, true)
+          .then(revisionContent => {
+            return {
+              base: revisionContent.document,
+              revision: content.document
+            }
+          })
+      } else {
+        return Promise.resolve({
+          base: content.document,
+          revision: null
+        });
+      }
       
 
-      return Promise.resolve(content.document);
+      
     }
 
   }

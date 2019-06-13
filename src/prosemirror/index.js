@@ -24,6 +24,7 @@ export default class ProsemirrorEditor {
     this._options = {
       autoFocus: false,
       content: '',
+      content_revision: null,
       hooks: {
         isEditable: () => true,
         onUpdate: () => {},
@@ -40,6 +41,9 @@ export default class ProsemirrorEditor {
       marks: buildMarks(),
       nodes: buildNodes()
     });
+
+    // if we have a content revision then we need to display diffs
+    
 
     // create the editor state
     this._state = EditorState.create({ 
