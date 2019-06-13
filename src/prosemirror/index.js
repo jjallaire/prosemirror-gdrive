@@ -183,7 +183,7 @@ export default class ProsemirrorEditor {
     // recreate transform from base to revision
     let baseDoc = this._schema.nodeFromJSON(this._options.content);
     let revisionDoc = this._schema.nodeFromJSON(this._options.content_revision);
-    let tr = recreateTransform(baseDoc, revisionDoc);
+    let tr = recreateTransform(baseDoc, revisionDoc, true, true);
     
     // create decorations corresponding to the changes
     const decorations = []
