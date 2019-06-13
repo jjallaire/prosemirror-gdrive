@@ -3,7 +3,6 @@
 import drive from '.'
 import { Status } from '../components/assignments/assignment.js'
 
-
 // there are certain revisions we want to preserve forever (e.g. draft turned in by student
 // and final draft turned in by student). this function checks the assignment status, 
 // then records and sets the keepForever flag on the revision if it hasn't been already recorded
@@ -35,6 +34,5 @@ export function manageRevisions(doc) {
   // no-op
   return Promise.resolve();
 
- 
-
 }
+
