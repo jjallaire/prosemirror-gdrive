@@ -86,6 +86,9 @@
       ],
       "vue/max-attributes-per-line": [
         "off"
+      ],
+      "vue/no-v-html": [
+        "off"
       ]
     },
     "parserOptions": {

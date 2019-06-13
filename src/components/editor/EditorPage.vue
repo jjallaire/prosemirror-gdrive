@@ -353,7 +353,8 @@ export default {
 
       // apply comments
 
-      // show diffs
+      // render diffs
+      
 
       return Promise.resolve(content.document);
     }

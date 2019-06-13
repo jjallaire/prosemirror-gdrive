@@ -72,7 +72,7 @@ export default {
     <v-text-field v-model="comment" />
     <v-btn @click="onAddComment">Add</v-btn>
     <div v-for="c in comments" :key="c.id">
-      {{ c.htmlContent }}
+      <span v-html="c.htmlContent" />
     </div>
   </div>
 
