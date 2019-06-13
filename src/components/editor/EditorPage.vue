@@ -515,6 +515,14 @@ export default {
   outline: none;
 }
 
+.ProseMirror .insertion {
+  color: green;
+}
+
+.ProseMirror .deletion {
+  color: red;
+}
+
 .ProseMirror p {
   margin-bottom: initial;
 }

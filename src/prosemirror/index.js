@@ -1,7 +1,8 @@
 
 import { EditorState, Plugin, PluginKey, NodeSelection } from "prosemirror-state"
-import { EditorView } from "prosemirror-view"
+import { Decoration, DecorationSet, EditorView } from "prosemirror-view"
 import { Schema, DOMParser, DOMSerializer } from 'prosemirror-model'
+import { ChangeSet, simplifyChanges } from 'prosemirror-changeset'
 import { history } from "prosemirror-history"
 import { keymap } from "prosemirror-keymap"
 import { baseKeymap } from "prosemirror-commands"
@@ -14,6 +15,8 @@ import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
 import { imagePlugin } from "./image/plugin.js";
+
+import { recreateTransform } from './recreate.js'
 
 
 export default class ProsemirrorEditor {
@@ -42,28 +45,39 @@ export default class ProsemirrorEditor {
       nodes: buildNodes()
     });
 
+    // setup document and plugins
+    let doc = this._createDocument(this._options.content);
+    let plugins = [
+      history(),
+      buildInputRules(this._schema),
+      keymap(buildKeymap(this._schema, this._options.mapKeys)),
+      keymap(baseKeymap),
+      dropCursor(),
+      gapCursor(),
+      new Plugin({
+        key: new PluginKey('editable'),
+        props: {
+          editable: this._options.hooks.isEditable
+        },
+      }),
+      imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)
+    ];
+
+
     // if we have a content revision then we need to display diffs
-    
+    // (diffs are returned in the form of a new document and a custom
+    // plugin that renders diff decorations)
+    if (this._options.content_revision) {
+      let diff = this._computeDiffDocument();
+      doc = diff.doc;
+      plugins = plugins.concat(diff.plugins);
+    }
 
     // create the editor state
     this._state = EditorState.create({ 
       schema: this._schema,
-      doc: this._createDocument(this._options.content),
-      plugins: [
-        history(),
-        buildInputRules(this._schema),
-        keymap(buildKeymap(this._schema, this._options.mapKeys)),
-        keymap(baseKeymap),
-        dropCursor(),
-        gapCursor(),
-        new Plugin({
-          key: new PluginKey('editable'),
-          props: {
-            editable: this._options.hooks.isEditable
-          },
-        }),
-        imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)
-      ]
+      doc: doc,
+      plugins: plugins
     });
   
     // create the editor
@@ -161,6 +175,69 @@ export default class ProsemirrorEditor {
     } else {
       return null;
     }
+  }
+
+  _computeDiffDocument() {
+    // based on https://gitlab.com/mpapp-public/prosemirror-recreate-steps/blob/master/demo/history/index.js
+    
+    // recreate transform from base to revision
+    let baseDoc = this._schema.nodeFromJSON(this._options.content);
+    let revisionDoc = this._schema.nodeFromJSON(this._options.content_revision);
+    let tr = recreateTransform(baseDoc, revisionDoc);
+    
+    // create decorations corresponding to the changes
+    const decorations = []
+    let changeSet = ChangeSet.create(baseDoc).addSteps(tr.doc, tr.mapping.maps);
+    let changes = simplifyChanges(changeSet.changes, tr.doc);
+   
+    // insertion
+    changes.forEach(change => {
+      decorations.push(
+        Decoration.inline(change.fromB, change.toB, { class: 'insertion' }, {})
+      )
+    });
+
+    // deletion
+    let deletionPos = null;
+    let lastDeletionTo = null;
+    changes.forEach(change => {
+      
+      // do we need to reset the deletion position?
+      if (deletionPos === null || lastDeletionTo === null || (lastDeletionTo + 1) !== change.fromA)
+        deletionPos = change.fromB;
+
+      // do the deletion
+      let slice = baseDoc.slice(change.fromA, change.toA);
+      let span = document.createElement('span');
+      span.setAttribute('class', 'deletion');
+      span.appendChild(
+        DOMSerializer.fromSchema(this._schema).serializeFragment(slice.content)
+      )
+      decorations.push(
+        Decoration.widget(deletionPos, span, { marks: []})
+      );
+
+      // record last deletion end
+      lastDeletionTo = change.toA;
+    });
+
+    // plugin to apply diff decorations
+    const decorationSet = DecorationSet.create(tr.doc, decorations);
+    let decosPlugin = new Plugin({
+      key: new PluginKey('diffs'),
+      props: {
+        decorations() {
+          return decorationSet;
+        }
+      }
+    })
+
+    // return
+    return {
+      doc: tr.doc,
+      plugins: [decosPlugin]
+    }
+   
   }
 
   _dispatchTransaction(transaction) {
