@@ -516,11 +516,14 @@ export default {
 }
 
 .ProseMirror .insertion {
-  color: green;
+  color: rgb(13,103,87);
+  background-color: rgb(217,239,238);
+  
 }
 
 .ProseMirror .deletion {
-  color: red;
+  color:#E53935;
+  background-color: #FFCDD2;
 }
 
 .ProseMirror p {
