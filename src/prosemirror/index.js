@@ -47,21 +47,7 @@ export default class ProsemirrorEditor {
 
     // setup document and plugins
     let doc = this._createDocument(this._options.content);
-    let plugins = [
-      history(),
-      buildInputRules(this._schema),
-      keymap(buildKeymap(this._schema, this._options.mapKeys)),
-      keymap(baseKeymap),
-      dropCursor(),
-      gapCursor(),
-      new Plugin({
-        key: new PluginKey('editable'),
-        props: {
-          editable: this._options.hooks.isEditable
-        },
-      }),
-      imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)
-    ];
+    let plugins = this._basePlugins();
 
 
     // if we have a content revision then we need to display diffs
@@ -105,11 +91,22 @@ export default class ProsemirrorEditor {
     }
   }
 
-  setContent(content = {}, emitUpdate = false) {
+  setContent(content = {}, contentRevision = null, emitUpdate = false) {
+
+    let doc = this._createDocument(content);
+    let plugins = this._basePlugins();
+
+    if (contentRevision) {
+      this._options.content_revision = contentRevision;
+      let diff = this._computeDiffDocument();
+      doc = diff.doc;
+      plugins = plugins.concat(diff.plugins);
+    }
+
     this._state = EditorState.create({
       schema: this._state.schema,
-      doc: this._createDocument(content),
-      plugins: this._state.plugins
+      doc: doc,
+      plugins: plugins
     })
 
     this._view.updateState(this._state)
@@ -214,7 +211,9 @@ export default class ProsemirrorEditor {
         DOMSerializer.fromSchema(this._schema).serializeFragment(slice.content)
       )
       decorations.push(
-        Decoration.widget(deletionPos, span, { marks: []})
+        Decoration.widget(deletionPos, span, { 
+          marks: []
+        })
       );
 
       // record last deletion end
@@ -238,6 +237,24 @@ export default class ProsemirrorEditor {
       plugins: [decosPlugin]
     }
    
+  }
+
+  _basePlugins() {
+    return [
+      history(),
+      buildInputRules(this._schema),
+      keymap(buildKeymap(this._schema, this._options.mapKeys)),
+      keymap(baseKeymap),
+      dropCursor(),
+      gapCursor(),
+      new Plugin({
+        key: new PluginKey('editable'),
+        props: {
+          editable: this._options.hooks.isEditable
+        },
+      }),
+      imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)
+    ];
   }
 
   _dispatchTransaction(transaction) {

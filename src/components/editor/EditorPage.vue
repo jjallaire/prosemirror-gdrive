@@ -253,7 +253,8 @@ export default {
     },
 
     onEditorUpdate(update) {
-      this.driveSave.onEditorUpdate(update);
+      if (this.editable)
+        this.driveSave.onEditorUpdate(update);
     },
 
     onEditLink(link) {
@@ -300,13 +301,17 @@ export default {
     },
 
     onSyncDoc(file) {
+      // get file content
       let content = JSON.parse(file.content);
       this.$store.commit(
         SET_DOC,
         docInfo(this.doc_id, file.metadata.name, file.metadata.headRevisionId, file.metadata.properties, content.description)
       );
-      if (this.editable)
-        this.editor.setContent(content.document);
+
+      // see if we have a revision to present
+      this.editorContent(content).then(content => {
+         this.editor.setContent(content.base, content.revision);
+      })
     },
 
     onSyncError(error) {
