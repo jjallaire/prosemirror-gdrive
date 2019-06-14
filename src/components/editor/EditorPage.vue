@@ -29,12 +29,9 @@ import driveChanges, { docSyncHandler } from '../../drive/changes'
 
 import ErrorPanel from '../core/ErrorPanel.vue'
 import ProgressSpinner from '../core/ProgressSpinner.vue'
-import PopupMenu from '../core/PopupMenu'
-import MenuTile from '../core/MenuTile'
 
 import dialog from '../core/dialog'
 
-import printJS from 'print-js'
 import { isTeacher } from '../../store/selectors';
 
 export default {
@@ -43,7 +40,6 @@ export default {
   components: {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorSaveStatus,
-    PopupMenu, MenuTile,
     EditorLinkDialog, EditorImageDialog,
     AssignmentSidebar, CommentsSidebar,
     EditorSubmitDraftButton, EditorReturnDraftButton, 
@@ -140,7 +136,7 @@ export default {
         return "/assignment/" + this.doc.properties.assignmentId;
       else
         return null;
-    }
+    },
   },
 
   mounted() {
@@ -328,16 +324,6 @@ export default {
       );
     },
 
-    onPrintDocument() {
-      printJS({
-        printable: 'prosemirror',
-        type: 'html',
-        header: this.doc.title,
-        headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
-        css: '/styles/print.css'
-      });
-    },
-
     onEditorAction(handler) {
       handler({
         id: this.doc_id,
@@ -411,10 +397,6 @@ export default {
 
           <v-chip v-if="status_message" class="status-message" color="info" disabled label outline>{{ status_message }}</v-chip>
 
-          <PopupMenu>
-            <MenuTile icon="print" text="Print Document..." @clicked="onPrintDocument" />
-          </PopupMenu>
-          
         </v-toolbar>
 
         <v-divider />

@@ -7,6 +7,10 @@ import EditorToolbarMenuBlock from './EditorToolbarMenuBlock.vue'
 
 import { VDivider } from 'vuetify/lib'
 
+import printJS from 'print-js'
+
+import { mapGetters } from 'vuex'
+
 export default {
 
   name: 'EditorToolbar',
@@ -27,6 +31,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'doc'
+    ]),
     commands: function() {
       return this.editor.commands;
     },
@@ -39,6 +46,23 @@ export default {
         this.commands.heading4,
         this.commands.code_block,
       ]
+    },
+    print_command: function() {
+      return {
+        icon: 'print',
+        title: 'Print Assignment',
+        isEnabled: () => true,
+        isLatched: () => false,
+        execute: () => {
+          printJS({
+            printable: 'prosemirror',
+            type: 'html',
+            header: this.doc.title,
+            headerStyle: 'font-size: 24pt; font-weight: bold; font-family: Georgia,Helvetica,"Times New Roman",Times,serif;',
+            css: '/styles/print.css'
+          });
+        }
+      }
     }
   }
 
@@ -50,6 +74,10 @@ export default {
 
   <span v-if="editor" class="editor-toolbar">
     
+    <EditorToolbarButton :command="print_command" />
+
+    <v-divider inset vertical />
+
     <EditorToolbarButton :command="commands.undo" />
     <EditorToolbarButton :command="commands.redo" />
  
