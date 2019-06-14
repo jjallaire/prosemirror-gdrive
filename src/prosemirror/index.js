@@ -186,15 +186,59 @@ export default class ProsemirrorEditor {
     const decorations = []
     let changeSet = ChangeSet.create(baseDoc).addSteps(tr.doc, tr.mapping.maps);
     let changes = simplifyChanges(changeSet.changes, tr.doc);
-   
-    // insertion
-    changes.forEach(change => {
-      decorations.push(
-        Decoration.inline(change.fromB, change.toB, { class: 'insertion' }, {})
-      )
-    });
 
+    // insertion
+    function findInsertEndIndex(startIndex) {
+      for (let i=startIndex; i<changes.length; i++) {
+        // if we are at the end then that's the end index
+        if (i === (changes.length - 1))
+          return i;
+        // if the next change is discontinuous then this is the end index
+        if ((changes[i].toB + 1) !== changes[i+1].fromB)
+          return i;
+      }
+    }
+    let index = 0;
+    while(index < changes.length) {
+      let endIndex = findInsertEndIndex(index);
+      decorations.push(
+        Decoration.inline(changes[index].fromB, changes[endIndex].toB, { class: 'insertion' }, {})
+      )
+      index = endIndex + 1;
+    }
+   
     // deletion
+    function findDeleteEndIndex(startIndex) {
+      for (let i=startIndex; i<changes.length; i++) {
+        // if we are at the end then that's the end index
+        if (i === (changes.length - 1))
+          return i;
+        // if the next change is discontinuous then this is the end index
+        if ((changes[i].toA + 1) !== changes[i+1].fromA)
+          return i;
+      }
+    }
+    index = 0;
+    while(index < changes.length) {
+      let endIndex = findDeleteEndIndex(index);
+
+      // do the deletion
+      let slice = baseDoc.slice(changes[index].fromA, changes[endIndex].toA);
+      let span = document.createElement('span');
+      span.setAttribute('class', 'deletion');
+      span.appendChild(
+        DOMSerializer.fromSchema(this._schema).serializeFragment(slice.content)
+      )
+      decorations.push(
+        Decoration.widget(changes[index].fromB, span, { 
+          marks: []
+        })
+      );
+      
+      index = endIndex + 1;
+    }
+
+    /*
     let deletionPos = null;
     let lastDeletionTo = null;
     changes.forEach(change => {
@@ -219,6 +263,7 @@ export default class ProsemirrorEditor {
       // record last deletion end
       lastDeletionTo = change.toA;
     });
+    */
 
     // plugin to apply diff decorations
     const decorationSet = DecorationSet.create(tr.doc, decorations);
