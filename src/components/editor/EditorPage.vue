@@ -169,6 +169,13 @@ export default {
 
         // set save status
         this.$store.commit(SET_SAVE_STATUS, "clean");
+
+        // set sidebar based on status
+        if (this.status === Status.StudentDraft || this.status === Status.Unassigned) {
+          this.sidebar = "assignment"
+        } else {
+          this.sidebar = "comments";
+        }
        
         // monitor and save editor changes (triggered by onUpdate hook installed below)
         this.driveSave = new DriveSave(
