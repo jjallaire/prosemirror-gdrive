@@ -353,7 +353,7 @@ export default {
 
       // is this teacher evaluation mode and do we have a draft as a baseline?
       if ((this.status === Status.TeacherEvaluate || this.status === Status.Complete) && 
-          this.doc.properties.draftRevisionId) {
+          this.doc.properties.draftRevisionId && this.is_teacher) {
         return drive
           .getRevision(this.doc_id, this.doc.properties.draftRevisionId, true)
           .then(revisionContent => {
