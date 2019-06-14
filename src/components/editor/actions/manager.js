@@ -7,7 +7,9 @@ import { Status } from '../../assignments/assignment.js'
 
 export function actionButton(user, status) {
 
-  if (isTeacher(user)) {
+  if (!status) {
+    return null;
+  } else if (isTeacher(user)) {
     switch(status) {
       case Status.StudentDraft:
         return null;
@@ -39,8 +41,9 @@ export function actionButton(user, status) {
 }
 
 export function statusMessage(user, status, grade) {
-
-  if (isTeacher(user)) {
+  if (!status) {
+    return null;
+  } if (isTeacher(user)) {
     switch(status) {
       case Status.StudentDraft:
         return "Draft in Progress";
