@@ -137,6 +137,12 @@ export default {
       else
         return null;
     },
+
+    show_changes: function() {
+      return (this.status === Status.TeacherEvaluate || this.status === Status.Complete) && 
+             this.doc.properties.draftRevisionId && 
+             this.is_teacher;
+    }
   },
 
   mounted() {
@@ -352,8 +358,7 @@ export default {
     editorContent(content) {
 
       // is this teacher evaluation mode and do we have a draft as a baseline?
-      if ((this.status === Status.TeacherEvaluate || this.status === Status.Complete) && 
-          this.doc.properties.draftRevisionId && this.is_teacher) {
+      if (this.show_changes) {
         return drive
           .getRevision(this.doc_id, this.doc.properties.draftRevisionId, true)
           .then(revisionContent => {
@@ -385,7 +390,7 @@ export default {
       <v-card class="edit-card card--flex-toolbar">
         <v-toolbar card dense :height="40">
        
-          <EditorToolbar :editor="editor" />
+          <EditorToolbar :editor="editor" :show_changes="show_changes"/>
           <EditorSaveStatus :status="save_status" />
                  
           <v-spacer />

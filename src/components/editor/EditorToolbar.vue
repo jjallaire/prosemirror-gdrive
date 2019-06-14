@@ -27,6 +27,10 @@ export default {
     minimal: {
       type: Boolean,
       default: false
+    },
+    show_changes: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -104,7 +108,10 @@ export default {
 
     <EditorToolbarButton v-if="!minimal" :command="commands.image" />
     <EditorToolbarButton :command="commands.link" />
+
+    <v-divider v-if="show_changes" inset vertical />
     
+    <EditorToolbarButton v-if="show_changes" :command="commands.show_changes" />
     
   </span>
 

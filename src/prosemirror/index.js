@@ -28,6 +28,7 @@ export default class ProsemirrorEditor {
       autoFocus: false,
       content: '',
       content_revision: null,
+      show_changes: true,
       hooks: {
         isEditable: () => true,
         onUpdate: () => {},
@@ -54,9 +55,13 @@ export default class ProsemirrorEditor {
     // (diffs are returned in the form of a new document and a custom
     // plugin that renders diff decorations)
     if (this._options.content_revision) {
-      let diff = this._computeDiffDocument();
-      doc = diff.doc;
-      plugins = plugins.concat(diff.plugins);
+      if (this._options.show_changes) {
+        let diff = this._computeDiffDocument();
+        doc = diff.doc;
+        plugins = plugins.concat(diff.plugins);
+      } else {
+        doc = this._createDocument(this._options.content_revision);
+      }
     }
 
     // create the editor state
@@ -74,7 +79,7 @@ export default class ProsemirrorEditor {
 
     // create editor commands
     this._commands = buildCommands(this._schema, this._options.hooks);
-
+    
     // auto-focus if requested
     if (this._options.autoFocus) {
       setTimeout(() => {
@@ -93,14 +98,19 @@ export default class ProsemirrorEditor {
 
   setContent(content = {}, contentRevision = null, emitUpdate = false) {
 
-    let doc = this._createDocument(content);
+    this._options.content = content;
+    let doc = this._createDocument(this._options.content);
     let plugins = this._basePlugins();
 
     if (contentRevision) {
       this._options.content_revision = contentRevision;
-      let diff = this._computeDiffDocument();
-      doc = diff.doc;
-      plugins = plugins.concat(diff.plugins);
+      if (this._options.show_changes) {
+        let diff = this._computeDiffDocument();
+        doc = diff.doc;
+        plugins = plugins.concat(diff.plugins);
+      } else {
+        doc = this._createDocument(this._options.content_revision);
+      }
     }
 
     this._state = EditorState.create({
@@ -113,6 +123,10 @@ export default class ProsemirrorEditor {
 
     if (emitUpdate)
       this._emitUpdate()
+  }
+
+  reloadContent() {
+    this.setContent(this._options.content, this._options.content_revision);
   }
 
   getHTML() {
@@ -142,10 +156,25 @@ export default class ProsemirrorEditor {
   // return an object keyed by command name
   get commands() {
     
-    return this._commands.reduce((commands, command) => ({
+    // adapt prosemirror commands
+    let commands = this._commands.reduce((commands, command) => ({
       ...commands,
       [command.name]: new EditorCommandAdaptor(command, this)
     }), {});
+
+    // additional commands
+    commands['show_changes'] = {
+      title: "Show changes",
+      icon: "change_history",
+      isEnabled: () => true,
+      isLatched: () => this._options.show_changes,
+      execute: () => {
+        this._options.show_changes = !this._options.show_changes;
+        this.reloadContent();
+      }
+    };
+
+    return commands;
 
   }
 
@@ -237,33 +266,6 @@ export default class ProsemirrorEditor {
       
       index = endIndex + 1;
     }
-
-    /*
-    let deletionPos = null;
-    let lastDeletionTo = null;
-    changes.forEach(change => {
-      
-      // do we need to reset the deletion position?
-      if (deletionPos === null || lastDeletionTo === null || (lastDeletionTo + 1) !== change.fromA)
-        deletionPos = change.fromB;
-
-      // do the deletion
-      let slice = baseDoc.slice(change.fromA, change.toA);
-      let span = document.createElement('span');
-      span.setAttribute('class', 'deletion');
-      span.appendChild(
-        DOMSerializer.fromSchema(this._schema).serializeFragment(slice.content)
-      )
-      decorations.push(
-        Decoration.widget(deletionPos, span, { 
-          marks: []
-        })
-      );
-
-      // record last deletion end
-      lastDeletionTo = change.toA;
-    });
-    */
 
     // plugin to apply diff decorations
     const decorationSet = DecorationSet.create(tr.doc, decorations);
