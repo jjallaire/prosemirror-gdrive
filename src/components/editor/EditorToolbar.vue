@@ -75,7 +75,6 @@ export default {
     <v-divider inset vertical />
 
     <EditorToolbarButton v-if="!minimal" :command="commands.image" />
-    <EditorToolbarButton v-if="!minimal" :command="commands.horizontal_rule" />
     <EditorToolbarButton :command="commands.link" />
     
     
