@@ -59,7 +59,7 @@ export default {
 .prosemirror-viewer {
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: #f5f5f5;
   padding: 8px;
 }
 
