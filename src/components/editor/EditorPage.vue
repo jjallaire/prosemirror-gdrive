@@ -122,6 +122,10 @@ export default {
       return (this.status === Status.TeacherEvaluate || this.status === Status.Complete) && 
              this.doc.properties.draftRevisionId && 
              this.is_teacher;
+    },
+
+    fixed_sidebar: function() {
+      return this.sidebar !== 'comments';
     }
   },
 
@@ -357,12 +361,16 @@ export default {
 
         <v-divider />
 
-        <div id="prosemirror" ref="prosemirror" />
+        <div 
+          id="prosemirror" 
+          :class="{ fixedSidebar: fixed_sidebar }" 
+          ref="prosemirror" 
+        />
 
-        <div id="prosemirror-sidebar">
+        <div v-show="sidebar == 'assignment'" id="prosemirror-sidebar">
           <AssignmentSidebar v-show="sidebar == 'assignment'" />
-          <CommentsSidebar v-show="sidebar == 'comments'" />
         </div>
+      
         
       </v-card>
     </div>
@@ -415,6 +423,7 @@ export default {
   margin-top: 4px;
   max-width: 292px;
   border-left: 1px solid rgba(0,0,0,0.12);
+
 }
 
 .edit-container .select-sidebar .v-input__control {
@@ -444,21 +453,19 @@ export default {
 
 
 .edit-container #prosemirror {
-  padding: 12px;
-  padding-right: 36px;
   position: absolute;
   top: 39px;
   left: 0;
   bottom: 0;
-  right: 300px;
+  right: 0;
   overflow-y: scroll;
+  background-color:#f5f5f5;
 }
 
-.edit-container #prosemirror-sidebar {
 
+.edit-container #prosemirror-sidebar {
   position: absolute;
   top: 41px;
-
   bottom: 0;
   right: 0;
   overflow-y: scroll;
@@ -470,6 +477,23 @@ export default {
 
 .ProseMirror {
   outline: none;
+  padding: 12px;
+}
+
+ #prosemirror .ProseMirror {
+    margin-right: 299px;
+    border-right: 1px solid rgba(0,0,0,0.12);
+    background-color: #fff;
+ }
+
+ .edit-container #prosemirror.fixedSidebar {
+  right: 300px;
+}
+
+ .edit-container #prosemirror.fixedSidebar .ProseMirror {
+  margin-right: 0;
+  border-right: none;
+
 }
 
 .ProseMirror .insertion {
