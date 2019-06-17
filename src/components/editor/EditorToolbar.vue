@@ -94,9 +94,6 @@ export default {
 
     <EditorToolbarButton :command="commands.strong" />
     <EditorToolbarButton :command="commands.em" />
-    <EditorToolbarButton v-if="!minimal" :command="commands.code" />
-    <EditorToolbarButton v-if="!minimal" :command="commands.underline" />
-    <EditorToolbarButton v-if="!minimal" :command="commands.strikethrough" />
 
     <v-divider inset vertical />
 

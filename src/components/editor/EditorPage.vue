@@ -350,6 +350,8 @@ export default {
           <EditorSaveStatus :status="save_status" />
                  
           <v-spacer />
+
+          <v-select v-model="sidebar" class="select-sidebar" :items="sidebars" solo flat />
   
         </v-toolbar>
 
@@ -358,7 +360,6 @@ export default {
         <div id="prosemirror" ref="prosemirror" />
 
         <div id="prosemirror-sidebar">
-          <v-select v-model="sidebar " :items="sidebars" solo flat />
           <AssignmentSidebar v-show="sidebar == 'assignment'" />
           <CommentsSidebar v-show="sidebar == 'comments'" />
         </div>
@@ -408,6 +409,24 @@ export default {
 
 .edit-container .edit-card .editor-save-status {
   margin-left: 10px;
+}
+
+.edit-container .select-sidebar {
+  margin-top: 4px;
+  max-width: 292px;
+  border-left: 1px solid rgba(0,0,0,0.12);
+}
+
+.edit-container .select-sidebar .v-input__control {
+  min-height: initial;
+  margin-top: 4px;
+  font-size: 14px;
+
+}
+
+.edit-container .select-sidebar .v-input__control > .v-input__slot {
+  color: inherit;
+  background-color: inherit;
 }
 
 .edit-container .v-toolbar__content  .v-btn--small {
