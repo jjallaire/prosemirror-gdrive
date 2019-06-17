@@ -534,7 +534,8 @@ export default {
       return {
         id: profile.getId(),
         name: profile.getName(),
-        email: profile.getEmail()
+        email: profile.getEmail(),
+        image: profile.getImageUrl(),
       };
     } else {
       return null

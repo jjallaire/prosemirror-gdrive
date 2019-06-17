@@ -11,13 +11,6 @@ import EditorSaveStatus from './EditorSaveStatus.vue'
 import EditorLinkDialog from './dialogs/EditorLinkDialog.vue'
 import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
-import { actionButton, statusMessage } from './actions/manager.js'
-import EditorSubmitDraftButton from './actions/EditorSubmitDraftButton.vue'
-import EditorReturnDraftButton from './actions/EditorReturnDraftButton.vue'
-import EditorSubmitFinalDraftButton from './actions/EditorSubmitFinalDraftButton.vue'
-import EditorAssignGradeButton from './actions/EditorAssignGradeButton.vue'
-
-
 import { Status } from '../assignments/assignment.js'
 import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
 import CommentsSidebar from '../comments/CommentsSidebar.vue'
@@ -41,9 +34,7 @@ export default {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorSaveStatus,
     EditorLinkDialog, EditorImageDialog,
-    AssignmentSidebar, CommentsSidebar,
-    EditorSubmitDraftButton, EditorReturnDraftButton, 
-    EditorSubmitFinalDraftButton, EditorAssignGradeButton
+    AssignmentSidebar, CommentsSidebar
   },
 
   props: {
@@ -86,7 +77,9 @@ export default {
     ...mapGetters([
       'doc',
       'save_status',
-      'user'
+      'user',
+      'action_button',
+      'status_message'
     ]),
 
     status: function() {
@@ -108,19 +101,6 @@ export default {
     editable: function() {
       return this.is_editor && 
              (this.status === Status.StudentDraft || this.status === Status.StudentRevision);
-    },
-
-
-    // active action_button (if there is no active action then
-    // a status_message will be shown)
-    action_button: function() {
-      return actionButton(this.user, this.status);
-    },
-
-    // active status message (shown in place of action_button when 
-    // no actions are possible)
-    status_message: function() {
-      return statusMessage(this.user, this.status, this.grade);
     },
 
     page_subtitle: function() {
@@ -330,30 +310,6 @@ export default {
       );
     },
 
-    onEditorAction(handler) {
-      handler({
-        id: this.doc_id,
-        properties: this.doc.properties,
-        getHTML: () => {
-          return this.editor.getHTML();
-        },
-        setProperties: (properties) => {
-          return drive
-            .setFileProperties(this.doc_id, properties)
-            .then(() => {
-              this.doc.properties = {
-                ...this.doc.properties,
-                ...properties
-              }
-            })
-            .catch(error => {
-              dialog.errorSnackbar("Error setting file properties: " + 
-                                    error.message);
-            })
-        }
-      });
-    },
-
 
     editorContent(content) {
 
@@ -395,13 +351,6 @@ export default {
                  
           <v-spacer />
   
-          <EditorSubmitDraftButton v-if="action_button === 'submit-draft'" />
-          <EditorReturnDraftButton v-if="action_button === 'return-draft'" />
-          <EditorSubmitFinalDraftButton v-if="action_button === 'submit-final-draft'" />
-          <EditorAssignGradeButton v-if="action_button === 'assign-grade'" />
-
-          <v-chip v-if="status_message" class="status-message" color="info" disabled label outline>{{ status_message }}</v-chip>
-
         </v-toolbar>
 
         <v-divider />
@@ -474,16 +423,6 @@ export default {
   margin-right: 5px;
 }
 
-.edit-container .status-message {
-  height: 28px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.edit-container .v-chip.v-chip.v-chip--outline,
-.edit-container .v-chip__content {
-  height: 28px;
-}
 
 .edit-container #prosemirror {
   padding: 12px;

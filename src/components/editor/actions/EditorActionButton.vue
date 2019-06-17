@@ -20,7 +20,7 @@ export default {
       prompt: null,
       status: null,
       enter_grade: false,
-      color: 'info'
+      color: 'success'
     }
   },
 
@@ -48,7 +48,7 @@ export default {
 
 <template>
 
-  <v-btn depressed small :color="color" @click="onClicked">
+  <v-btn class="editor-action-button" depressed small :color="color" @click="onClicked">
     <v-icon v-if="icon" small light>{{ icon }}</v-icon>
     &nbsp;
     {{ caption }}

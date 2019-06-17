@@ -15,6 +15,12 @@ import ProgressSpinner from './components/core/ProgressSpinner.vue'
 import NavigationList from './components/navigation/NavigationList.vue'
 import EditorDocTitle from './components/editor/EditorDocTitle.vue'
 
+import EditorSubmitDraftButton from './components/editor/actions/EditorSubmitDraftButton.vue'
+import EditorReturnDraftButton from './components/editor/actions/EditorReturnDraftButton.vue'
+import EditorSubmitFinalDraftButton from './components/editor/actions/EditorSubmitFinalDraftButton.vue'
+import EditorAssignGradeButton from './components/editor/actions/EditorAssignGradeButton.vue'
+
+
 import dialog from './components/core/dialog'
 import drive from './drive'
 import config from './config'
@@ -30,7 +36,9 @@ export default {
 
   components: {
     VApp, VNavigationDrawer, VToolbar, VContent, VContainer, VSpacer, VBtn, VIcon, 
-    ProgressSpinner, NavigationList, AuthPage, ErrorPanel, ErrorSnackbar, EditorDocTitle
+    ProgressSpinner, NavigationList, AuthPage, ErrorPanel, ErrorSnackbar, EditorDocTitle,
+    EditorSubmitDraftButton, EditorReturnDraftButton, 
+    EditorSubmitFinalDraftButton, EditorAssignGradeButton
   },
 
   data () {
@@ -51,7 +59,9 @@ export default {
       'doc',
       'page_title',
       'page_title_link',
-      'page_subtitle'
+      'page_subtitle',
+      'action_button',
+      'status_message'
     ]),
 
     is_teacher: function() {
@@ -69,6 +79,7 @@ export default {
 
     onSignOutClicked() {
       drive.signOut();
+      return false;
     },
 
     onTitleChanged: _debounce(function(value) {
@@ -98,7 +109,7 @@ export default {
       <NavigationList />
     </v-navigation-drawer>
     
-    <v-toolbar color="orange" dark fixed app dense :clipped-left="true" :height="45">
+    <v-toolbar class="app-toolbar" color="orange" dark fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon v-if="is_teacher" @click.stop="drawer = !drawer" />
       <v-btn v-else-if="initialized" title="Home" :to="{ path: '/' }" icon>
         <v-icon>home</v-icon>
@@ -111,12 +122,39 @@ export default {
         <EditorDocTitle :value="doc.title" @input="onTitleChanged" />
       </v-toolbar-title>
       <span v-if="page_subtitle">&nbsp;&nbsp;&nbsp;&nbsp;{{ page_subtitle }}</span>
+
+      <v-chip v-if="status_message" class="status-message" color="white" disabled label outline>{{ status_message }}</v-chip>
+
+
+      <EditorSubmitDraftButton v-if="action_button === 'submit-draft'" />
+      <EditorReturnDraftButton v-else-if="action_button === 'return-draft'" />
+      <EditorSubmitFinalDraftButton v-else-if="action_button === 'submit-final-draft'" />
+      <EditorAssignGradeButton v-else-if="action_button === 'assign-grade'" />
+
       <v-spacer />
+    
       <template v-if="authorized">
-        <span>{{ user.email }}</span>
-        <v-btn title="Sign out" icon @click="onSignOutClicked">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+        <v-menu bottom offset-y open-on-click>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-avatar size="28px">
+                <img :src="user.image">
+              </v-avatar>
+            </v-btn>
+          </template>  
+          <v-card>
+            <v-card-text>
+              <p>
+                {{ user.name }}<br>
+                {{ user.email }}
+              </p>
+              <a title="Sign out" icon @click="onSignOutClicked">
+                Sign out
+              </a>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+       
       </template>
       <template v-else-if="initialized">
         <v-btn flat @click="onSignInClicked">Sign In</v-btn>
@@ -139,6 +177,30 @@ export default {
 
 
 <style>
+
+.app-toolbar .v-toolbar__content {
+  padding-right: 5px;
+}
+
+.app-toolbar .status-message {
+  height: 28px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.app-toolbar .v-chip.v-chip.v-chip--outline,
+.app-toolbar .v-chip__content {
+  height: 28px;
+}
+
+.app-toolbar .editor-action-button {
+  margin-left: 20px;
+}
+
+.sign-out-button {
+  margin-left: 20px;
+}
 
 .app-container {
   position: fixed;
