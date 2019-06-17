@@ -105,4 +105,12 @@
     line-height: 1.6em;
   }    
     
+  .insertion {
+    color: rgb(13,103,87); 
+  }
+  
+  .deletion {
+    color:#E53935;
+  }
+  
 }
