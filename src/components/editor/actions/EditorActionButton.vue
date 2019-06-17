@@ -20,7 +20,7 @@ export default {
       prompt: null,
       status: null,
       enter_grade: false,
-      color: 'success'
+      color: 'info'
     }
   },
 

@@ -199,11 +199,11 @@ export default {
     <v-card>
       <v-card-title>
        
-        <v-btn v-if="creator" title="Create new" color="orange" fab dark small @click="onNewAssignment">
+        <v-btn v-if="creator" title="Create new" color="primary" fab dark small @click="onNewAssignment">
           <v-icon>add</v-icon>
         </v-btn>
 
-        <v-btn title="Open picker" color="orange" fab outline dark small @click="onOpenAssignment">
+        <v-btn title="Open picker" color="info" fab outline dark small @click="onOpenAssignment">
           <v-icon>folder_open</v-icon>
         </v-btn>
       

@@ -22,7 +22,7 @@ export default {
     <v-progress-circular
       :size="70"
       :width="7"
-      color="orange"
+      color="info"
       indeterminate
     />
 

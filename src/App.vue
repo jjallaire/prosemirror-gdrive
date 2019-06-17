@@ -82,6 +82,10 @@ export default {
       return false;
     },
 
+    onHomeClicked() {
+      this.$router.push({ path: "/"});
+    },
+
     onTitleChanged: _debounce(function(value) {
       drive
         .renameFile(this.doc.id, value)
@@ -109,9 +113,9 @@ export default {
       <NavigationList />
     </v-navigation-drawer>
     
-    <v-toolbar class="app-toolbar" color="orange" dark fixed app dense :clipped-left="true" :height="45">
+    <v-toolbar class="app-toolbar" fixed app dense :clipped-left="true" :height="45">
       <v-toolbar-side-icon v-if="is_teacher" @click.stop="drawer = !drawer" />
-      <v-btn v-else-if="initialized" title="Home" :to="{ path: '/' }" icon>
+      <v-btn class="home-button" v-else-if="initialized" title="Home" icon @click="onHomeClicked">
         <v-icon>home</v-icon>
       </v-btn>
       <v-toolbar-title v-if="page_title" class="toolbar-title">
@@ -123,7 +127,7 @@ export default {
       </v-toolbar-title>
       <span v-if="page_subtitle">&nbsp;&nbsp;&nbsp;&nbsp;{{ page_subtitle }}</span>
 
-      <v-chip v-if="status_message" class="status-message" color="white" disabled label outline>{{ status_message }}</v-chip>
+      <v-chip v-if="status_message" class="status-message" color="rgba(0,0,0,0.6)" disabled label outline>{{ status_message }}</v-chip>
 
 
       <EditorSubmitDraftButton v-if="action_button === 'submit-draft'" />
@@ -178,8 +182,15 @@ export default {
 
 <style>
 
+
+.app-toolbar,
+.app-toolbar .home-button {
+  color: rgba(0,0,0,0.6) !important;
+}
+
 .app-toolbar .v-toolbar__content {
   padding-right: 5px;
+  color: rgba(0,0,0,0.6);
 }
 
 .app-toolbar .status-message {
@@ -226,7 +237,7 @@ export default {
 }
 
 .page-title-link:hover {
-  color: rgba(255,255,255,0.8);
+  text-decoration: underline;
 }
 
 .v-navigation-drawer {

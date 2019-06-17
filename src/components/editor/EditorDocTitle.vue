@@ -54,6 +54,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: rgba(0,0,0,0.6) !important;
 }
 
 .editor-document-title input:hover {
