@@ -422,13 +422,13 @@ export default {
   margin-top: 4px;
   max-width: 292px;
   border-left: 1px solid rgba(0,0,0,0.12);
-
 }
 
 .edit-container .select-sidebar .v-input__control {
   min-height: initial;
   margin-top: 4px;
   font-size: 14px;
+  font-weight: 400;
 
 }
 
