@@ -366,7 +366,7 @@ export default {
           :class="{ fixedSidebar: fixed_sidebar }" 
         />
 
-        <div v-show="sidebar == 'assignment'" id="prosemirror-sidebar">
+        <div v-show="fixed_sidebar" id="prosemirror-sidebar">
           <AssignmentSidebar v-show="sidebar == 'assignment'" />
         </div>
       
