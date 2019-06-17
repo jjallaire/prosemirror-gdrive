@@ -13,7 +13,6 @@ import EditorImageDialog from './dialogs/EditorImageDialog.vue'
 
 import { Status } from '../assignments/assignment.js'
 import AssignmentSidebar from '../assignments/AssignmentSidebar.vue'
-import CommentsSidebar from '../comments/CommentsSidebar.vue'
 
 import config from '../../config'
 import drive from '../../drive'
@@ -34,7 +33,7 @@ export default {
     ProgressSpinner, ErrorPanel, 
     EditorToolbar, EditorSaveStatus,
     EditorLinkDialog, EditorImageDialog,
-    AssignmentSidebar, CommentsSidebar
+    AssignmentSidebar
   },
 
   props: {
@@ -363,8 +362,8 @@ export default {
 
         <div 
           id="prosemirror" 
-          :class="{ fixedSidebar: fixed_sidebar }" 
           ref="prosemirror" 
+          :class="{ fixedSidebar: fixed_sidebar }" 
         />
 
         <div v-show="sidebar == 'assignment'" id="prosemirror-sidebar">
@@ -454,7 +453,7 @@ export default {
 
 .edit-container #prosemirror {
   position: absolute;
-  top: 39px;
+  top: 41px;
   left: 0;
   bottom: 0;
   right: 0;
