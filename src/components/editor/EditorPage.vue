@@ -369,7 +369,8 @@ export default {
         <div v-show="fixed_sidebar" id="prosemirror-sidebar">
           <AssignmentSidebar v-show="sidebar == 'assignment'" />
         </div>
-      
+        <div v-show="!fixed_sidebar" id="prosemirror-fixed-sidebar" />
+    
         
       </v-card>
     </div>
@@ -458,7 +459,7 @@ export default {
   bottom: 0;
   right: 0;
   overflow-y: scroll;
-  background-color:#f5f5f5;
+  z-index: 10;
 }
 
 
@@ -473,6 +474,17 @@ export default {
   border-left: 1px solid rgba(0,0,0,0.12);
 }
 
+.edit-container #prosemirror-fixed-sidebar {
+  position: fixed;
+  top: 93px;
+  bottom: 8px;
+  right: 8px;
+  width: 300px;
+  background-color:#f5f5f5;
+  border-left: 1px solid rgba(0,0,0,0.12);
+  z-index: 1;
+}
+
 
 .ProseMirror {
   outline: none;
@@ -480,9 +492,8 @@ export default {
 }
 
  #prosemirror .ProseMirror {
-    margin-right: 299px;
-    border-right: 1px solid rgba(0,0,0,0.12);
-    background-color: #fff;
+  margin-right: 300px; 
+  background-color: #fff;
  }
 
  .edit-container #prosemirror.fixedSidebar {
