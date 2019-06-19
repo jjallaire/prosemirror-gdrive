@@ -349,7 +349,7 @@ export default class ProsemirrorEditor {
 class EditorCommandAdaptor extends EditorCommand {
       
   constructor(command, editor) {
-    super(command.name, command.icon, command.title)
+    super(command.name, command.icon, command.text, command.title)
     this._command = command;
     this._editor = editor;
   }

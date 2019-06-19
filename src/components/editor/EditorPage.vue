@@ -359,10 +359,8 @@ export default {
         <v-toolbar card dense :height="40">
        
           <EditorToolbar :editor="editor" :show_changes="show_changes" :allow_comments="allow_comments" />
-          <EditorSaveStatus :status="save_status" />
-                 
           <v-spacer />
-
+          <EditorSaveStatus :status="save_status" />
           <v-select v-model="sidebar" class="select-sidebar" :items="sidebars" solo flat />
   
         </v-toolbar>
@@ -425,7 +423,7 @@ export default {
 }
 
 .edit-container .edit-card .editor-save-status {
-  margin-left: 10px;
+  margin-right: 14px;
 }
 
 .edit-container .select-sidebar {
@@ -546,7 +544,7 @@ export default {
 
 .ProseMirror p {
   margin-bottom: initial;
-  margin-right: 12px;
+  margin-right: 16px;
 }
 
 

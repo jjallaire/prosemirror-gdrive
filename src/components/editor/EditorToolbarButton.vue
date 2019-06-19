@@ -34,6 +34,7 @@ export default {
     @click="command.execute()"
   >
     <v-icon>{{ command.icon }}</v-icon>
+    <span v-if="command.text" class="button-text">{{ command.text }}</span>
   </v-btn>
 
 
@@ -52,6 +53,14 @@ export default {
 
 .editor-toolbar-button .v-btn__content {
    color: rgba(100,100,100,1);
+}
+
+.editor-toolbar-button .v-btn__content .button-text {
+  margin-left: 5px;
+}
+
+.editor-toolbar-button.v-btn--disabled .button-text {
+  color: rgba(0,0,0,0.26);
 }
 
 .editor-toolbar-button.v-btn--active {
