@@ -35,6 +35,14 @@ export function buildMarks(extra = {}) {
       ],
       toDOM: () => ['s', 0],
     },
+    comment: {
+      parseDOM: [
+        {
+          tag: 'span.comment',
+        },
+      ],
+      toDOM: () => ['span', { class: 'comment' }, 0]
+    },
     ...extra,
   }
 

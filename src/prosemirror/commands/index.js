@@ -9,6 +9,7 @@ import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
 import { linkCommand } from './link.js'
 import { insertCommand } from './insert.js'
+import { commentCommand } from './comment.js'
 
 import { imageCommand } from '../image/command.js'
 
@@ -64,7 +65,6 @@ class MarkCommand extends ProsemirrorCommand {
   isLatched(state) {
     return markIsActive(state, this._markType, this._attrs);
   }
-
 }
 
 class NodeCommand extends ProsemirrorCommand {
@@ -117,7 +117,8 @@ class WrapCommand extends NodeCommand {
 }
 
 export function buildCommands(schema, hooks) {
-  return [
+ 
+  let editingCommands = [
     new ProsemirrorCommand("undo", "undo", "Undo", undo),
     new ProsemirrorCommand("redo", "redo", "Redo", redo),
     new MarkCommand("strong", "format_bold", "Bold", schema.marks.strong),
@@ -140,6 +141,16 @@ export function buildCommands(schema, hooks) {
                            insertCommand(schema.nodes.horizontal_rule)),
     new ProsemirrorCommand("image", "image", "Image", 
                            imageCommand(schema.nodes.image, hooks.onEditImage))
-  ]
+  ];
+
+  let annotationCommands = [
+    new ProsemirrorCommand("comment", "comment", "Comment", commentCommand(schema.marks.comment))
+  ];
+  
+
+  if (hooks.isEditable())
+    return editingCommands;
+  else
+    return annotationCommands;
 }
 

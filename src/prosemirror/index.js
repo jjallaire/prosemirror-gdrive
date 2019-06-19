@@ -21,24 +21,27 @@ import { recreateTransform } from './recreate.js'
 
 export default class ProsemirrorEditor {
 
-  constructor(place, options) {
+  constructor(place, options, hooks) {
 
-    // save options
+    // options
     this._options = {
       autoFocus: false,
       content: '',
       content_revision: null,
       show_changes: true,
-      hooks: {
-        isEditable: () => true,
-        onUpdate: () => {},
-        onSelectionChanged: () => {},
-        onEditLink: Promise.resolve(null),
-        onEditImage: Promise.resolve(null)
-      },
       mapKeys: {},
       ...options
     };
+
+    // hooks
+    this._hooks = {
+      isEditable: () => true,
+      onUpdate: () => {},
+      onSelectionChanged: () => {},
+      onEditLink: Promise.resolve(null),
+      onEditImage: Promise.resolve(null),
+      ...hooks
+    },
 
     // create schema
     this._schema = new Schema({
@@ -78,7 +81,7 @@ export default class ProsemirrorEditor {
     });
 
     // create editor commands
-    this._commands = buildCommands(this._schema, this._options.hooks);
+    this._commands = buildCommands(this._schema, this._hooks);
     
     // auto-focus if requested
     if (this._options.autoFocus) {
@@ -127,6 +130,10 @@ export default class ProsemirrorEditor {
 
   reloadContent() {
     this.setContent(this._options.content, this._options.content_revision);
+  }
+
+  isEditable() {
+    return this._hooks.isEditable();
   }
 
   getHTML() {
@@ -297,10 +304,10 @@ export default class ProsemirrorEditor {
       new Plugin({
         key: new PluginKey('editable'),
         props: {
-          editable: this._options.hooks.isEditable
+          editable: this._hooks.isEditable
         },
       }),
-      imagePlugin(this._schema.nodes.image, this._options.hooks.onEditImage)
+      imagePlugin(this._schema.nodes.image, this._hooks.onEditImage)
     ];
   }
 
@@ -320,16 +327,16 @@ export default class ProsemirrorEditor {
   }
 
   _emitSelectionChanged() {
-    if (this._options.hooks.onSelectionChanged) {
-      this._options.hooks.onSelectionChanged({
+    if (this._hooks.onSelectionChanged) {
+      this._hooks.onSelectionChanged({
         type: (this._state.selection instanceof NodeSelection) ? 'node' : 'text'
       });
     }
   }
 
   _emitUpdate(transaction) {
-    if (this._options.hooks.onUpdate) {
-      this._options.hooks.onUpdate({
+    if (this._hooks.onUpdate) {
+      this._hooks.onUpdate({
         time: transaction.time,
         getHTML: this.getHTML.bind(this),
         getJSON: this.getJSON.bind(this),

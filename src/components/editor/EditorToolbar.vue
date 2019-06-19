@@ -31,6 +31,10 @@ export default {
     show_changes: {
       type: Boolean,
       default: false
+    },
+    allow_comments: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -38,6 +42,10 @@ export default {
     ...mapGetters([
       'doc'
     ]),
+
+    editable: function() {
+      return this.editor.isEditable();
+    },
     commands: function() {
       return this.editor.commands;
     },
@@ -80,35 +88,42 @@ export default {
     
     <EditorToolbarButton :command="print_command" />
 
-    <v-divider inset vertical />
+    <template v-if="editable">
 
-    <EditorToolbarButton :command="commands.undo" />
-    <EditorToolbarButton :command="commands.redo" />
- 
-    <template v-if="!minimal">
       <v-divider inset vertical />
-      <EditorToolbarMenuBlock :commands="block_commands" /> 
+
+      <EditorToolbarButton :command="commands.undo" />
+      <EditorToolbarButton :command="commands.redo" />
+  
+      <template v-if="!minimal">
+        <v-divider inset vertical />
+        <EditorToolbarMenuBlock :commands="block_commands" /> 
+      </template>
+
+      <v-divider inset vertical />
+
+      <EditorToolbarButton :command="commands.strong" />
+      <EditorToolbarButton :command="commands.em" />
+
+      <v-divider inset vertical />
+
+      <EditorToolbarButton :command="commands.bullet_list" />
+      <EditorToolbarButton :command="commands.ordered_list" />
+      <EditorToolbarButton :command="commands.blockquote" />
+
+      <v-divider inset vertical />
+
+      <EditorToolbarButton v-if="!minimal" :command="commands.image" />
+      <EditorToolbarButton :command="commands.link" />
     </template>
 
-    <v-divider inset vertical />
-
-    <EditorToolbarButton :command="commands.strong" />
-    <EditorToolbarButton :command="commands.em" />
-
-    <v-divider inset vertical />
-
-    <EditorToolbarButton :command="commands.bullet_list" />
-    <EditorToolbarButton :command="commands.ordered_list" />
-    <EditorToolbarButton :command="commands.blockquote" />
-
-    <v-divider inset vertical />
-
-    <EditorToolbarButton v-if="!minimal" :command="commands.image" />
-    <EditorToolbarButton :command="commands.link" />
-
+   
     <v-divider v-if="show_changes" inset vertical />
-    
     <EditorToolbarButton v-if="show_changes" :command="commands.show_changes" />
+      
+    <v-divider v-if="allow_comments" inset vertical />
+    <EditorToolbarButton v-if="allow_comments" :command="commands.comment" />
+    
     
   </span>
 

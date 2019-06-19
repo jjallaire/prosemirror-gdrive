@@ -31,13 +31,18 @@ export default {
   },
 
   mounted() {
-    this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
-      content: '',
-      autoFocus: false,
-      hooks: {
+    this.editor = new ProsemirrorEditor(
+      this.$refs.prosemirror, 
+      // options
+      {
+        content: '',
+        autoFocus: false,
+      },
+      // hooks
+      {
         isEditable: () => false,
       }
-    });
+    );
   },
 
   methods: {

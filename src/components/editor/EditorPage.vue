@@ -123,6 +123,11 @@ export default {
              this.is_teacher;
     },
 
+    allow_comments: function() {
+      return (this.status === Status.TeacherReview || this.status === Status.TeacherEvaluate || this.status == Status.Complete) &&
+             this.is_teacher;
+    },
+
     fixed_sidebar: function() {
       return this.sidebar !== 'comments';
     }
@@ -187,19 +192,24 @@ export default {
       .then(content => {
 
         // initialize editor
-        this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
-          autoFocus: true,
-          editable: true,
-          content: content.base,
-          content_revision: content.revision,
-          hooks: {
+        this.editor = new ProsemirrorEditor(
+          this.$refs.prosemirror, 
+          // options
+          {
+            autoFocus: true,
+            editable: true,
+            content: content.base,
+            content_revision: content.revision,
+          },
+          // hooks
+          {
             isEditable: () => this.editable,
             onUpdate: this.onEditorUpdate,
             onSelectionChanged: this.onEditorSelectionChanged,
             onEditLink: this.onEditLink,
             onEditImage: this.onEditImage
           }
-        });
+        );
 
         // subscribe to file changes
         return driveChanges.subscribe(this.syncHandler);
@@ -245,8 +255,7 @@ export default {
     },
 
     onEditorUpdate(update) {
-      if (this.editable)
-        this.driveSave.onEditorUpdate(update);
+      this.driveSave.onEditorUpdate(update);
     },
 
     onEditLink(link) {
@@ -349,7 +358,7 @@ export default {
       <v-card class="edit-card card--flex-toolbar">
         <v-toolbar card dense :height="40">
        
-          <EditorToolbar :editor="editor" :show_changes="show_changes" />
+          <EditorToolbar :editor="editor" :show_changes="show_changes" :allow_comments="allow_comments"/>
           <EditorSaveStatus :status="save_status" />
                  
           <v-spacer />
@@ -512,12 +521,16 @@ export default {
   grid-column: content;
 }
 
-.edit-container #prosemirror.commentsSidebar .ProseMirror .comment {
+.edit-container #prosemirror.commentsSidebar .ProseMirror .sidebar-comment {
   grid-column: comments;
 }
 
- .edit-container #prosemirror.fixedSidebar .ProseMirror .comment {
+ .edit-container #prosemirror.fixedSidebar .ProseMirror .sidebar-comment {
    display: none;
+ }
+
+ .edit-container #prosemirror.commentsSidebar .ProseMirror span.comment {
+   background-color: pink;
  }
 
 .ProseMirror .insertion {

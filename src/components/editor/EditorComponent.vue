@@ -43,16 +43,21 @@ export default {
   methods: {
 
     initialize({ content, onUpdate, autoFocus }) {
-      this.editor = new ProsemirrorEditor(this.$refs.prosemirror, {
-        content: content,
-        autoFocus: autoFocus || false,
-        hooks: {
+      this.editor = new ProsemirrorEditor(
+        this.$refs.prosemirror, 
+        // options
+        {
+          content: content,
+          autoFocus: autoFocus || false,
+        },
+        // hooks
+        {
           onUpdate: onUpdate,
           onSelectionChanged: this.onEditorSelectionChanged,
           onEditLink: this.onEditLink,
           onEditImage: this.onEditImage
         }
-      })
+      )
     },
 
     onEditLink(link) {
@@ -112,7 +117,6 @@ export default {
 }
 
 .prosemirror-editor-component {
-  padding: 12px;
   position: absolute;
   top: 29px;
   left: 0;
