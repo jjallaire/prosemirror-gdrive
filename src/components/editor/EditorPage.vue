@@ -363,13 +363,13 @@ export default {
         <div 
           id="prosemirror" 
           ref="prosemirror" 
-          :class="{ fixedSidebar: fixed_sidebar }" 
+          :class="{ fixedSidebar: fixed_sidebar, commentsSidebar: !fixed_sidebar }" 
         />
 
         <div v-show="fixed_sidebar" id="prosemirror-sidebar">
           <AssignmentSidebar v-show="sidebar == 'assignment'" />
         </div>
-        <div v-show="!fixed_sidebar" id="prosemirror-fixed-sidebar" />
+        <div v-show="!fixed_sidebar" id="prosemirror-sidebar-background" />
     
         
       </v-card>
@@ -462,7 +462,6 @@ export default {
   z-index: 10;
 }
 
-
 .edit-container #prosemirror-sidebar {
   position: absolute;
   top: 41px;
@@ -474,7 +473,7 @@ export default {
   border-left: 1px solid rgba(0,0,0,0.12);
 }
 
-.edit-container #prosemirror-fixed-sidebar {
+.edit-container #prosemirror-sidebar-background {
   position: fixed;
   top: 93px;
   bottom: 8px;
@@ -492,7 +491,6 @@ export default {
 }
 
  #prosemirror .ProseMirror {
-  margin-right: 300px; 
   background-color: #fff;
  }
 
@@ -501,10 +499,26 @@ export default {
 }
 
  .edit-container #prosemirror.fixedSidebar .ProseMirror {
-  margin-right: 0;
   border-right: none;
-
 }
+
+.edit-container #prosemirror.commentsSidebar .ProseMirror {
+  display: grid;
+  grid-template-columns: [content] auto [comments] 288px; 
+  background-color: transparent;
+}
+
+.edit-container #prosemirror.commentsSidebar .ProseMirror > * {
+  grid-column: content;
+}
+
+.edit-container #prosemirror.commentsSidebar .ProseMirror .comment {
+  grid-column: comments;
+}
+
+ .edit-container #prosemirror.fixedSidebar .ProseMirror .comment {
+   display: none;
+ }
 
 .ProseMirror .insertion {
   color: rgb(13,103,87);
@@ -519,7 +533,9 @@ export default {
 
 .ProseMirror p {
   margin-bottom: initial;
+  margin-right: 12px;
 }
+
 
 .ProseMirror code {
   color: inherit;
