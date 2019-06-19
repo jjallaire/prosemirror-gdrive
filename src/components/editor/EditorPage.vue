@@ -358,7 +358,7 @@ export default {
       <v-card class="edit-card card--flex-toolbar">
         <v-toolbar card dense :height="40">
        
-          <EditorToolbar :editor="editor" :show_changes="show_changes" :allow_comments="allow_comments"/>
+          <EditorToolbar :editor="editor" :show_changes="show_changes" :allow_comments="allow_comments" />
           <EditorSaveStatus :status="save_status" />
                  
           <v-spacer />
