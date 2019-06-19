@@ -10,6 +10,14 @@ export function commentCommand(markType) {
 
   // Prosemirror.setBlockType
 
+  // commands.selectParentNode(pm: ProseMirror, apply: ?bool) → bool 📄
+  // Move the selection to the node wrapping the current selection, if any. 
+  // (Will not select the document node.)
+
+  // commands. createParagraphNear(pm: ProseMirror, apply: ?bool) → bool 📄
+  // If a block node is selected, create an empty paragraph before (if 
+  // it is its parent's first child) or after it.
+
   return (state, dispatch) => {
 
     // must have a selection
