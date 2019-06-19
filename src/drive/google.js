@@ -1,7 +1,6 @@
 
 
 import config from '../config'
-import * as log from '../core/log.js'
 
 const kDiscoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
 
@@ -107,8 +106,16 @@ export default {
           }
         })
         .catch(error => {
-          log.addBreadcrumb('init_error', JSON.stringify(error));
-          store.commit(SET_INIT_ERROR, new GAPIError(error.error.errors[0]));
+          if (error.error.errors) {
+            store.commit(SET_INIT_ERROR, new GAPIError(error.error.errors[0]));
+          } else if (error.error) {
+            let msg = error.error;
+            if (error.details)
+              msg = msg + ": " + error.details;
+            store.commit(SET_INIT_ERROR, new Error(msg))
+          } else {
+            store.commit(SET_INIT_ERROR, error);
+          }
           resolve();
         });
       });
