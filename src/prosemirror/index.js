@@ -213,18 +213,18 @@ export default class ProsemirrorEditor {
   _computeDiffDocument() {
     // based on https://gitlab.com/mpapp-public/prosemirror-recreate-steps/blob/master/demo/history/index.js
     
-    // recreate transform from base to revision
+    // recreate transform back to base doc 
     let baseDoc = this._schema.nodeFromJSON(this._options.content);
     let revisionDoc = this._schema.nodeFromJSON(this._options.content_revision);
-    let tr = recreateTransform(baseDoc, revisionDoc, true, true);
+    let tr = recreateTransform(revisionDoc, baseDoc, true, true);
     
     // create decorations corresponding to the changes
     const decorations = []
-    let changeSet = ChangeSet.create(baseDoc).addSteps(tr.doc, tr.mapping.maps);
+    let changeSet = ChangeSet.create(revisionDoc).addSteps(tr.doc, tr.mapping.maps);
     let changes = simplifyChanges(changeSet.changes, tr.doc);
 
-    // insertion
-    function findInsertEndIndex(startIndex) {
+    // deletion
+    function findDeleteEndIndex(startIndex) {
       for (let i=startIndex; i<changes.length; i++) {
         // if we are at the end then that's the end index
         if (i === (changes.length - 1))
@@ -236,15 +236,15 @@ export default class ProsemirrorEditor {
     }
     let index = 0;
     while(index < changes.length) {
-      let endIndex = findInsertEndIndex(index);
+      let endIndex = findDeleteEndIndex(index);
       decorations.push(
-        Decoration.inline(changes[index].fromB, changes[endIndex].toB, { class: 'insertion' }, {})
+        Decoration.inline(changes[index].fromB, changes[endIndex].toB, { class: 'deletion' }, {})
       )
       index = endIndex + 1;
     }
    
-    // deletion
-    function findDeleteEndIndex(startIndex) {
+    // insertion
+    function findInsertEndIndex(startIndex) {
       for (let i=startIndex; i<changes.length; i++) {
         // if we are at the end then that's the end index
         if (i === (changes.length - 1))
@@ -256,17 +256,17 @@ export default class ProsemirrorEditor {
     }
     index = 0;
     while(index < changes.length) {
-      let endIndex = findDeleteEndIndex(index);
+      let endIndex = findInsertEndIndex(index);
 
-      // do the deletion
-      let slice = baseDoc.slice(changes[index].fromA, changes[endIndex].toA);
+      // apply the insertion
+      let slice = revisionDoc.slice(changes[index].fromA, changes[endIndex].toA);
       let span = document.createElement('span');
-      span.setAttribute('class', 'deletion');
+      span.setAttribute('class', 'insertion');
       span.appendChild(
         DOMSerializer.fromSchema(this._schema).serializeFragment(slice.content)
       )
       decorations.push(
-        Decoration.widget(changes[index].fromB, span, { 
+        Decoration.widget(changes[index].toB, span, { 
           marks: []
         })
       );
