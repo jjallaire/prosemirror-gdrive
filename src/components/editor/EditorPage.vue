@@ -519,11 +519,12 @@ export default {
   grid-column: content;
 }
 
-.edit-container #prosemirror.commentsSidebar .ProseMirror .sidebar-comment {
+.edit-container #prosemirror.commentsSidebar .ProseMirror .sidebar-comments {
   grid-column: comments;
+  display: contents;
 }
 
- .edit-container #prosemirror.fixedSidebar .ProseMirror .sidebar-comment {
+ .edit-container #prosemirror.fixedSidebar .ProseMirror .sidebar-comments {
    display: none;
  }
 

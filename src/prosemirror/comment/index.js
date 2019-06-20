@@ -1,3 +1,8 @@
+
+import { Plugin, PluginKey } from "prosemirror-state"
+import { Decoration, DecorationSet } from "prosemirror-view"
+import { AddMarkStep } from "prosemirror-transform"
+
 export const commentMark = {
   parseDOM: [
     {
@@ -6,6 +11,8 @@ export const commentMark = {
   ],
   toDOM: () => ['span', { class: 'comment' }, 0]
 }
+
+const commentsPluginKey = new PluginKey('comments');
 
 export function commentCommand(markType) {
 
@@ -21,6 +28,8 @@ export function commentCommand(markType) {
       // add a comment mark
       let tr = state.tr;
       tr.addMark(state.selection.from, state.selection.to, markType.create());
+    
+      // dispatch the transaction
       dispatch(tr);
     }
 
@@ -29,10 +38,77 @@ export function commentCommand(markType) {
   }
 }
 
-export function commentPlugin() {
+// https://prosemirror.net/docs/ref/#state.Plugin_System
 
+export function commentsPlugin() {
+
+  return new Plugin({
+    key: commentsPluginKey,
+    state: {
+      init() {
+        return DecorationSet.empty;
+      },
+      apply(tr, set) {
+        
+        // adjust decoration positions to changes made by the transaction
+        set = set.map(tr.mapping, tr.doc);
+
+        // if any comments were inserted then add a comments aside
+        tr.steps.forEach(step => {
+          if (step instanceof AddMarkStep) {
+            let type = step.mark.type;
+            if (type.name === "comment") {
+              let comment = document.createElement('aside');
+              comment.setAttribute('class', 'sidebar-comments');
+              comment.innerHTML = "Here is a comment<br/>";
+
+              const resolvedPos = tr.doc.resolve(step.from);
+              const afterPos = resolvedPos.after(1);
+
+              //if (set.find(afterPos, afterPos).length === 0) {
+                let commentWidget = Decoration.widget(afterPos, comment, { marks: [] });
+                set = set.add(tr.doc, [commentWidget]);
+              //}
+            }
+          }
+        });
+
+        // https://prosemirror.net/examples/upload/
+        // https://github.com/ProseMirror/website/blob/d9427c7ff48312149f7be4607b1bf393240ab683/src/collab/client/comment.js
+
+
+        return set;
+      }
+    },
+    props: {
+      decorations(state) {
+        return this.getState(state);
+      }
+    },
+  })
   
 }
+
+/*
+// get the comments plugin
+      let commentsPlugin = commentsPluginKey.get(state);
+      let pluginState = commentsPlugin.getState(state);
+      let decorationSet = pluginState.decorationSet;
+
+      // add a comment decoration if we need to
+      const resolvedPos = tr.doc.resolve(state.selection.from);
+      const afterPos = resolvedPos.after(1);
+      if (decorationSet.find(afterPos, afterPos).length === 0) {
+        let comment = document.createElement('aside');
+        comment.setAttribute('class', 'sidebar-comments');
+        comment.innerText = "Here is a comment";
+        let commentWidget = Decoration.widget(afterPos, comment, { marks: [] });
+
+        decorationSet = decorationSet.add(tr.doc, [commentWidget] );
+      }
+
+
+*/
 
 // TODO: could also consider decorating the body node at the 
   // appropriate position (would ensure that comments aren't 

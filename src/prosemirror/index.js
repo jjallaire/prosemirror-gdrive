@@ -15,6 +15,7 @@ import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
 import { imagePlugin } from "./image/plugin.js";
+import { commentsPlugin } from './comment'
 
 import { recreateTransform } from './recreate.js'
 
@@ -51,7 +52,7 @@ export default class ProsemirrorEditor {
 
     // setup document and plugins
     let doc = this._createDocument(this._options.content);
-    let plugins = this._basePlugins();
+    let plugins = this._basePlugins(doc);
 
 
     // if we have a content revision then we need to display diffs
@@ -103,7 +104,7 @@ export default class ProsemirrorEditor {
 
     this._options.content = content;
     let doc = this._createDocument(this._options.content);
-    let plugins = this._basePlugins();
+    let plugins = this._basePlugins(doc);
 
     if (contentRevision) {
       this._options.content_revision = contentRevision;
@@ -293,7 +294,7 @@ export default class ProsemirrorEditor {
    
   }
 
-  _basePlugins() {
+  _basePlugins(doc) {
     return [
       history(),
       buildInputRules(this._schema),
@@ -307,7 +308,8 @@ export default class ProsemirrorEditor {
           editable: this._hooks.isEditable
         },
       }),
-      imagePlugin(this._schema.nodes.image, this._hooks.onEditImage)
+      imagePlugin(this._schema.nodes.image, this._hooks.onEditImage),
+      commentsPlugin(doc)
     ];
   }
 

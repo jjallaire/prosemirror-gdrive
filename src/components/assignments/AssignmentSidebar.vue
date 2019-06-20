@@ -24,7 +24,8 @@ export default {
   watch: {
     doc: {
       handler () {
-        this.editor.setContent(this.doc.description);
+        if (this.doc.id)
+          this.editor.setContent(this.doc.description);
       },
       deep: true
     }
