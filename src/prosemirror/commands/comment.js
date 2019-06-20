@@ -1,6 +1,10 @@
 export function commentCommand(markType) {
 
 
+  // TODO: could also consider decorating the body node at the 
+  // appropriate position (would ensure that comments aren't 
+  // deleted b/c the body node can't be deleted)
+
   // TODO: the insertion of a comment needs to insert an additional node
   // that is right below the paragraph containing the node. This node
   // will be <p class="comment"> and should share an ID with this comment.
