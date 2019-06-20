@@ -45,8 +45,21 @@ export function commentsPlugin() {
   return new Plugin({
     key: commentsPluginKey,
     state: {
-      init() {
-        return DecorationSet.empty;
+      init(config, instance) {
+
+        let set = DecorationSet.empty;
+
+        let doc = instance.doc;
+
+        let comments = [];
+        doc.descendants((node, pos, parent) => {
+          comments = comments.concat(node.marks.filter(mark => mark.type.name === "comment"));
+        });
+
+        console.log("comments: " + comments.length);
+      
+
+        return set;
       },
       apply(tr, set) {
         
