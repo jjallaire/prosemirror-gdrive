@@ -2,6 +2,8 @@
 
 import { schema } from "prosemirror-schema-basic"
 
+import { commentMark } from './comment'
+
 export function buildMarks(extra = {}) {
 
   let marks = {
@@ -35,14 +37,7 @@ export function buildMarks(extra = {}) {
       ],
       toDOM: () => ['s', 0],
     },
-    comment: {
-      parseDOM: [
-        {
-          tag: 'span.comment',
-        },
-      ],
-      toDOM: () => ['span', { class: 'comment' }, 0]
-    },
+    comment: commentMark,
     ...extra,
   }
 
