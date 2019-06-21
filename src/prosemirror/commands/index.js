@@ -146,7 +146,8 @@ export function buildCommands(schema, hooks) {
   ];
 
   let annotationCommands = [
-    new ProsemirrorCommand("comment", "add_comment", "Add Comment", "Add Comment", commentCommand(schema.marks.comment))
+    new ProsemirrorCommand("comment", "add_comment", "Add Comment", "Add Comment", 
+                           commentCommand(schema.marks.comment, hooks.onEditComment))
   ];
   
 

@@ -6,32 +6,53 @@ import { AddMarkStep } from "prosemirror-transform"
 // NodeViews might be a better match here: https://prosemirror.net/examples/footnote/
 
 export const commentMark = {
+  attrs: { 'data-id': {}, 'data-comment': {} }, 
   parseDOM: [
     {
       tag: 'span.comment',
+      getAttrs(dom) { 
+        return {
+          'data-id': dom['data-id'],
+          'data-comment': dom['data-comment']
+        }
+      }
     },
   ],
-  toDOM: () => ['span', { class: 'comment' }, 0]
+  toDOM(node) { 
+    return [
+      'span', 
+      { 
+        class: 'comment', 
+        'data-id': node.attrs['data-id'], 
+        'data-comment': node.attrs['data-comment'] 
+      }, 
+      0
+    ]
+  },
+  inclusive: false
 }
 
 
-export function commentCommand(markType) {
+export function commentCommand(markType, onEditComment) {
 
-  return (state, dispatch) => {
+  return (state, dispatch, view) => {
 
-    // must have a selection
+    // require a selection
     if (state.selection.empty)
       return false;
 
     // dispatch if requested
     if (dispatch) {
-
-      // add a comment mark
-      let tr = state.tr;
-      tr.addMark(state.selection.from, state.selection.to, markType.create());
-    
-      // dispatch the transaction
-      dispatch(tr);
+       // show edit ui
+       onEditComment()
+        .then(comment => {
+          if (comment) {
+            let tr = state.tr;
+            tr.addMark(state.selection.from, state.selection.to, markType.create(comment));
+            dispatch(tr);
+          }
+          view.focus();
+        });
     }
 
     return true;

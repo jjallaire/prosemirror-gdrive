@@ -26,6 +26,8 @@ import dialog from '../core/dialog'
 
 import { isTeacher } from '../../store/selectors';
 
+import shortUuid from 'short-uuid'
+
 export default {
   name: 'EditorPage',
 
@@ -207,7 +209,8 @@ export default {
             onUpdate: this.onEditorUpdate,
             onSelectionChanged: this.onEditorSelectionChanged,
             onEditLink: this.onEditLink,
-            onEditImage: this.onEditImage
+            onEditImage: this.onEditImage,
+            onEditComment: this.onEditComment,
           }
         );
 
@@ -264,6 +267,16 @@ export default {
 
     onEditImage(image) {
       return this.$refs.imageDialog.show(image);
+    },
+
+    onEditComment() {
+      return dialog.prompt("Comment")
+        .then(comment => {
+          return {
+            'data-id': shortUuid().new(),
+            'data-comment': comment
+          }
+        })
     },
 
     onSaveStatus(status) {
@@ -531,7 +544,7 @@ export default {
  }
 
  .edit-container #prosemirror.commentsSidebar .ProseMirror span.comment {
-   background-color: pink;
+   background-color: #FFF8DC;
  }
 
 .ProseMirror .insertion {

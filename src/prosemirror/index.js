@@ -19,7 +19,6 @@ import { commentsPlugin } from './comment'
 
 import { recreateTransform } from './recreate.js'
 
-
 export default class ProsemirrorEditor {
 
   constructor(place, options, hooks) {
@@ -41,6 +40,7 @@ export default class ProsemirrorEditor {
       onSelectionChanged: () => {},
       onEditLink: Promise.resolve(null),
       onEditImage: Promise.resolve(null),
+      onEditComment: Promise.resolve(null),
       ...hooks
     },
 
