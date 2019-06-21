@@ -36,3 +36,7 @@ new Vue({
   render: h => h(App),
 }).$mount('#app')
 
+
+// TODO: Way to prevent removal of decorations (NodeView?)
+// TODO: Assignment sidebar watching doc creates too much chatter
+// TODO: Some sort of comment selection
