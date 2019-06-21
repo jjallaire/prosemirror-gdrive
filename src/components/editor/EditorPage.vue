@@ -522,6 +522,8 @@ export default {
 .edit-container #prosemirror.commentsSidebar .ProseMirror .sidebar-comments {
   grid-column: comments;
   display: contents;
+  user-select: none;
+
 }
 
  .edit-container #prosemirror.fixedSidebar .ProseMirror .sidebar-comments {

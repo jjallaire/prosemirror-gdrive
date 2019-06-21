@@ -52,7 +52,7 @@ export default class ProsemirrorEditor {
 
     // setup document and plugins
     let doc = this._createDocument(this._options.content);
-    let plugins = this._basePlugins(doc);
+    let plugins = this._basePlugins();
 
 
     // if we have a content revision then we need to display diffs
@@ -104,7 +104,7 @@ export default class ProsemirrorEditor {
 
     this._options.content = content;
     let doc = this._createDocument(this._options.content);
-    let plugins = this._basePlugins(doc);
+    let plugins = this._basePlugins();
 
     if (contentRevision) {
       this._options.content_revision = contentRevision;
@@ -294,7 +294,7 @@ export default class ProsemirrorEditor {
    
   }
 
-  _basePlugins(doc) {
+  _basePlugins() {
     return [
       history(),
       buildInputRules(this._schema),
@@ -309,7 +309,7 @@ export default class ProsemirrorEditor {
         },
       }),
       imagePlugin(this._schema.nodes.image, this._hooks.onEditImage),
-      commentsPlugin(doc)
+      commentsPlugin(this._schema.marks.comment)
     ];
   }
 
