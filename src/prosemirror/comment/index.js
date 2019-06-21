@@ -72,8 +72,10 @@ export function commentsPlugin(markType) {
 
         let comments = [];
         doc.descendants((node, pos) => {
-          if (markType.isInSet(node.marks))
-            comments.push(createComment(doc, pos))
+          node.marks.forEach(mark => {
+            if (mark.type === markType)
+              comments.push(createComment(doc, pos, mark))
+          })  
         });    
 
         return DecorationSet.create(doc, comments);
@@ -90,9 +92,8 @@ export function commentsPlugin(markType) {
         // if any comments were inserted then add a comments aside
         tr.steps.forEach(step => {
           if (step instanceof AddMarkStep) {
-            let type = step.mark.type;
-            if (type.name === "comment") {
-              let commentWidget = createComment(tr.doc, step.from);
+            if (step.mark.type === markType) {
+              let commentWidget = createComment(tr.doc, step.from, step.mark);
               set = set.add(tr.doc, [commentWidget]);
             }
           }
@@ -110,11 +111,11 @@ export function commentsPlugin(markType) {
 }
 
 
-function createComment(doc, at) {
+function createComment(doc, at, mark) {
   const resolvedPos = doc.resolve(at);
   const afterPos = resolvedPos.after(1);
   let comment = document.createElement('aside');
   comment.setAttribute('class', 'sidebar-comments');
-  comment.innerHTML = "Here is a comment<br/>";
+  comment.innerHTML = mark.attrs['data-comment'] + "<br/>";
   return Decoration.widget(afterPos, comment, { marks: [] });
 }
