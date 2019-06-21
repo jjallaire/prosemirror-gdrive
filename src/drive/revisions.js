@@ -10,7 +10,7 @@ export function manageRevisions(doc) {
 
   let preserveRevisions = [
     {
-      status: Status.TeacherReview,
+      status: Status.StudentRevision,
       revision: "draftRevisionId"
     },
     {

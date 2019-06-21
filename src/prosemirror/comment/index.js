@@ -61,8 +61,8 @@ export function commentsPlugin(markType) {
         
         // adjust decoration positions to changes made by the transaction
         set = set.map(tr.mapping, tr.doc, {
-          onRemove(decorationSpec) {
-            console.log(decorationSpec);
+          onRemove() {
+            
           }
         });
 
