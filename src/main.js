@@ -37,6 +37,26 @@ new Vue({
 }).$mount('#app')
 
 
+
+// footnote example: 
+//   https://prosemirror.net/examples/footnote/
+//   https://glitch.com/edit/#!/voracious-perigee?path=index.js:18:26
+
+// simple paragraph example: https://observablehq.com/@hubgit/prosemirror-nodeviews-example
+
+
+/*
+    - Add a new block level node type named 'aside'
+    - We create a node view for asides 
+    - When inserting footnotes we check for an aside node view 
+      for the current paragraph and then use that
+    - filterTransaction to prevent deletion? (https://discuss.prosemirror.net/t/how-to-prevent-node-deletion/130/8)
+
+
+
+*/
+
+
 // TODO: Way to prevent removal of decorations (NodeView?)
 // TODO: Assignment sidebar watching doc creates too much chatter
 // TODO: Some sort of comment selection
