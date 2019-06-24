@@ -24,32 +24,24 @@ export default {
   watch: {
     doc: {
       handler () {
-        if (this.doc.id)
-          this.editor.setContent(this.doc.description);
+        if (this.doc.id && !this.editor) {
+          this.editor = new ProsemirrorEditor(
+            this.$refs.prosemirror, 
+            // options
+            {
+              content: this.doc.description,
+              autoFocus: false,
+            },
+            // hooks
+            {
+              isEditable: () => false,
+            }
+          );
+        }
       },
       deep: true
     }
   },
-
-  mounted() {
-    this.editor = new ProsemirrorEditor(
-      this.$refs.prosemirror, 
-      // options
-      {
-        content: '',
-        autoFocus: false,
-      },
-      // hooks
-      {
-        isEditable: () => false,
-      }
-    );
-  },
-
-  methods: {
-   
-  }
-
 }
 
 </script>
