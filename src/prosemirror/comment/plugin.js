@@ -1,66 +1,34 @@
 
+
+// NodeViews might be a better match here: https://prosemirror.net/examples/footnote/
+// footnote example: 
+//   https://prosemirror.net/examples/footnote/
+//   https://glitch.com/edit/#!/voracious-perigee?path=index.js:18:26
+
+// simple paragraph example: https://observablehq.com/@hubgit/prosemirror-nodeviews-example
+
+
+/*
+    - Add a new block level node type named 'aside'
+    - We create a node view for asides 
+    - When inserting footnotes we check for an aside node view 
+      for the current paragraph and then use that
+    - filterTransaction to prevent deletion? (https://discuss.prosemirror.net/t/how-to-prevent-node-deletion/130/8)
+
+
+
+*/
+
+// TODO: Way to prevent removal of decorations (NodeView?)
+// TODO: Some sort of comment selection
+
+
 import { Plugin, PluginKey } from "prosemirror-state"
 import { Decoration, DecorationSet } from "prosemirror-view"
 import { AddMarkStep } from "prosemirror-transform"
 
-// NodeViews might be a better match here: https://prosemirror.net/examples/footnote/
 
-export const commentMark = {
-  attrs: { 'data-id': {}, 'data-comment': {} }, 
-  parseDOM: [
-    {
-      tag: 'span.comment',
-      getAttrs(dom) { 
-        return {
-          'data-id': dom['data-id'],
-          'data-comment': dom['data-comment']
-        }
-      }
-    },
-  ],
-  toDOM(node) { 
-    return [
-      'span', 
-      { 
-        class: 'comment', 
-        'data-id': node.attrs['data-id'], 
-        'data-comment': node.attrs['data-comment'] 
-      }, 
-      0
-    ]
-  },
-  inclusive: false
-}
-
-
-export function commentCommand(markType, onEditComment) {
-
-  return (state, dispatch, view) => {
-
-    // require a selection
-    if (state.selection.empty)
-      return false;
-
-    // dispatch if requested
-    if (dispatch) {
-       // show edit ui
-       onEditComment()
-        .then(comment => {
-          if (comment) {
-            let tr = state.tr;
-            tr.addMark(state.selection.from, state.selection.to, markType.create(comment));
-            dispatch(tr);
-          }
-          view.focus();
-        });
-    }
-
-    return true;
-
-  }
-}
-
-export function commentsPlugin(markType) {
+export function commentPlugin(markType) {
 
   return new Plugin({
     key: new PluginKey('comments'),

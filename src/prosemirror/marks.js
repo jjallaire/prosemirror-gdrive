@@ -2,7 +2,7 @@
 
 import { schema } from "prosemirror-schema-basic"
 
-import { commentMark } from './comment'
+import { commentMark } from './comment/mark.js'
 
 export function buildMarks(extra = {}) {
 

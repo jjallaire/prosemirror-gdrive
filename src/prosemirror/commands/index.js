@@ -9,7 +9,7 @@ import { toggleList, toggleBlockType, toggleWrap } from 'tiptap-commands'
 
 import { linkCommand } from './link.js'
 import { insertCommand } from './insert.js'
-import { commentCommand } from '../comment'
+import { commentCommand } from '../comment/command.js'
 
 import { imageCommand } from '../image/command.js'
 
