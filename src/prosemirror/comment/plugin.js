@@ -7,6 +7,10 @@
 
 // simple paragraph example: https://observablehq.com/@hubgit/prosemirror-nodeviews-example
 
+// discussion of input in node views:
+//  https://discuss.prosemirror.net/t/creating-a-custom-node-with-inline-input/1282/8
+
+
 
 /*
     - Add a new block level node type named 'aside'
@@ -28,7 +32,7 @@ import { Decoration, DecorationSet } from "prosemirror-view"
 import { AddMarkStep } from "prosemirror-transform"
 
 
-export function commentPlugin(markType) {
+export function commentsPlugin(markType) {
 
   return new Plugin({
     key: new PluginKey('comments'),

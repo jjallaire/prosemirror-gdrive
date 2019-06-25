@@ -15,7 +15,7 @@ import { buildKeymap } from "./keymap"
 import { buildInputRules } from "./inputrules"
 import { EditorCommand, buildCommands } from './commands' 
 import { imagePlugin } from "./image/plugin.js";
-import { commentPlugin } from './comment/plugin.js'
+import { commentsPlugin } from './comment/plugin.js'
 
 import { recreateTransform } from './recreate.js'
 
@@ -309,7 +309,7 @@ export default class ProsemirrorEditor {
         },
       }),
       imagePlugin(this._schema.nodes.image, this._hooks.onEditImage),
-      commentPlugin(this._schema.marks.comment)
+      commentsPlugin(this._schema.marks.comment)
     ];
   }
 
