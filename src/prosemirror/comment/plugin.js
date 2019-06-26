@@ -26,6 +26,8 @@
 // TODO: Way to prevent removal of decorations (NodeView?)
 // TODO: Some sort of comment selection
 
+// from the website: https://github.com/ProseMirror/website/blob/d9427c7ff48312149f7be4607b1bf393240ab683/src/collab/client/comment.js
+
 
 import { Plugin, PluginKey } from "prosemirror-state"
 import { Decoration, DecorationSet } from "prosemirror-view"
@@ -87,6 +89,11 @@ function createComment(doc, at, mark) {
   const resolvedPos = doc.resolve(at);
   const afterPos = resolvedPos.after(1);
   let comment = document.createElement('aside');
+
+  comment.addEventListener("click", () => {
+    comment.classList.toggle('comment-expanded');
+  });
+
   comment.innerHTML = mark.attrs['data-comment'] + "<br/>";
   return Decoration.widget(afterPos, comment, { marks: [] });
 }

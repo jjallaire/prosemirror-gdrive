@@ -536,7 +536,11 @@ export default {
   grid-column: comments;
   display: contents;
   user-select: none;
+  cursor: pointer;
+}
 
+.edit-container #prosemirror.commentsSidebar .ProseMirror aside.comment-expanded {
+  font-weight: 500;
 }
 
  .edit-container #prosemirror.fixedSidebar .ProseMirror aside {
