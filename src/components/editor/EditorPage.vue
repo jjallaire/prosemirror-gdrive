@@ -532,14 +532,14 @@ export default {
   grid-column: content;
 }
 
-.edit-container #prosemirror.commentsSidebar .ProseMirror .sidebar-comments {
+.edit-container #prosemirror.commentsSidebar .ProseMirror aside {
   grid-column: comments;
   display: contents;
   user-select: none;
 
 }
 
- .edit-container #prosemirror.fixedSidebar .ProseMirror .sidebar-comments {
+ .edit-container #prosemirror.fixedSidebar .ProseMirror aside {
    display: none;
  }
 

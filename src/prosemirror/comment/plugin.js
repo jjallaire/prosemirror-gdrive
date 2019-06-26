@@ -87,7 +87,6 @@ function createComment(doc, at, mark) {
   const resolvedPos = doc.resolve(at);
   const afterPos = resolvedPos.after(1);
   let comment = document.createElement('aside');
-  comment.setAttribute('class', 'sidebar-comments');
   comment.innerHTML = mark.attrs['data-comment'] + "<br/>";
   return Decoration.widget(afterPos, comment, { marks: [] });
 }
