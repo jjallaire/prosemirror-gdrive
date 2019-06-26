@@ -274,7 +274,8 @@ export default {
         .then(comment => {
           return {
             'data-id': shortUuid().new(),
-            'data-comment': comment
+            'data-comment': comment,
+            'data-active': '0'
           }
         })
     },

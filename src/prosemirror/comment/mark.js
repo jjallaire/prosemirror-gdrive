@@ -1,14 +1,15 @@
 
 
 export const commentMark = {
-  attrs: { 'data-id': {}, 'data-comment': {} }, 
+  attrs: { 'data-id': {}, 'data-comment': {}, 'data-active': {} }, 
   parseDOM: [
     {
       tag: 'span.comment',
       getAttrs(dom) { 
         return {
           'data-id': dom['data-id'],
-          'data-comment': dom['data-comment']
+          'data-comment': dom['data-comment'],
+          'data-active': dom['data-active']
         }
       }
     },
@@ -19,7 +20,8 @@ export const commentMark = {
       { 
         class: 'comment', 
         'data-id': node.attrs['data-id'], 
-        'data-comment': node.attrs['data-comment'] 
+        'data-comment': node.attrs['data-comment'],
+        'data-active': node.attrs['data-active']
       }, 
       0
     ]
