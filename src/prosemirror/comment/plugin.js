@@ -92,6 +92,11 @@ function createComment(doc, at, mark) {
 
   comment.addEventListener("click", () => {
     comment.classList.toggle('comment-expanded');
+
+    // set data-active attribute on other marks
+    
+
+
   });
 
   comment.innerHTML = mark.attrs['data-comment'] + "<br/>";
